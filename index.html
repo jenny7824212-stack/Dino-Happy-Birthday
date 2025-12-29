@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DINO 27 | 2026 MILANO COLLECTION PRE-LAUNCH</title>
+    <style>
+        body { background: #000; color: #fff; font-family: "Times New Roman", serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .container { text-align: center; z-index: 10; padding: 20px; }
+        
+        /* 背景 Otter 圖片樣式 */
+        .bg-img { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; z-index: 1; transition: 1s; }
+        
+        h1 { font-size: 50px; font-weight: 100; letter-spacing: 12px; margin-bottom: 20px; transition: 1s; }
+        .countdown { font-size: 35px; letter-spacing: 5px; color: #d4af37; margin-bottom: 40px; font-weight: 100; }
+        
+        .enter-btn {
+            background: none; border: 1px solid #d4af37; color: #d4af37;
+            padding: 15px 40px; font-size: 16px; cursor: pointer;
+            letter-spacing: 5px; transition: 0.5s; opacity: 0; transform: translateY(20px);
+        }
+        .enter-btn.show { opacity: 1; transform: translateY(0); }
+        .enter-btn:hover { background: #d4af37; color: #000; box-shadow: 0 0 20px rgba(212,175,55,0.4); }
+
+        .sub-text { font-size: 14px; letter-spacing: 3px; color: #888; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <img src="otter1.jpg" id="bg-photo" class="bg-img">
+
+    <div class="container">
+        <h1 id="title">DINO 27</h1>
+        <div id="countdown-timer" class="countdown">LOADING...</div>
+        <div id="action-area">
+            <p class="sub-text" id="status-text">THE SHOW WILL BEGIN IN MILANO</p>
+        </div>
+    </div>
+
+    <script>
+        // === 設定倒數目標：2026年2月11日 00:00:00 ===
+        const targetDate = new Date("February 11, 2026 00:00:00").getTime();
+
+        const timer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            // 計算 天, 時, 分, 秒
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown-timer").innerHTML = 
+                days + "D " + hours + "H " + minutes + "M " + seconds + "S ";
+
+            // 倒數結束
+            if (distance < 0) {
+                clearInterval(timer);
+                showLaunchUI();
+            }
+        }, 1000);
+
+        function showLaunchUI() {
+            // 切換為 otter2.jpg 並更新文字
+            document.getElementById("bg-photo").src = "otter2.jpg";
+            document.getElementById("bg-photo").style.opacity = "0.7";
+            document.getElementById("title").innerText = "THE SHOW IS LIVE";
+            document.getElementById("countdown-timer").innerHTML = "MILANO COLLECTION NOW OPEN";
+            document.getElementById("status-text").innerText = "歡迎進入李燦設計師的地下展示空間";
+            
+            // 顯示進入按鈕
+            const actionArea = document.getElementById("action-area");
+            const btn = document.createElement("button");
+            btn.className = "enter-btn show";
+            btn.innerText = "ENTER THE SHOW";
+            btn.onclick = function() {
+                location.href = 'magazine.html'; // 跳轉到雜誌頁面
+            };
+            actionArea.prepend(btn);
+        }
+
+        // 測試用：如果你想直接看結束效果，可以在瀏覽器控制台輸入 showLaunchUI()
+    </script>
+</body>
+</html>
