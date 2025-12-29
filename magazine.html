@@ -5,17 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DINO 27 歲生日應援站</title>
     <style>
-        /* 背景改為灰色 */
+        /* 頁面背景改為質感灰色 */
         body { background: #f4f4f4; color: #000; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; margin: 0; overflow-x: hidden; }
         
         header { padding: 40px 20px; text-align: center; border-bottom: 1px solid #000; letter-spacing: 5px; background: #fff; }
         .nav-bar { display: flex; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid #000; font-size: 14px; position: sticky; top: 0; background: #fff; z-index: 100; }
         
+        /* 重新整理區域 */
         .refresh-container { text-align: center; padding: 15px; }
-        #refresh-btn { background: #fff; border: 1px solid #000; padding: 8px 20px; cursor: pointer; font-size: 12px; }
+        #refresh-btn { background: #fff; border: 1px solid #000; padding: 8px 20px; cursor: pointer; font-size: 12px; transition: 0.3s; }
+        #refresh-btn:hover { background: #000; color: #fff; }
 
-        #floating-market-btn { position: fixed; bottom: 30px; right: 30px; background: #000; color: #fff; padding: 18px 25px; border-radius: 50px; cursor: pointer; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid #fff; letter-spacing: 4px; font-weight: bold; font-size: 16px; }
+        /* 懸浮黑市入口 */
+        #floating-market-btn { 
+            position: fixed; bottom: 30px; right: 30px; 
+            background: #000; color: #fff; padding: 18px 25px; 
+            border-radius: 50px; cursor: pointer; z-index: 999; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid #fff; 
+            letter-spacing: 4px; font-weight: bold; font-size: 16px; 
+        }
 
+        /* 雜誌網格 */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
         .item { border: 1px solid #ddd; padding: 15px; text-align: center; position: relative; background: #fff; border-radius: 4px; }
         .item img { width: 100%; height: auto; cursor: pointer; } 
@@ -23,14 +33,21 @@
         .item p { font-size: 12px; color: #666; }
         .sold-out { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); color: #fff; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
 
+        /* 黑市彈窗樣式 */
         #black-market-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 1000; padding: 40px 20px; box-sizing: border-box; overflow-y: auto; }
         .quiz-container { max-width: 600px; margin: 20px auto; }
-        .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #fff; background: transparent; color: #fff; cursor: pointer; text-align: left; }
+        .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #fff; background: transparent; color: #fff; cursor: pointer; text-align: left; font-size: 16px; }
         .option-btn:hover { background: #fff; color: #000; }
-        #quiz-story { font-style: italic; color: #aaa; margin-bottom: 25px; white-space: pre-line; line-height: 1.8; }
+        #quiz-story { font-style: italic; color: #aaa; margin-bottom: 25px; white-space: pre-line; line-height: 1.8; font-size: 15px; }
+        #quiz-question { font-size: 18px; line-height: 1.6; font-weight: bold; color: #fff; margin-bottom: 20px; }
+        
+        /* 關站遮罩 */
+        #closed-message { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#fff; color:#000; z-index:9999; justify-content:center; align-items:center; font-size:24px; text-align:center; }
     </style>
 </head>
 <body>
+
+<div id="closed-message">活動已結束，感謝您的參與。</div>
 
 <header>
     <h1>DINO 27TH BIRTHDAY</h1>
@@ -55,7 +72,7 @@
         <h2>黑市挑戰</h2>
         <hr border="1" color="#fff" style="margin-bottom:20px;">
         <p id="quiz-story"></p>
-        <p id="quiz-question" style="font-size: 18px; line-height: 1.6; font-weight: bold;"></p>
+        <p id="quiz-question"></p>
         <div id="quiz-options"></div>
         <div id="quiz-footer" style="margin-top: 30px; font-size: 12px; color: #666;">
             <span onclick="closeMarket()" style="cursor:pointer;">[ 離開黑市 ]</span>
@@ -64,27 +81,28 @@
 </div>
 
 <script>
-    // 配置區域
+    // ------------------- 配置區域 -------------------
     const STOCK_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv';
     const BLACK_MARKET_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScv7hqzJEcDXYX7BpIEfs5c2NmNfLOpUnWIxa1blxE9gU9afw/viewform';
     const ORDER_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScWck40_ZDTAutZ6PT6cq3koXbHUyplsl8lcoASe2ACTlZXOg/viewform';
+    
+    // 設定 2/12 關站時間
+    const CLOSE_DATE = new Date("Feb 12, 2025 00:00:00").getTime(); 
 
     let coins = 3;
     let inventory = {};
     let currentQuiz = -1;
 
-    // PDF 題目內容校對 
-    const questions = [
-        { story: "你剛踏進黑市深處,就被攔下。\n對方沒有質問,只是靜靜看著你。\n「國王的生日?」", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
-        { story: "你被放行了。\n牆上貼著舊舞台海報,上面一串文字:\n「鏡子裡所照的我十分陌生。」", q: "問題 2：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
-        { story: "燈光短暫亮起。\n燦噠哩想起第一次的solo mixtape mv 拍攝。\n「但你不是一個人。」", q: "問題 3：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
-        { story: "哥哥們都來幫國王加油啦。\n經過一排展示架,上面放著演唱會服裝。", q: "問題 4：SEVENTEEN RIGHT HERE演唱會「韓國場」Rain舞台第一天與第二天表演有何不同?", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2 },
-        { story: "螢幕亮起,一段熟悉的舞蹈畫面出現。\n國王幫哥哥的solo曲設計舞蹈。\n秋天的落葉好多。", q: "問題 5：Dino Danceology中,和知秀一起的那支舞是在哪裡拍攝的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
-        { story: "你再往裡走,黑市的聲音逐漸消失。\n只剩下一句問題,在空間裡回盪。\n「第一次身旁沒有成員站上了何處的國際舞台?」", q: "問題 6：李燦今年獨自一人出國表演,是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯(EWC 開幕式)", "法國"], correct: 2 },
-        { story: "那一刻,空氣變得很安靜。\n門前的人翻著資料,語氣不像盤問,更像確認。\n「今年,李燦走出了多少次『隊伍以外』?」", q: "問題 7：李燦 2025年共有幾次「隊外」合作? (BSS、HxW、CxM及家人合作不計入)", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
-        { story: "他闔上資料。你終於來到最深處。\n桌上攤著一本翻舊的冊子。\n封面寫著——《水獺觀察日記》", q: "問題 8：以下哪一個「沒有」被收錄在hys_921008《水獺觀察日記》中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 },
-        { story: "燦噠哩發現設計師最喜歡幸福的小水獺。\n牆上貼滿剪報,幾乎都是同一個色系。\n「有一個顏色,只有你能撐得住。」", q: "問題 9：水獺裁縫師最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
-    ];
+    // ------------------- 核心功能 -------------------
+
+    function checkSiteStatus() {
+        const now = new Date().getTime();
+        if (now >= CLOSE_DATE) {
+            document.getElementById('closed-message').style.display = 'flex';
+        }
+    }
+    setInterval(checkSiteStatus, 60000);
+    checkSiteStatus();
 
     async function manualRefresh() { await syncStock(); alert("庫存已同步！"); }
 
@@ -113,17 +131,34 @@
             const isSoldOut = (stock !== '...' && stock <= 0);
             const item = document.createElement('div');
             item.className = 'item';
-            item.innerHTML = `<img src="cloth${i}.jpg" onclick="${isSoldOut ? '' : `orderItem(${i})`}"><h3>商品編號 #${String(i).padStart(3, '0')}</h3><p>剩餘數量: ${stock}</p>${isSoldOut ? '<div class="sold-out">SOLD OUT</div>' : ''}`;
+            item.innerHTML = `
+                <img src="cloth${i}.jpg" onclick="${isSoldOut ? '' : `orderItem(${i})`}">
+                <h3>商品編號 #${String(i).padStart(3, '0')}</h3>
+                <p>剩餘數量: ${stock}</p>
+                ${isSoldOut ? '<div class="sold-out">SOLD OUT</div>' : ''}
+            `;
             grid.appendChild(item);
         }
     }
 
     function orderItem(id) {
-        // 修正 404 問題，對 # 進行編碼
         const formattedId = "#" + id;
         const finalUrl = `${ORDER_FORM_URL}?usp=pp_url&entry.94643144=${encodeURIComponent(formattedId)}`;
         window.open(finalUrl);
     }
+
+    // ------------------- 黑市題目資料 -------------------
+    const questions = [
+        { story: "你剛踏進黑市深處,就被攔下。\n對方沒有質問,只是靜靜看著你。\n「國王的生日?」", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
+        { story: "你被放行了。\n牆上貼著舊舞台海報,上面一串文字:\n「鏡子裡所照的我十分陌生。」", q: "問題 2：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
+        { story: "燈光短暫亮起。\n燦噠哩想起第一次的solo mixtape mv 拍攝。\n「但你不是一個人。」", q: "問題 3：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
+        { story: "哥哥們都來幫國王加油啦。\n經過一排展示架,上面放著演唱會服裝。", q: "問題 4：SEVENTEEN RIGHT HERE演唱會「韓國場」Rain舞台第一天與第二天表演有何不同?", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2 },
+        { story: "螢幕亮起,一段熟悉的舞蹈畫面出現。\n國王幫哥哥的solo曲設計舞蹈。\n秋天的落葉好多。", q: "問題 5：Dino Danceology中,和知秀一起的那支舞是在哪裡拍攝的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
+        { story: "你再往裡走,黑市的聲音逐漸消失。\n只剩下一句問題,在空間裡回盪。\n「第一次身旁沒有成員站上了何處的國際舞台?」", q: "問題 6：李燦今年獨自一人出國表演,是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯(EWC 開幕式)", "法國"], correct: 2 },
+        { story: "那一刻,空氣變得很安靜。\n門前的人翻著資料,語氣不像盤問,更像確認。\n「今年,李燦走出了多少次『隊伍以外』?」", q: "問題 7：李燦 2025年共有幾次「隊外」合作? (BSS、HxW、CxM及家人合作不計入)", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
+        { story: "他闔上資料。你終於來到最深處。\n桌上攤著一本翻舊的冊子。\n封面寫著——《水獺觀察日記》", q: "問題 8：以下哪一個「沒有」被收錄在hys_921008《水獺觀察日記》中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 },
+        { story: "燦噠哩發現設計師最喜歡幸福的小水獺。\n牆上貼滿剪報,幾乎都是同一個色系。\n「有一個顏色特別漂亮耀眼。」", q: "問題 9：水獺裁縫師最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
+    ];
 
     function openMarket() {
         document.getElementById('black-market-overlay').style.display = 'block';
