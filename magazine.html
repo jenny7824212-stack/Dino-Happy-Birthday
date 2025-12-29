@@ -7,23 +7,33 @@
     <style>
         body { background: #fff; color: #000; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; margin: 0; overflow-x: hidden; }
         header { padding: 40px 20px; text-align: center; border-bottom: 1px solid #000; letter-spacing: 5px; }
+        
+        /* 導覽列 */
         .nav-bar { display: flex; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid #000; font-size: 14px; position: sticky; top: 0; background: #fff; z-index: 100; }
         
+        /* 懸浮黑市入口 - 隨頁面滾動移動 */
+        #floating-market-btn {
+            position: fixed; bottom: 30px; right: 30px; 
+            background: #000; color: #fff; padding: 15px 20px; 
+            border-radius: 50px; cursor: pointer; z-index: 999;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid #fff;
+            letter-spacing: 2px; font-weight: bold;
+        }
+
+        /* 雜誌網格 */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
         .item { border: 1px solid #eee; padding: 15px; text-align: center; position: relative; }
         .item img { width: 100%; height: auto; cursor: pointer; } 
         .item h3 { font-size: 16px; margin: 15px 0 5px; letter-spacing: 1px; }
         .item p { font-size: 12px; color: #666; }
-        .sold-out { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); color: #fff; display: flex; align-items: center; justify-content: center; letter-spacing: 2px; z-index: 10; pointer-events: none; }
+        .sold-out { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); color: #fff; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
 
-        .refresh-container { text-align: center; margin: 20px 0; }
-        #refresh-btn { background: #fff; color: #000; border: 1px solid #000; padding: 10px 25px; cursor: pointer; letter-spacing: 2px; font-size: 14px; transition: 0.3s; }
-        #refresh-btn:hover { background: #f0f0f0; }
-
+        /* 黑市挑戰彈窗 */
         #black-market-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 1000; padding: 40px 20px; box-sizing: border-box; overflow-y: auto; }
-        .quiz-container { max-width: 600px; margin: 0 auto; }
+        .quiz-container { max-width: 600px; margin: 50px auto; }
         .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #fff; background: transparent; color: #fff; cursor: pointer; text-align: left; transition: 0.2s; }
         .option-btn:hover { background: #fff; color: #000; }
+        #quiz-story { font-style: italic; color: #aaa; margin-bottom: 20px; white-space: pre-line; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -35,12 +45,10 @@
 
 <div class="nav-bar">
     <div>我的魚幣: <span id="coin-count">3</span> 🐟</div>
-    <div id="market-status" style="cursor:pointer; text-decoration: underline;" onclick="openMarket()">進入黑市挑戰</div>
+    <div>同步狀態: <span id="sync-indicator">🟢 正常</span></div>
 </div>
 
-<div class="refresh-container">
-    <button id="refresh-btn" onclick="manualRefresh()">更新即時庫存</button>
-</div>
+<div id="floating-market-btn" onclick="openMarket()">進入黑市挑戰</div>
 
 <div class="grid" id="magazine-grid"></div>
 
@@ -48,8 +56,8 @@
     <div class="quiz-container">
         <h2>黑市挑戰</h2>
         <hr border="1" color="#fff">
-        <p id="quiz-story" style="font-style: italic; color: #aaa; margin-bottom: 20px; white-space: pre-line;"></p>
-        <p id="quiz-question" style="font-size: 18px; line-height: 1.6;"></p>
+        <p id="quiz-story"></p>
+        <p id="quiz-question" style="font-size: 18px; line-height: 1.6; font-weight: bold;"></p>
         <div id="quiz-options"></div>
         <div id="quiz-footer" style="margin-top: 30px; font-size: 12px; color: #666;">
             <span onclick="closeMarket()" style="cursor:pointer;">[ 離開黑市 ]</span>
@@ -58,45 +66,44 @@
 </div>
 
 <script>
-    // ------------------- 1. 配置區域 -------------------
-    const STOCK_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv'; 
-    
-    // 請填入你的實際表單連結
-    const ORDER_FORM_URL = '你的訂購表單網址'; 
-    const BLACK_MARKET_FORM_URL = '你的黑市領獎表單網址'; 
+    // 1. 設定區域
+    const STOCK_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv';
+    const ORDER_FORM_URL = '你的訂購表單連結';
+    const BLACK_MARKET_FORM_URL = '你的黑市領獎表單連結';
 
     let coins = 3;
     let inventory = {};
     let currentQuiz = 0;
 
-    // ------------------- 2. 庫存管理 -------------------
-    async function manualRefresh() {
-        const btn = document.getElementById('refresh-btn');
-        btn.innerText = "庫存同步中...";
-        btn.disabled = true;
-        await syncStock();
-        setTimeout(() => {
-            btn.innerText = "更新成功！";
-            setTimeout(() => { btn.innerText = "更新即時庫存"; btn.disabled = false; }, 1000);
-        }, 500);
-    }
+    // 2. 題目與故事內容 [cite: 1-90]
+    const questions = [
+        { story: "你剛踏進黑市深處,就被攔下。\n對方沒有質問,只是靜靜看著你。\n「國王的生日?」", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
+        { story: "你被放行了。\n牆上貼著舊舞台海報,上面一串文字:\n「鏡子裡所照的我十分陌生。」", q: "問題 2：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
+        { story: "燈光短暫亮起。\n燦噠哩想起第一次的solo mixtape mv 拍攝。\n「但你不是一個人。」", q: "問題 3：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
+        { story: "哥哥們都來幫國王加油啦。\n經過一排展示架,上面放著演唱會服裝。", q: "問題 4：SEVENTEEN RIGHT HERE演唱會「韓國場」Rain舞台第一天與第二天表演有何不同?", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2 },
+        { story: "螢幕亮起,一段熟悉的舞蹈畫面出現。\n國王幫哥哥的solo曲設計舞蹈。\n秋天的落葉好多。", q: "問題 5：Dino Danceology中,和知秀一起的那支舞是在哪裡拍攝的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
+        { story: "你再往裡走,黑市的聲音逐漸消失。\n只剩下一句問題,在空間裡回盪。\n「第一次身旁沒有成員站上了何處的國際舞台?」", q: "問題 6：李燦今年獨自一人出國表演,是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯(EWC 開幕式)", "法國"], correct: 2 },
+        { story: "那一刻,空氣變得很安靜。\n門前的人翻著資料,語氣不像盤問,更像確認。\n「今年,李燦走出了多少次『隊伍以外』?」", q: "問題 7：李燦 2025年共有幾次「隊外」合作? (BSS、HxW、CxM及家人合作不計入)", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
+        { story: "他闔上資料。你終於來到最深處。\n桌上攤著一本翻舊的冊子。\n封面寫著——《水獺觀察日記》", q: "問題 8：以下哪一個「沒有」被收錄在《水獺觀察日記》中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 },
+        { story: "燦噠哩發現設計師最喜歡幸福的小水獺。\n牆上貼滿剪報,幾乎都是同一個色系。\n「有一個顏色,只有你能撐得住。」", q: "問題 9：水獺裁縫師最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
+    ];
 
+    // 3. 庫存邏輯
     async function syncStock() {
         try {
-            const timestamp = new Date().getTime();
-            const res = await fetch(`${STOCK_CSV_URL}&t=${timestamp}`);
+            const res = await fetch(`${STOCK_CSV_URL}&t=${new Date().getTime()}`);
             const text = await res.text();
-            const rows = text.split('\n').filter(row => row.trim() !== '').slice(1);
+            const rows = text.split('\n').filter(r => r.trim() !== '').slice(1);
             rows.forEach(row => {
                 const cols = row.split(',');
                 if (cols.length >= 3) {
-                    const id = parseInt(cols[0].trim());
-                    let count = parseInt(cols[2].trim()); 
-                    if (!isNaN(id)) inventory[id] = isNaN(count) ? 0 : count;
+                    const id = parseInt(cols[0]);
+                    const count = parseInt(cols[2]);
+                    if (!isNaN(id)) inventory[id] = count;
                 }
             });
             renderGrid();
-        } catch (e) { console.error("Sync Error", e); renderGrid(); }
+        } catch (e) { console.error("Sync Failed"); }
     }
 
     function renderGrid() {
@@ -110,30 +117,16 @@
             item.innerHTML = `
                 <img src="cloth${i}.jpg" onclick="${isSoldOut ? '' : `orderItem(${i})`}">
                 <h3>商品編號 #${String(i).padStart(3, '0')}</h3>
-                <p>剩餘庫存: ${stock}</p>
+                <p>剩餘數量: ${stock}</p>
                 ${isSoldOut ? '<div class="sold-out">SOLD OUT</div>' : ''}
             `;
             grid.appendChild(item);
         }
     }
 
-    function orderItem(id) {
-        window.open(`${ORDER_FORM_URL}?entry.你的ID=${id}`);
-    }
+    function orderItem(id) { window.open(`${ORDER_FORM_URL}?entry.你的ID=${id}`); }
 
-    // ------------------- 3. 黑市題目設定 (9 題) -------------------
-    const questions = [
-        { q: "問題 1：李燦的生日是幾號？", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1, story: "你被放行了。\n牆上貼著舊海報：『鏡子裡所照的我十分陌生。』" },
-        { q: "問題 2：李燦成年高中畢業的Solo曲是？", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2, story: "燦噠哩想起第一次的 solo mv 拍攝：『但你不是一個人。』" },
-        { q: "問題 3：《Wait》花絮 MV拍攝時，有幾位哥哥到場加油？", a: ["10", "11", "12", "13"], correct: 2, story: "哥哥們都來了！展示架上放著演唱會服裝。" },
-        { q: "問題 4：Rain 舞台第一天與第二天有何處不同？", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2, story: "國王幫哥哥設計舞蹈。秋天的落葉好多。" },
-        { q: "問題 5：Dino Danceology 中，和知秀一起的那支舞，是在哪裡拍攝的？", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3, story: "黑市聲音消失：『第一次獨自一人站上的國際舞台？』" },
-        { q: "問題 6：李燦今年獨自出國表演是去？", a: ["日本", "美國", "沙烏地(EWC)", "法國"], correct: 2, story: "門前的人翻著資料：『今年，李燦走出了多少次隊伍以外？』" },
-        { q: "問題 7：李燦 2025年共有幾次「隊外」合作？", a: ["4次", "5次", "6次", "7次"], correct: 2, story: "你來到最深處。桌上攤著一本《水獺觀察日記》。" },
-        { q: "問題 8：日記中「沒有」收錄以下哪個動作？", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3, story: "『有一個顏色，只有你能撐得住。』" },
-        { q: "問題 9：設計師最喜歡李燦的哪一個髮色？", a: ["黑色", "金色", "紅色", "藍色"], correct: 3, story: "門，在你面前打開。設計師就在裡面。" }
-    ];
-
+    // 4. 黑市邏輯
     function openMarket() {
         document.getElementById('black-market-overlay').style.display = 'block';
         showQuestion();
@@ -156,28 +149,25 @@
     }
 
     function checkAnswer(idx) {
-        const correctIdx = questions[currentQuiz].correct;
-        if (idx === correctIdx) {
+        if (idx === questions[currentQuiz].correct) {
             coins += 2;
             document.getElementById('coin-count').innerText = coins;
             alert("回答正確！獲得 2 枚魚幣。");
         } else {
-            alert("回答錯誤！可惜這題沒有魚幣，進入下一題。");
+            alert("回答錯誤，可惜這題沒有魚幣。進入下一題。");
         }
-        
-        // 不論對錯，都進入下一題
         currentQuiz++;
         showQuestion();
     }
 
     function finishMarket() {
+        document.getElementById('quiz-story').innerText = "門，在你面前打開。";
         document.getElementById('quiz-question').innerText = `挑戰結束！你最終獲得了 ${coins} 枚魚幣。`;
-        document.getElementById('quiz-options').innerHTML = `<button class="option-btn" onclick="submitCoins()">前往提交魚幣獎勵</button>`;
+        document.getElementById('quiz-options').innerHTML = `<button class="option-btn" style="background:#fff; color:#000; text-align:center;" onclick="submitCoins()">前往提交魚幣與驗證碼領取獎勵</button>`;
     }
 
     function submitCoins() {
         const verifyCode = Math.floor(Math.random() * 90000) + 10000;
-        // 魚幣使用 entry.999，驗證碼使用 entry.888
         window.open(`${BLACK_MARKET_FORM_URL}?entry.999=${coins}&entry.888=${verifyCode}`);
     }
 
