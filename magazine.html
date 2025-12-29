@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DINO 27 歲生日應援站</title>
     <style>
-        /* 頁面背景改為質感灰色 */
         body { background: #f4f4f4; color: #000; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; margin: 0; overflow-x: hidden; }
-        
         header { padding: 40px 20px; text-align: center; border-bottom: 1px solid #000; letter-spacing: 5px; background: #fff; }
         .nav-bar { display: flex; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid #000; font-size: 14px; position: sticky; top: 0; background: #fff; z-index: 100; }
-        
         .refresh-container { text-align: center; padding: 15px; }
-        #refresh-btn { background: #fff; border: 1px solid #000; padding: 8px 20px; cursor: pointer; font-size: 12px; transition: 0.3s; }
-        #refresh-btn:hover { background: #000; color: #fff; }
+        #refresh-btn { background: #fff; border: 1px solid #000; padding: 8px 20px; cursor: pointer; font-size: 12px; }
 
-        /* 懸浮黑市入口 */
+        /* 黑市按鈕樣式 */
         #floating-market-btn { 
             position: fixed; bottom: 30px; right: 30px; 
             background: #000; color: #fff; padding: 18px 25px; 
             border-radius: 50px; cursor: pointer; z-index: 999; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid #fff; 
             letter-spacing: 4px; font-weight: bold; font-size: 16px; 
+        }
+        /* 被禁用時的樣式 */
+        #floating-market-btn.disabled {
+            background: #888; color: #ccc; cursor: not-allowed; border: 1px solid #888;
         }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
@@ -71,25 +71,32 @@
         <p id="quiz-question"></p>
         <div id="quiz-options"></div>
         <div id="quiz-footer" style="margin-top: 30px; font-size: 12px; color: #666;">
-            <span onclick="closeMarket()" style="cursor:pointer;">[ 離開黑市 ]</span>
+            <span onclick="confirmCloseMarket()" style="cursor:pointer;">[ 離開黑市 ]</span>
         </div>
     </div>
 </div>
 
 <script>
-    // ------------------- 配置區域 -------------------
     const STOCK_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv';
     const BLACK_MARKET_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScv7hqzJEcDXYX7BpIEfs5c2NmNfLOpUnWIxa1blxE9gU9afw/viewform';
     const ORDER_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScWck40_ZDTAutZ6PT6cq3koXbHUyplsl8lcoASe2ACTlZXOg/viewform';
     
-    // 已修正為 2026 年
     const CLOSE_DATE = new Date("Feb 12, 2026 00:00:00").getTime(); 
 
     let coins = 3;
     let inventory = {};
     let currentQuiz = -1;
 
-    // ------------------- 核心功能 -------------------
+    // --- 初始化檢查：是否已經進入過黑市 ---
+    function checkMarketStatus() {
+        const hasEntered = localStorage.getItem('dino_market_entered');
+        if (hasEntered === 'true') {
+            const btn = document.getElementById('floating-market-btn');
+            btn.innerHTML = "{ 黑市已關閉 }";
+            btn.classList.add('disabled');
+            btn.onclick = function() { alert("你已經進入過黑市了，機會只有一次！"); };
+        }
+    }
 
     function checkSiteStatus() {
         const now = new Date().getTime();
@@ -99,9 +106,10 @@
     }
     setInterval(checkSiteStatus, 60000);
     checkSiteStatus();
+    checkMarketStatus();
 
+    // --- 庫存功能 ---
     async function manualRefresh() { await syncStock(); alert("庫存已同步！"); }
-
     async function syncStock() {
         try {
             const res = await fetch(`${STOCK_CSV_URL}&t=${new Date().getTime()}`);
@@ -143,7 +151,7 @@
         window.open(finalUrl);
     }
 
-    // ------------------- 黑市題目資料 -------------------
+    // --- 黑市遊戲邏輯 ---
     const questions = [
         { story: "你剛踏進黑市深處,就被攔下。\n對方沒有質問,只是靜靜看著你。\n「國王的生日?」", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
         { story: "你被放行了。\n牆上貼著舊舞台海報,上面一串文字:\n「鏡子裡所照的我十分陌生。」", q: "問題 2：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
@@ -153,10 +161,18 @@
         { story: "你再往裡走,黑市的聲音逐漸消失。\n只剩下一句問題,在空間裡回盪。\n「第一次身旁沒有成員站上了何處的國際舞台?」", q: "問題 6：李燦今年獨自一人出國表演,是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯(EWC 開幕式)", "法國"], correct: 2 },
         { story: "那一刻,空氣變得很安靜。\n門前的人翻著資料,語氣不像盤問,更像確認。\n「今年,李燦走出了多少次『隊伍以外』?」", q: "問題 7：李燦 2026年共有幾次「隊外」合作? (BSS、HxW、CxM及家人合作不計入)", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
         { story: "他闔上資料。你終於來到最深處。\n桌上攤著一本翻舊的冊子。\n封面寫著——《水獺觀察日記》", q: "問題 8：以下哪一個「沒有」被收錄在hys_921008《水獺觀察日記》中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 },
-        { story: "燦噠哩發現設計師最喜歡幸福的小水獺。\n牆上貼滿剪報,幾乎都是同一個色系。\n「有一個顏色特別漂亮。」", q: "問題 9：水獺裁縫師最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
+        { story: "燦噠哩發現設計師最喜歡幸福的小水獺。\n牆上貼滿剪報,幾乎都是同一個色系。\n「有一個顏色十分耀眼。」", q: "問題 9：水獺裁縫師最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
     ];
 
     function openMarket() {
+        if (localStorage.getItem('dino_market_entered') === 'true') {
+            alert("機會只有一次，黑市大門已關閉。");
+            return;
+        }
+        // 標記為已進入
+        localStorage.setItem('dino_market_entered', 'true');
+        checkMarketStatus(); // 更新按鈕樣式
+        
         document.getElementById('black-market-overlay').style.display = 'block';
         currentQuiz = -1;
         showQuestion();
@@ -213,11 +229,13 @@
         window.open(url);
     }
 
-    function closeMarket() {
-        document.getElementById('black-market-overlay').style.display = 'none';
-        currentQuiz = -1; coins = 3;
-        document.getElementById('coin-count').innerText = coins;
+    // --- 強制退出的邏輯 ---
+    function confirmCloseMarket() {
+        if (confirm("離開黑市後將無法再次進入，確定要離開嗎？")) {
+            document.getElementById('black-market-overlay').style.display = 'none';
+        }
     }
+
     syncStock();
 </script>
 </body>
