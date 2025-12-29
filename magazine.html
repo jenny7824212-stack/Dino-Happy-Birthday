@@ -62,21 +62,31 @@
     let hasLeftMarket = false;
     let inventory = Array(17).fill(2); 
 
-    // 1. 同步庫存
-    async function syncStock() {
-        try {
-            const res = await fetch(STOCK_CSV_URL);
-            const text = await res.text();
-            const rows = text.split('\n').slice(1);
-            rows.forEach(row => {
-                const cols = row.split(',');
-                const id = parseInt(cols[0]);
-                const count = parseInt(cols[1]);
-                if(!isNaN(id)) inventory[id] = count;
-            });
-            renderGrid();
-        } catch (e) { console.log("Stock Sync Error", e); renderGrid(); }
+   // 1. 同步庫存
+async function syncStock() {
+    try {
+        const res = await fetch(STOCK_CSV_URL);
+        const text = await res.text();
+        // 建議加上 trim() 處理換行符號問題
+        const rows = text.split('\n').slice(1);
+        
+        rows.forEach(row => {
+            const cols = row.split(',');
+            if (cols.length >= 3) { // 確保這行至少有三欄
+                const id = parseInt(cols[0]);    // A欄: ID
+                const count = parseInt(cols[2]); // 修改這裡！從 cols[1] 改成 cols[2] (讀取 C 欄)
+                
+                if(!isNaN(id)) {
+                    inventory[id] = isNaN(count) ? 0 : count; 
+                }
+            }
+        });
+        renderGrid();
+    } catch (e) { 
+        console.log("Stock Sync Error", e); 
+        renderGrid(); 
     }
+}
 
     // 2. 渲染雜誌
     function renderGrid() {
@@ -160,3 +170,4 @@
 </body>
 
 </html>
+
