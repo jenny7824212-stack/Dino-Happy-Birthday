@@ -7,20 +7,21 @@
     <style>
         body { background: #fff; color: #000; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; margin: 0; overflow-x: hidden; }
         header { padding: 40px 20px; text-align: center; border-bottom: 1px solid #000; letter-spacing: 5px; }
-        
-        /* 導覽列 */
         .nav-bar { display: flex; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid #000; font-size: 14px; position: sticky; top: 0; background: #fff; z-index: 100; }
         
-        /* 懸浮黑市入口 - 隨頁面滾動移動 */
+        /* 重新整理區域 */
+        .refresh-container { text-align: center; padding: 15px; border-bottom: 1px solid #eee; }
+        #refresh-btn { background: #fff; border: 1px solid #000; padding: 8px 20px; cursor: pointer; letter-spacing: 1px; font-size: 12px; }
+
+        /* 懸浮黑市入口 */
         #floating-market-btn {
             position: fixed; bottom: 30px; right: 30px; 
-            background: #000; color: #fff; padding: 15px 20px; 
+            background: #000; color: #fff; padding: 18px 25px; 
             border-radius: 50px; cursor: pointer; z-index: 999;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid #fff;
-            letter-spacing: 2px; font-weight: bold;
+            letter-spacing: 4px; font-weight: bold; font-size: 16px;
         }
 
-        /* 雜誌網格 */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
         .item { border: 1px solid #eee; padding: 15px; text-align: center; position: relative; }
         .item img { width: 100%; height: auto; cursor: pointer; } 
@@ -28,12 +29,11 @@
         .item p { font-size: 12px; color: #666; }
         .sold-out { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); color: #fff; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
 
-        /* 黑市挑戰彈窗 */
         #black-market-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 1000; padding: 40px 20px; box-sizing: border-box; overflow-y: auto; }
-        .quiz-container { max-width: 600px; margin: 50px auto; }
-        .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #fff; background: transparent; color: #fff; cursor: pointer; text-align: left; transition: 0.2s; }
+        .quiz-container { max-width: 600px; margin: 20px auto; }
+        .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #fff; background: transparent; color: #fff; cursor: pointer; text-align: left; }
         .option-btn:hover { background: #fff; color: #000; }
-        #quiz-story { font-style: italic; color: #aaa; margin-bottom: 20px; white-space: pre-line; line-height: 1.6; }
+        #quiz-story { font-style: italic; color: #aaa; margin-bottom: 20px; white-space: pre-line; line-height: 1.8; }
     </style>
 </head>
 <body>
@@ -45,19 +45,23 @@
 
 <div class="nav-bar">
     <div>我的魚幣: <span id="coin-count">3</span> 🐟</div>
-    <div>同步狀態: <span id="sync-indicator">🟢 正常</span></div>
+    <div>網頁狀態: <span id="sync-indicator">🟢 已連線</span></div>
 </div>
 
-<div id="floating-market-btn" onclick="openMarket()">進入黑市挑戰</div>
+<div class="refresh-container">
+    <button id="refresh-btn" onclick="manualRefresh()">更新即時庫存</button>
+</div>
+
+<div id="floating-market-btn" onclick="openMarket()">{ 黑市 }</div>
 
 <div class="grid" id="magazine-grid"></div>
 
 <div id="black-market-overlay">
     <div class="quiz-container">
-        <h2>黑市挑戰</h2>
+        <h2 id="market-title">黑市</h2>
         <hr border="1" color="#fff">
         <p id="quiz-story"></p>
-        <p id="quiz-question" style="font-size: 18px; line-height: 1.6; font-weight: bold;"></p>
+        <p id="quiz-question" style="font-size: 18px; line-height: 1.6;"></p>
         <div id="quiz-options"></div>
         <div id="quiz-footer" style="margin-top: 30px; font-size: 12px; color: #666;">
             <span onclick="closeMarket()" style="cursor:pointer;">[ 離開黑市 ]</span>
@@ -66,16 +70,14 @@
 </div>
 
 <script>
-    // 1. 設定區域
     const STOCK_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv';
     const ORDER_FORM_URL = '你的訂購表單連結';
     const BLACK_MARKET_FORM_URL = '你的黑市領獎表單連結';
 
     let coins = 3;
     let inventory = {};
-    let currentQuiz = 0;
+    let currentQuiz = -1; // 從 -1 開始表示背景故事階段
 
-    // 2. 題目與故事內容 [cite: 1-90]
     const questions = [
         { story: "你剛踏進黑市深處,就被攔下。\n對方沒有質問,只是靜靜看著你。\n「國王的生日?」", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
         { story: "你被放行了。\n牆上貼著舊舞台海報,上面一串文字:\n「鏡子裡所照的我十分陌生。」", q: "問題 2：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
@@ -84,11 +86,12 @@
         { story: "螢幕亮起,一段熟悉的舞蹈畫面出現。\n國王幫哥哥的solo曲設計舞蹈。\n秋天的落葉好多。", q: "問題 5：Dino Danceology中,和知秀一起的那支舞是在哪裡拍攝的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
         { story: "你再往裡走,黑市的聲音逐漸消失。\n只剩下一句問題,在空間裡回盪。\n「第一次身旁沒有成員站上了何處的國際舞台?」", q: "問題 6：李燦今年獨自一人出國表演,是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯(EWC 開幕式)", "法國"], correct: 2 },
         { story: "那一刻,空氣變得很安靜。\n門前的人翻著資料,語氣不像盤問,更像確認。\n「今年,李燦走出了多少次『隊伍以外』?」", q: "問題 7：李燦 2025年共有幾次「隊外」合作? (BSS、HxW、CxM及家人合作不計入)", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
-        { story: "他闔上資料。你終於來到最深處。\n桌上攤著一本翻舊的冊子。\n封面寫著——《水獺觀察日記》", q: "問題 8：以下哪一個「沒有」被收錄在《水獺觀察日記》中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 },
+        { story: "他闔上資料。你終於來到最深處。\n桌上攤著一本翻舊的冊子。\n封面寫著——《水獺觀察日記》", q: "問題 8：以下哪一個「沒有」被收錄在hys_921008《水獺觀察日記》中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 },
         { story: "燦噠哩發現設計師最喜歡幸福的小水獺。\n牆上貼滿剪報,幾乎都是同一個色系。\n「有一個顏色,只有你能撐得住。」", q: "問題 9：水獺裁縫師最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
     ];
 
-    // 3. 庫存邏輯
+    async function manualRefresh() { await syncStock(); alert("庫存已同步！"); }
+
     async function syncStock() {
         try {
             const res = await fetch(`${STOCK_CSV_URL}&t=${new Date().getTime()}`);
@@ -126,18 +129,29 @@
 
     function orderItem(id) { window.open(`${ORDER_FORM_URL}?entry.你的ID=${id}`); }
 
-    // 4. 黑市邏輯
     function openMarket() {
         document.getElementById('black-market-overlay').style.display = 'block';
+        currentQuiz = -1;
         showQuestion();
     }
 
     function showQuestion() {
-        if (currentQuiz >= questions.length) { finishMarket(); return; }
-        const data = questions[currentQuiz];
-        document.getElementById('quiz-story').innerText = data.story;
-        document.getElementById('quiz-question').innerText = data.q;
+        const storyP = document.getElementById('quiz-story');
+        const questionP = document.getElementById('quiz-question');
         const optionsDiv = document.getElementById('quiz-options');
+        
+        if (currentQuiz === -1) {
+            storyP.innerText = "為了準備即將到來的巴黎時裝週，\n你踏入了這片不為人知的黑市，\n目的是尋找那位傳說中的設計師——水獺裁縫師。";
+            questionP.innerText = "唯有證明你對李燦的了解，\n才能見到他的真面目。";
+            optionsDiv.innerHTML = `<button class="option-btn" onclick="currentQuiz=0; showQuestion();">開始尋找設計師</button>`;
+            return;
+        }
+
+        if (currentQuiz >= questions.length) { finishMarket(); return; }
+        
+        const data = questions[currentQuiz];
+        storyP.innerText = data.story;
+        questionP.innerText = data.q;
         optionsDiv.innerHTML = '';
         data.a.forEach((txt, idx) => {
             const btn = document.createElement('button');
@@ -173,7 +187,7 @@
 
     function closeMarket() {
         document.getElementById('black-market-overlay').style.display = 'none';
-        currentQuiz = 0; coins = 3;
+        currentQuiz = -1; coins = 3;
         document.getElementById('coin-count').innerText = coins;
     }
 
