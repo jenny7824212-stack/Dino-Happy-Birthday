@@ -59,17 +59,15 @@
 
 <script>
     // ------------------- 1. 配置區域 -------------------
-    // 已更新為黑市雜誌專用 CSV
     const STOCK_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv'; 
     
-    // 請記得把這兩個表單連結換成你真實的 Google 表單網址
+    // 請填入你的實際表單連結
     const ORDER_FORM_URL = '你的訂購表單網址'; 
     const BLACK_MARKET_FORM_URL = '你的黑市領獎表單網址'; 
 
     let coins = 3;
     let inventory = {};
     let currentQuiz = 0;
-    let hasMistakeInCurrentQuestion = false;
 
     // ------------------- 2. 庫存管理 -------------------
     async function manualRefresh() {
@@ -120,8 +118,7 @@
     }
 
     function orderItem(id) {
-        // 這邊可以根據需要修改商品編號的 entry ID
-        window.open(`${ORDER_FORM_URL}?entry.商品ID=${id}`);
+        window.open(`${ORDER_FORM_URL}?entry.你的ID=${id}`);
     }
 
     // ------------------- 3. 黑市題目設定 (9 題) -------------------
@@ -144,7 +141,6 @@
 
     function showQuestion() {
         if (currentQuiz >= questions.length) { finishMarket(); return; }
-        hasMistakeInCurrentQuestion = false; 
         const data = questions[currentQuiz];
         document.getElementById('quiz-story').innerText = data.story;
         document.getElementById('quiz-question').innerText = data.q;
@@ -154,27 +150,24 @@
             const btn = document.createElement('button');
             btn.className = 'option-btn';
             btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
-            btn.onclick = () => checkAnswer(idx, btn);
+            btn.onclick = () => checkAnswer(idx);
             optionsDiv.appendChild(btn);
         });
     }
 
-    function checkAnswer(idx, btn) {
+    function checkAnswer(idx) {
         const correctIdx = questions[currentQuiz].correct;
         if (idx === correctIdx) {
-            if (!hasMistakeInCurrentQuestion) {
-                coins += 2;
-                document.getElementById('coin-count').innerText = coins;
-            }
-            currentQuiz++;
-            showQuestion();
+            coins += 2;
+            document.getElementById('coin-count').innerText = coins;
+            alert("回答正確！獲得 2 枚魚幣。");
         } else {
-            hasMistakeInCurrentQuestion = true; 
-            btn.style.border = "1px solid red";
-            btn.style.color = "red";
-            btn.innerText = "✘ 回答錯誤，請試試其他選項";
-            btn.disabled = true;
+            alert("回答錯誤！可惜這題沒有魚幣，進入下一題。");
         }
+        
+        // 不論對錯，都進入下一題
+        currentQuiz++;
+        showQuestion();
     }
 
     function finishMarket() {
