@@ -233,8 +233,13 @@
     }
 
     function submitCoins() {
-        const verifyCode = Math.floor(Math.random() * 90000) + 10000;
-        window.open(`${BLACK_MARKET_FORM_URL}?usp=pp_url&entry.94782409=${coins}&entry.1993098186=${verifyCode}`);
+        // 使用複雜公式：(魚幣數量 * 17) + 211
+        const verifyCode = (coins * 17) + 211; 
+        
+        // 跳轉網址
+        const url = `${BLACK_MARKET_FORM_URL}?usp=pp_url&entry.94782409=${coins}&entry.1993098186=${verifyCode}`;
+        
+        window.open(url);
     }
 
     function confirmCloseMarket() {
@@ -251,3 +256,4 @@
 </script>
 </body>
 </html>
+
