@@ -97,11 +97,24 @@
     let currentQuiz = -1;
 
     function initMode() {
+        const topNav = document.getElementById('top-nav');
         if (isPreviewMode) {
+            // 隱藏黑市與刷新按鈕
             document.getElementById('floating-market-btn').style.display = 'none';
             document.getElementById('refresh-btn').style.display = 'none';
-            document.getElementById('top-nav').innerHTML = "<div>DINO 27TH BIRTHDAY - PREVIEW MODE</div>";
+            
+            // 插入返回入口按鈕與預覽模式提示
+            topNav.innerHTML = `
+                <div style="cursor:pointer; text-decoration:underline; font-weight:bold; color:#fff;" onclick="window.location.href='index.html'">← 返回入口 BACK</div>
+                <div style="color:#888; letter-spacing:2px;">PREVIEW MODE</div>
+                <div></div>
+            `;
         } else {
+            // 一般模式：顯示魚幣
+            topNav.innerHTML = `
+                <div>FISHER COIN: <span id="coin-count">${coins}</span> 🐟</div>
+                <div>STATUS: <span id="sync-indicator">🟢 CONNECTED</span></div>
+            `;
             checkMarketStatus();
         }
     }
@@ -256,4 +269,5 @@
 </script>
 </body>
 </html>
+
 
