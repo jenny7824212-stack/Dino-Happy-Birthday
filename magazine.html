@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DINO 27 歲生日應援站</title>
     <style>
-        /* 背景改為深炭灰色，增加高級感 */
         body { background: #222222; color: #ffffff; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; margin: 0; overflow-x: hidden; }
-        
         header { padding: 40px 20px; text-align: center; border-bottom: 1px solid #444; letter-spacing: 5px; background: #1a1a1a; }
         header h1 { margin: 0; font-size: 24px; color: #fff; }
         header p { color: #888; font-size: 12px; margin-top: 10px; }
@@ -18,7 +16,6 @@
         #refresh-btn { background: transparent; border: 1px solid #666; color: #ccc; padding: 8px 20px; cursor: pointer; font-size: 11px; transition: 0.3s; }
         #refresh-btn:hover { background: #fff; color: #000; border-color: #fff; }
 
-        /* 黑市按鈕 */
         #floating-market-btn { 
             position: fixed; bottom: 30px; right: 30px; 
             background: #ffffff; color: #000000; padding: 18px 25px; 
@@ -27,13 +24,10 @@
             letter-spacing: 4px; font-weight: bold; font-size: 16px; 
             transition: 0.3s;
         }
-        #floating-market-btn:hover { transform: scale(1.1); box-shadow: 0 15px 40px rgba(0,0,0,0.7); }
+        #floating-market-btn:hover { transform: scale(1.1); }
         #floating-market-btn.disabled { background: #444; color: #777; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        /* 雜誌網格 */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; padding: 40px 20px; }
-        
-        /* 雜誌卡片：背景改為深黑色 */
         .item { border: 1px solid #333; padding: 15px; text-align: center; position: relative; background: #1a1a1a; border-radius: 2px; transition: 0.3s; }
         .item:hover { border-color: #666; transform: translateY(-5px); }
         .item img { width: 100%; height: auto; transition: 0.3s; filter: grayscale(20%); } 
@@ -43,7 +37,6 @@
         
         .sold-out { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); color: #fff; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; font-weight: bold; letter-spacing: 2px; }
 
-        /* 黑市彈窗樣式 */
         #black-market-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 1000; padding: 40px 20px; box-sizing: border-box; overflow-y: auto; }
         .quiz-container { max-width: 600px; margin: 20px auto; }
         .option-btn { display: block; width: 100%; padding: 18px; margin: 12px 0; border: 1px solid #444; background: #111; color: #fff; cursor: pointer; text-align: left; font-size: 16px; transition: 0.3s; }
@@ -51,7 +44,6 @@
         #quiz-story { font-style: italic; color: #888; margin-bottom: 25px; white-space: pre-line; line-height: 1.8; font-size: 15px; }
         #quiz-question { font-size: 18px; line-height: 1.6; font-weight: bold; color: #fff; margin-bottom: 20px; }
         
-        /* 關站遮罩 */
         #closed-message { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000; color:#fff; z-index:9999; justify-content:center; align-items:center; font-size:20px; text-align:center; letter-spacing:2px; }
     </style>
 </head>
@@ -85,21 +77,20 @@
         <p id="quiz-question"></p>
         <div id="quiz-options"></div>
         <div id="quiz-footer" style="margin-top: 40px; font-size: 12px; color: #444; text-align: center;">
-            <span onclick="confirmCloseMarket()" style="cursor:pointer; text-decoration: underline;">[ 離開黑市 / LEAVE MARKET ]</span>
+            <span onclick="confirmCloseMarket()" style="cursor:pointer; text-decoration: underline;">[ LEAVE MARKET ]</span>
         </div>
     </div>
 </div>
 
 <script>
-    // --- 配置 ---
     const STOCK_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv';
     const BLACK_MARKET_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScv7hqzJEcDXYX7BpIEfs5c2NmNfLOpUnWIxa1blxE9gU9afw/viewform';
     const ORDER_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScWck40_ZDTAutZ6PT6cq3koXbHUyplsl8lcoASe2ACTlZXOg/viewform';
     const CLOSE_DATE = new Date("Feb 12, 2026 00:00:00").getTime(); 
 
-    // --- 檢查預覽模式 ---
     const urlParams = new URLSearchParams(window.location.search);
     const isPreviewMode = urlParams.get('mode') === 'preview';
+    const isDeveloper = urlParams.get('dev') === 'otter921008'; 
 
     let coins = 3;
     let inventory = {};
@@ -116,11 +107,15 @@
     }
 
     function checkMarketStatus() {
-        if (localStorage.getItem('dino_market_entered') === 'true') {
-            const btn = document.getElementById('floating-market-btn');
+        const hasEntered = localStorage.getItem('dino_market_entered');
+        const btn = document.getElementById('floating-market-btn');
+        
+        if (hasEntered === 'true' && !isDeveloper) {
             btn.innerHTML = "{ 黑市已關閉 }";
             btn.classList.add('disabled');
-            btn.onclick = function() { alert("你已經進入過黑市了，機會只有一次！"); };
+            btn.onclick = function() { alert("你已經進入過黑市了！"); };
+        } else if (isDeveloper) {
+            btn.innerHTML = "{ 黑市 (DEV) }";
         }
     }
 
@@ -174,22 +169,25 @@
         window.open(`${ORDER_FORM_URL}?usp=pp_url&entry.94643144=${encodeURIComponent(formattedId)}`);
     }
 
-    // --- 黑市遊戲邏輯 (題目保持不變) ---
+    // --- 黑市遊戲邏輯 ---
     const questions = [
         { story: "你剛踏進黑市深處,就被攔下。\n對方沒有質問,只是靜靜看著你。\n「國王的生日?」", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
         { story: "你被放行了。\n牆上貼著舊舞台海報,上面一串文字:\n「鏡子裡所照的我十分陌生。」", q: "問題 2：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
         { story: "燈光短暫亮起。\n燦噠哩想起第一次的solo mixtape mv 拍攝。\n「但你不是一個人。」", q: "問題 3：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
         { story: "哥哥們都來幫國王加油啦。\n經過一排展示架,上面放著演唱會服裝。", q: "問題 4：SEVENTEEN RIGHT HERE演唱會「韓國場」Rain舞台第一天與第二天表演有何不同?", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2 },
         { story: "螢幕亮起,一段熟悉的舞蹈畫面出現。\n國王幫哥哥的solo曲設計舞蹈。\n秋天的落葉好多。", q: "問題 5：Dino Danceology中,和知秀一起的那支舞是在哪裡拍攝的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
-        { story: "你再往裡走,黑市的聲音逐漸消失。\n只剩下一句問題,在空間裡回盪。\n「第一次身旁沒有成員站上了何處的國際舞台?」", q: "問題 6：李燦今年獨自一人出國表演,是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯(EWC 開幕式)", "法國"], correct: 2 },
-        { story: "那一刻,空氣變得很安靜。\n門前的人翻著資料,語氣不像盤問,更像確認。\n「今年,李燦走出了多少次『隊伍以外』?」", q: "問題 7：李燦 2026年共有幾次「隊外」合作? (BSS、HxW、CxM及家人合作不計入)", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
+        { story: "你再往裡走,黑市的聲音逐漸消失。\n只剩下一句問題,在空間裡回盪。\n「第一次身旁沒有成員站上了何處的國際舞台?」", q: "問題 6：李燦今年獨自一人出國表演,是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯", "法國"], correct: 2 },
+        { story: "那一刻,空氣變得很安靜。\n門前的人翻著資料,語氣不像盤問,更像確認。\n「今年,李燦走出了多少次『隊伍以外』?」", q: "問題 7：李燦 2026年共有幾次「隊外」合作? (BSS、HxW、CxM及家人合作計入隊內)", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
         { story: "他闔上資料。你終於來到最深處。\n桌上攤著一本翻舊的冊子。\n封面寫著——《水獺觀察日記》", q: "問題 8：以下哪一個「沒有」被收錄在hys_921008《水獺觀察日記》中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 },
         { story: "燦噠哩發現設計師最喜歡幸福的小水獺。\n牆上貼滿剪報,幾乎都是同一個色系。\n「有一個顏色十分耀眼。」", q: "問題 9：水獺裁縫師最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
     ];
 
     function openMarket() {
-        if (localStorage.getItem('dino_market_entered') === 'true') return;
-        localStorage.setItem('dino_market_entered', 'true');
+        if (localStorage.getItem('dino_market_entered') === 'true' && !isDeveloper) {
+            alert("機會只有一次，黑市大門已關閉。");
+            return;
+        }
+        if (!isDeveloper) { localStorage.setItem('dino_market_entered', 'true'); }
         checkMarketStatus();
         document.getElementById('black-market-overlay').style.display = 'block';
         currentQuiz = -1;
@@ -223,14 +221,14 @@
     function checkAnswer(idx) {
         if (idx === questions[currentQuiz].correct) {
             coins += 2; document.getElementById('coin-count').innerText = coins;
-            alert("回答正確！獲得 2 枚魚幣。");
-        } else { alert("回答錯誤，可惜這題沒有魚幣。"); }
+            alert("正確！獲得 2 枚魚幣。");
+        } else { alert("錯誤。進入下一題。"); }
         currentQuiz++; showQuestion();
     }
 
     function finishMarket() {
-        document.getElementById('quiz-story').innerText = "門，在你面前打開。";
-        document.getElementById('quiz-question').innerText = `挑戰結束！你最終獲得了 ${coins} 枚魚幣。`;
+        document.getElementById('quiz-story').innerText = "挑戰結束！";
+        document.getElementById('quiz-question').innerText = `最終獲得了 ${coins} 枚魚幣。`;
         document.getElementById('quiz-options').innerHTML = `<button class="option-btn" style="background:#fff; color:#000; text-align:center;" onclick="submitCoins()">領取獎勵 / CLAIM REWARD</button>`;
     }
 
@@ -240,10 +238,12 @@
     }
 
     function confirmCloseMarket() {
-        if (confirm("離開黑市後將無法再次進入，確定要離開嗎？")) {
+        if (confirm("離開黑市後將無法再次進入，確定離開？")) {
             document.getElementById('black-market-overlay').style.display = 'none';
         }
     }
+
+    function manualRefresh() { syncStock(); alert("庫存已更新！"); }
 
     checkSiteStatus();
     initMode();
