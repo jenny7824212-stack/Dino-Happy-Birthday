@@ -6,6 +6,7 @@
     <title>DINO 27TH BIRTHDAY - COMING SOON</title>
     <style>
         body { 
+            /* 背景圖片與遮罩 */
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('otter1.jpg');
             background-size: cover;
             background-position: center;
@@ -49,15 +50,21 @@
             margin-bottom: 20px;
         }
 
-        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; align-items: center; }
+        
+        /* 正式進入按鈕 (預設隱藏) */
         .enter-btn { 
             display: none; background: #fff; color: #000; padding: 15px 50px; 
             text-decoration: none; font-weight: bold; letter-spacing: 5px; font-size: 18px;
+            border: none; cursor: pointer; transition: 0.3s; width: fit-content;
         }
+        .enter-btn:hover { background: #ddd; }
+
+        /* 預覽按鈕 (始終顯示) */
         .preview-btn {
             display: inline-block; background: transparent; color: #fff; padding: 10px 30px; 
             text-decoration: none; font-size: 12px; letter-spacing: 2px; border: 1px solid rgba(255,255,255,0.4);
-            transition: 0.3s;
+            transition: 0.3s; width: fit-content;
         }
         .preview-btn:hover { background: #fff; color: #000; }
 
@@ -81,32 +88,54 @@
     <div id="timer">LOADING...</div>
     
     <div class="btn-group">
-        <a href="magazine.html" id="enter-link" class="enter-btn">ENTER ATELIER</a>
+        <button id="enter-btn" class="enter-btn" onclick="checkPasscode()">ENTER ATELIER</button>
+        
         <a href="magazine.html?mode=preview" class="preview-btn">PREVIEW COLLECTION</a>
     </div>
 
     <script>
+        // 設定正式發刊時間
         const REVEAL_DATE = new Date("Feb 08, 2026 00:00:00").getTime();
+
         function updateTimer() {
             const now = new Date().getTime();
             const distance = REVEAL_DATE - now;
             const timerElement = document.getElementById('timer');
-            const enterLink = document.getElementById('enter-link');
+            const enterBtn = document.getElementById('enter-btn');
 
             if (distance < 0) {
+                // 時間到了：隱藏計時器，顯示正式進入按鈕
                 timerElement.style.display = 'none';
-                enterLink.style.display = 'inline-block';
+                enterBtn.style.display = 'inline-block';
             } else {
+                // 還在倒數：計算剩餘時間
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const secs = Math.floor((distance % (1000 * 60)) / 1000);
+                
                 timerElement.innerHTML = `
                     <div style="font-size: 10px; margin-bottom: 5px; color: #888; letter-spacing: 2px;">REVEAL IN</div>
                     ${days}D ${hours}H ${mins}M ${secs}S
                 `;
             }
         }
+
+        // 密碼檢查機制
+        function checkPasscode() {
+            const password = prompt("請輸入發刊通行密碼：\n(提示：off-white 6碼");
+            const secretCode = "240301"; // 這是妳設定的通行密碼
+
+            if (password === secretCode) {
+                // 密碼正確，進入正式版
+                window.location.href = "magazine.html";
+            } else if (password !== null) {
+                // 密碼錯誤
+                alert("通行碼錯誤。請注意本次應援主題時裝周日期。");
+            }
+        }
+
+        // 啟動定時器
         setInterval(updateTimer, 1000);
         updateTimer();
     </script>
