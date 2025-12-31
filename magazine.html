@@ -211,12 +211,17 @@
         const storyP = document.getElementById('quiz-story');
         const questionP = document.getElementById('quiz-question');
         const optionsDiv = document.getElementById('quiz-options');
+
         if (currentQuiz === -1) {
             storyP.innerText = "尋找傳說中的設計師——水獺裁縫師。";
-            questionP.innerText = "唯有證明你對李燦的了解，才能見到他的真面目。";
+            // 在這裡加入提醒文字
+            questionP.innerHTML = `唯有證明你對李燦的了解，才能見到他的真面目。<br>
+                                   <span style="font-size:12px; color:#aaa; font-weight:normal;">
+                                   (若需返回雜誌頁面，請點擊下方 [ LEAVE MARKET ])</span>`;
             optionsDiv.innerHTML = `<button class="option-btn" onclick="currentQuiz=0; showQuestion();">開始尋找 / START SEARCHING</button>`;
             return;
         }
+        // ... 後續代碼保持不變
         if (currentQuiz >= questions.length) { finishMarket(); return; }
         const data = questions[currentQuiz];
         storyP.innerText = data.story;
@@ -240,9 +245,23 @@
     }
 
     function finishMarket() {
-        document.getElementById('quiz-story').innerText = "挑戰結束！";
-        document.getElementById('quiz-question').innerText = `最終獲得了 ${coins} 枚魚幣。`;
-        document.getElementById('quiz-options').innerHTML = `<button class="option-btn" style="background:#fff; color:#000; text-align:center;" onclick="submitCoins()">領取獎勵 / CLAIM REWARD</button>`;
+        document.getElementById('quiz-story').innerText = "挑戰結束！水獺裁縫師認可了你的誠意。";
+        
+        // 放入加權規則文案
+        document.getElementById('quiz-question').innerHTML = `
+            <div style="background:#111; border:1px solid #333; padding:15px; text-align:left; font-size:14px; line-height:1.6;">
+                最終獲得了 <span style="color:#fff; font-size:20px;">${coins}</span> 枚魚幣。<br><br>
+                <strong style="color:#fff;">🎫 黑市加權抽獎說明：</strong><br>
+                1 枚魚幣 = 1 次抽獎機會。魚幣越多，名字在抽獎箱中出現的次數越多，中獎機率回提升~<br><br>
+                <span style="font-size:12px; color:#888;">* 請點擊下方按鈕前往表單登記，逾期未登記將視同放棄抽獎資格。</span>
+            </div>
+        `;
+        
+        document.getElementById('quiz-options').innerHTML = `
+            <button class="option-btn" style="background:#fff; color:#000; text-align:center; font-weight:bold;" onclick="submitCoins()">
+                領取獎勵並登記抽獎 / CLAIM REWARD
+            </button>
+        `;
     }
 
     function submitCoins() {
@@ -269,6 +288,7 @@
 </script>
 </body>
 </html>
+
 
 
 
