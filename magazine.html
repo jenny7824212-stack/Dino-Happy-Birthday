@@ -182,23 +182,31 @@
     showQuestion();
 }
 
+   let temporaryCoins = 0; 
+
     function showQuestion() {
         const storyP = document.getElementById('quiz-story');
         const questionP = document.getElementById('quiz-question');
         const optionsDiv = document.getElementById('quiz-options');
+
+        // 初始畫面
         if (currentQuiz === -1) {
+            temporaryCoins = 0; 
             storyP.innerText = "尋找傳說中的設計師——水獺裁縫師。";
             questionP.innerHTML = "證明你對李燦的了解，才能見到他的真面目。";
-            questionP.innerHTML = "請注意退出就無法再進入。";
             optionsDiv.innerHTML = `<button class="option-btn" onclick="currentQuiz=0; showQuestion();">開始挑戰</button>`;
             return;
         }
+        
+        // 結束畫面：只有到這一步才顯示正式領取按鈕
         if (currentQuiz >= questions.length) {
-            storyP.innerText = "挑戰結束！";
-            questionP.innerHTML = `獲得了 ${coins} 魚幣。`;
-            optionsDiv.innerHTML = `<button class="option-btn" onclick="submitFinalCoins()">領取獎勵並登記</button>`;
+            storyP.innerText = "挑戰結束！裁縫師認可了你的誠意。";
+            const totalPotential = coins + temporaryCoins; 
+            questionP.innerHTML = `本次挑戰獲得額外：${temporaryCoins} 🐟<br>領取後總計將持有：${totalPotential} 🐟`;
+            optionsDiv.innerHTML = `<button class="option-btn" style="background:#fff; color:#000;" onclick="finalizeMarketCoins()">確認領取並登記獎勵</button>`;
             return;
         }
+
         const data = questions[currentQuiz];
         storyP.innerText = data.story;
         questionP.innerText = data.q;
@@ -209,23 +217,38 @@
             btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
             btn.onclick = () => {
                 if (idx === data.correct) {
-                    coins += 2; document.getElementById('coin-count').innerText = coins;
-                    localStorage.setItem('dino_coins', coins);
-                    alert("正確！獲得2枚魚幣!");
-                } else alert("答錯了,沒關係 繼續挑戰。");
-                currentQuiz++; showQuestion();
+                    temporaryCoins += 2; // 只加在暫存，不改左上角實體錢包
+                    alert("正確！(暫時獲得 2 🐟)");
+                } else {
+                    alert("答錯了。");
+                }
+                currentQuiz++; 
+                showQuestion();
             };
             optionsDiv.appendChild(btn);
         });
     }
 
-    function submitFinalCoins() {
+    // 正式把暫存魚幣存入 localStorage
+    function finalizeMarketCoins() {
+        coins += temporaryCoins;
+        localStorage.setItem('dino_coins', coins);
+        document.getElementById('coin-count').innerText = coins;
+
         const verifyCode = (coins * 17) + 211;
-        safeOpen(`${BLACK_MARKET_FORM_URL}?usp=pp_url&entry.94782409=${coins}&entry.1993098186=${verifyCode}`);
+        const targetUrl = `${BLACK_MARKET_FORM_URL}?usp=pp_url&entry.94782409=${coins}&entry.1993098186=${verifyCode}`;
+        
+        alert("魚幣已成功存入帳戶！即將跳轉至登記表單。");
+        safeOpen(targetUrl);
+        
+        // 關閉黑市視窗
+        document.getElementById('black-market-overlay').style.display = 'none';
     }
 
     function confirmCloseMarket() {
-        if (confirm("確定離開？若是出去了就無法再進入!!")) document.getElementById('black-market-overlay').style.display = 'none';
+        if (confirm("⚠️ 注意：一旦關閉視窗，剛才答對賺取的魚幣將會消失，且無法再次進入。確定要離開？")) {
+            document.getElementById('black-market-overlay').style.display = 'none';
+        }
     }
 
     async function syncStock() {
@@ -277,6 +300,7 @@
 </script>
 </body>
 </html>
+
 
 
 
