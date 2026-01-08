@@ -163,13 +163,24 @@
         { story: "「有一個顏色十分耀眼。」", q: "問題 9：水獺裁縫師最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
     ];
 
-    function openMarket() {
-        if (!isDeveloper) localStorage.setItem('dino_market_entered', 'true');
-        checkMarketStatus();
-        document.getElementById('black-market-overlay').style.display = 'block';
-        currentQuiz = -1;
-        showQuestion();
+   function openMarket() {
+    // --- 新增：進入前的警告提醒 ---
+    const hasEnteredBefore = localStorage.getItem('dino_market_entered');
+    
+    // 如果不是開發者，且還沒進去過，就跳出警告
+    if (!isDeveloper && hasEnteredBefore !== 'true') {
+        const confirmEntry = confirm("⚠️ 注意：黑市挑戰機會只有一次！\n一旦進入，無論是否完成測驗，大門都將關閉。\n\n你準備好證明你對李燦的了解了嗎？");
+        if (!confirmEntry) return; // 如果點取消，就不進去
     }
+
+    // 確定進入後，紀錄狀態
+    if (!isDeveloper) localStorage.setItem('dino_market_entered', 'true');
+    
+    checkMarketStatus();
+    document.getElementById('black-market-overlay').style.display = 'block';
+    currentQuiz = -1;
+    showQuestion();
+}
 
     function showQuestion() {
         const storyP = document.getElementById('quiz-story');
@@ -199,8 +210,8 @@
                 if (idx === data.correct) {
                     coins += 2; document.getElementById('coin-count').innerText = coins;
                     localStorage.setItem('dino_coins', coins);
-                    alert("正確！");
-                } else alert("答錯了。");
+                    alert("正確！獲得2枚魚幣!");
+                } else alert("答錯了,沒關係 繼續挑戰。");
                 currentQuiz++; showQuestion();
             };
             optionsDiv.appendChild(btn);
@@ -213,7 +224,7 @@
     }
 
     function confirmCloseMarket() {
-        if (confirm("確定離開？")) document.getElementById('black-market-overlay').style.display = 'none';
+        if (confirm("確定離開？若是出去了就無法再進入!!")) document.getElementById('black-market-overlay').style.display = 'none';
     }
 
     async function syncStock() {
@@ -265,6 +276,7 @@
 </script>
 </body>
 </html>
+
 
 
 
