@@ -92,46 +92,63 @@
     // --- 2. 狀態初始化 (從 LocalStorage 讀取) ---
     const urlParams = new URLSearchParams(window.location.search);
     const isPreviewMode = urlParams.get('mode') === 'preview';
-    const isDeveloper = urlParams.get('dev') === 'otter921008'; 
+    const isDeveloper = urlParams.get('dev') === 'otter921008'; // 這是你的通關金鑰
 
-    // 魚幣：初始 3 枚，若有紀錄則讀取紀錄
     let coins = localStorage.getItem('dino_coins') !== null ? parseInt(localStorage.getItem('dino_coins')) : 3;
-    // 購買紀錄：紀錄是否已買過
     let hasOrdered = localStorage.getItem('dino_ordered') === 'true';
-
     let inventory = {};
     let currentQuiz = -1;
 
-    // --- 3. 初始化頁面顯示 ---
+    // --- 3. 開發者功能面板 ---
+    function initDevMode() {
+        if (isDeveloper) {
+            const devBtn = document.createElement('div');
+            devBtn.innerHTML = "🛠️ DEV MODE";
+            devBtn.style = "position:fixed; bottom:20px; left:20px; background:rgba(255,0,0,0.8); color:white; padding:10px; cursor:pointer; z-index:9999; font-family:monospace; border-radius:5px;";
+            devBtn.onclick = () => {
+                const action = prompt("【開發者選單】\n1: 修改魚幣數量\n2: 重置購買紀錄\n3: 清除黑市進入紀錄\n請輸入編號：");
+                if (action === "1") {
+                    let n = prompt("輸入新的魚幣數量：", coins);
+                    if (n !== null) { coins = parseInt(n); localStorage.setItem('dino_coins', coins); document.getElementById('coin-count').innerText = coins; }
+                } else if (action === "2") {
+                    hasOrdered = false; localStorage.setItem('dino_ordered', 'false'); alert("購買紀錄已清除！"); renderGrid();
+                } else if (action === "3") {
+                    localStorage.removeItem('dino_market_entered'); alert("黑市紀錄已清除！"); checkMarketStatus();
+                }
+            };
+            document.body.appendChild(devBtn);
+        }
+    }
+
+    // --- 4. 基礎邏輯 ---
     function initMode() {
         const topNav = document.getElementById('top-nav');
         if (isPreviewMode) {
             document.getElementById('floating-market-btn').style.display = 'none';
             document.getElementById('refresh-btn').style.display = 'none';
-            topNav.innerHTML = `
-                <div style="cursor:pointer; text-decoration:underline; font-weight:bold; color:#fff;" onclick="window.location.href='index.html'">← 返回入口 BACK</div>
-                <div style="color:#888; letter-spacing:2px;">PREVIEW MODE</div>
-                <div></div>
-            `;
+            topNav.innerHTML = `<div style="cursor:pointer;" onclick="window.location.href='index.html'">← BACK</div><div style="color:#888;">PREVIEW MODE</div><div></div>`;
         } else {
-            // 更新魚幣顯示
             document.getElementById('coin-count').innerText = coins;
             checkMarketStatus();
+            initDevMode();
         }
     }
 
-    // 檢查黑市進入資格
     function checkMarketStatus() {
         const hasEntered = localStorage.getItem('dino_market_entered');
         const btn = document.getElementById('floating-market-btn');
+        // 如果是開發者，黑市永遠顯示為開啟
         if (hasEntered === 'true' && !isDeveloper) {
             btn.innerHTML = "{ 黑市已關閉 }";
             btn.classList.add('disabled');
-            btn.onclick = function() { alert("機會只有一次，黑市大門已關閉。"); };
+            btn.onclick = () => alert("機會只有一次，黑市大門已關閉。");
+        } else {
+            btn.innerHTML = "{ 進入黑市 }";
+            btn.classList.remove('disabled');
+            btn.onclick = openMarket;
         }
     }
 
-    // 庫存同步與渲染
     async function syncStock() {
         try {
             const res = await fetch(`${STOCK_CSV_URL}&t=${new Date().getTime()}`);
@@ -157,8 +174,6 @@
             const isSoldOut = (stock !== '...' && stock <= 0);
             const item = document.createElement('div');
             item.className = 'item';
-            
-            // 如果已購買過，點擊會觸發已購買提示，否則執行 orderItem
             const clickAction = isPreviewMode ? "" : (isSoldOut ? "" : `orderItem(${i})`);
             const cursor = isPreviewMode ? "default" : (isSoldOut ? "default" : "pointer");
 
@@ -173,69 +188,57 @@
         }
     }
 
-    // --- 4. 購買邏輯 (扣除 3 幣 & 限購一項) ---
     function orderItem(id) {
         if (hasOrdered && !isDeveloper) {
             alert("裁縫師提醒：每人限購一件珍藏，你已經挑選過囉！");
             return;
         }
         if (coins < 3) {
-            alert("你的魚幣不足！購買服裝需要 3 枚魚幣。");
+            alert("你的魚幣不足以支付裁縫師的報酬。");
             return;
         }
-
-        if (confirm(`確定要消耗 3 枚魚幣兌換 ITEM #${String(id).padStart(3, '0')} 嗎？\n(兌換後剩餘魚幣將保留用於抽獎加權)`)) {
+        if (confirm(`確定要消耗 3 枚魚幣兌換 ITEM #${String(id).padStart(3, '0')} 嗎？`)) {
             coins -= 3;
             hasOrdered = true;
-            
-            // 存檔至 LocalStorage
             localStorage.setItem('dino_coins', coins);
             localStorage.setItem('dino_ordered', 'true');
-            
-            // 更新畫面
             document.getElementById('coin-count').innerText = coins;
-            
-            const formattedId = "#" + id;
-            window.open(`${ORDER_FORM_URL}?usp=pp_url&entry.94643144=${encodeURIComponent(formattedId)}`);
+            window.open(`${ORDER_FORM_URL}?usp=pp_url&entry.94643144=${encodeURIComponent("#"+id)}`);
             renderGrid();
         }
     }
 
-    // --- 5. 黑市邏輯 (答對存檔) ---
+    // --- 5. 黑市問答庫 ---
     const questions = [
-        { story: "你剛踏進黑市深處,就被攔下。\n對方沒有質問,只是靜靜看著你。\n「國王的生日?」", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
-        { story: "你被放行了。\n牆上貼著舊舞台海報,上面一串文字:\n「鏡子裡所照的我十分陌生。」", q: "問題 2：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
-        { story: "燈光短暫亮起。\n燦噠哩想起第一次的solo mixtape mv 拍攝。\n「但你不是一個人。」", q: "問題 3：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
-        { story: "哥哥們都來幫國王加油啦。\n經過一排展示架,上面放著演唱會服裝。", q: "問題 4：SEVENTEEN RIGHT HERE演唱會「韓國場」Rain舞台第一天與第二天表演有何不同?", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2 },
-        { story: "螢幕亮起,一段熟悉的舞蹈畫面出現。\n國王幫哥哥的solo曲設計舞蹈。\n秋天的落葉好多。", q: "問題 5：Dino Danceology中,和知秀一起的那支舞是在哪裡拍攝的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
-        { story: "你再往裡走,黑市的聲音逐漸消失。\n只剩下一句問題,在空間裡回盪。\n「第一次身旁沒有成員站上了何處的國際舞台?」", q: "問題 6：李燦今年獨自一人出國表演,是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯", "法國"], correct: 2 },
-        { story: "那一刻,空氣變得很安靜。\n門前的人翻著資料,語氣不像盤問,更像確認。\n「今年,李燦走出了多少次『隊伍以外』?」", q: "問題 7：李燦 2026年共有幾次「隊外」合作? (BSS、HxW、CxM及家人合作計入隊內)", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
-        { story: "他闔上資料。你終於來到最深處。\n桌上攤著一本翻舊的冊子。\n封面寫著——《水獺觀察日記》", q: "問題 8：以下哪一個「沒有」被收錄在hys_921008《水獺觀察日記》中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 },
-        { story: "燦噠哩發現設計師最喜歡幸福的小水獺。\n牆上貼滿剪報,幾乎都是同一個色系。\n「有一個顏色十分耀眼。」", q: "問題 9：水獺裁縫師最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
+        { story: "你剛踏進黑市深處...「國王的生日?」", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
+        { story: "牆上貼著舊舞台海報...「鏡子裡所照的我十分陌生。」", q: "問題 2：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
+        { story: "燦噠哩想起第一次的solo mixtape mv 拍攝。", q: "問題 3：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
+        { story: "經過一排展示架,上面放著演唱會服裝。", q: "問題 4：SEVENTEEN RIGHT HERE演唱會「韓國場」Rain舞台第一天與第二天表演有何不同?", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2 },
+        { story: "國王幫哥哥的solo曲設計舞蹈。秋天的落葉好多。", q: "問題 5：Dino Danceology中,和知秀一起的那支舞是在哪裡拍攝的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
+        { story: "「第一次身旁沒有成員站上了何處的國際舞台?」", q: "問題 6：李燦今年獨自一人出國表演,是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯", "法國"], correct: 2 },
+        { story: "「今年,李燦走出了多少次『隊伍以外』?」", q: "問題 7：李燦 2026年共有幾次「隊外」合作?", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
+        { story: "桌上攤著一本書——《水獺觀察日記》", q: "問題 8：以下哪一個「沒有」被收錄在hys_921008《水獺觀察日記》中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 },
+        { story: "牆上貼滿剪報...「有一個顏色十分耀眼。」", q: "問題 9：水獺裁縫師最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
     ];
 
     function openMarket() {
         if (localStorage.getItem('dino_market_entered') === 'true' && !isDeveloper) {
-            alert("機會只有一次，黑市大門已關閉。");
-            return;
+            alert("黑市已關閉。"); return;
         }
-        if (!isDeveloper) { localStorage.setItem('dino_market_entered', 'true'); }
+        if (!isDeveloper) localStorage.setItem('dino_market_entered', 'true');
         checkMarketStatus();
         document.getElementById('black-market-overlay').style.display = 'block';
-        currentQuiz = -1;
-        showQuestion();
+        currentQuiz = -1; showQuestion();
     }
 
     function showQuestion() {
         const storyP = document.getElementById('quiz-story');
         const questionP = document.getElementById('quiz-question');
         const optionsDiv = document.getElementById('quiz-options');
-
         if (currentQuiz === -1) {
             storyP.innerText = "尋找傳說中的設計師——水獺裁縫師。";
-            questionP.innerHTML = `唯有證明你對李燦的了解，才能見到他的真面目。<br>
-                                   <span style="font-size:12px; color:#aaa; font-weight:normal;">(若需返回雜誌頁面，請點擊下方 [ LEAVE MARKET ])</span>`;
-            optionsDiv.innerHTML = `<button class="option-btn" onclick="currentQuiz=0; showQuestion();">開始尋找 / START SEARCHING</button>`;
+            questionP.innerHTML = "證明你對李燦的了解，才能見到他的真面目。";
+            optionsDiv.innerHTML = `<button class="option-btn" onclick="currentQuiz=0; showQuestion();">開始挑戰</button>`;
             return;
         }
         if (currentQuiz >= questions.length) { finishMarket(); return; }
@@ -254,56 +257,35 @@
 
     function checkAnswer(idx) {
         if (idx === questions[currentQuiz].correct) {
-            coins += 2; 
+            coins += 2; localStorage.setItem('dino_coins', coins);
             document.getElementById('coin-count').innerText = coins;
-            localStorage.setItem('dino_coins', coins); // 答對立即存檔
             alert("正確！獲得 2 枚魚幣。");
         } else { alert("錯誤。進入下一題。"); }
         currentQuiz++; showQuestion();
     }
 
     function finishMarket() {
-        document.getElementById('quiz-story').innerText = "挑戰結束！水獺裁縫師認可了你的誠意。";
-        document.getElementById('quiz-question').innerHTML = `
-            <div style="background:#111; border:1px solid #333; padding:15px; text-align:left; font-size:14px; line-height:1.6;">
-                最終獲得了 <span style="color:#fff; font-size:20px;">${coins}</span> 枚魚幣。<br><br>
-                <strong style="color:#fff;">🎫 黑市加權抽獎說明：</strong><br>
-                1 枚魚幣 = 1 次抽獎機會。魚幣越多，名字在抽獎箱中出現次數越多~<br><br>
-                請前往表單登記，逾期未登記將視同放棄抽獎資格。
-            </div>
-        `;
-        document.getElementById('quiz-options').innerHTML = `
-            <button class="option-btn" style="background:#fff; color:#000; text-align:center; font-weight:bold;" onclick="submitCoins()">
-                領取獎勵並登記抽獎 / CLAIM REWARD
-            </button>
-        `;
+        document.getElementById('quiz-story').innerText = "挑戰結束！";
+        document.getElementById('quiz-question').innerHTML = `獲得了 ${coins} 枚魚幣。請前往登記。`;
+        document.getElementById('quiz-options').innerHTML = `<button class="option-btn" onclick="submitCoins()">領取獎勵並登記</button>`;
     }
 
     function submitCoins() {
         const verifyCode = (coins * 17) + 211; 
-        const url = `${BLACK_MARKET_FORM_URL}?usp=pp_url&entry.94782409=${coins}&entry.1993098186=${verifyCode}`;
-        window.open(url);
+        window.open(`${BLACK_MARKET_FORM_URL}?usp=pp_url&entry.94782409=${coins}&entry.1993098186=${verifyCode}`);
     }
 
-    function confirmCloseMarket() {
-        if (confirm("離開黑市後將無法再次進入，確定離開？")) {
-            document.getElementById('black-market-overlay').style.display = 'none';
-        }
-    }
-
+    function confirmCloseMarket() { document.getElementById('black-market-overlay').style.display = 'none'; }
     function manualRefresh() { syncStock(); alert("庫存已更新！"); }
 
-    // --- 6. 頁面啟動 ---
     window.onload = () => {
-        if (new Date().getTime() >= CLOSE_DATE) {
-            document.getElementById('closed-message').style.display = 'flex';
-        }
-        initMode();
-        syncStock();
+        if (new Date().getTime() >= CLOSE_DATE) document.getElementById('closed-message').style.display = 'flex';
+        initMode(); syncStock();
     };
 </script>
 </body>
 </html>
+
 
 
 
