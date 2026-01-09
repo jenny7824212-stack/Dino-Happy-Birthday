@@ -69,7 +69,7 @@
     const STOCK_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv';
     const ORDER_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScWck40_ZDTAutZ6PT6cq3koXbHUyplsl8lcoASe2ACTlZXOg/viewform';
     const BLACK_MARKET_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScv7hqzJEcDXYX7BpIEfs5c2NmNfLOpUnWIxa1blxE9gU9afw/viewform';
-    const OPEN_DATE = new Date("Feb 08, 2026 00:00:00").getTime(); 
+    const OPEN_DATE = new Date("Feb 08, 2026 10:00:00").getTime(); 
 
     const urlParams = new URLSearchParams(window.location.search);
     const isPreviewMode = urlParams.get('mode') === 'preview';
@@ -110,7 +110,7 @@
     function orderItem(id) {
         const now = new Date().getTime();
         if (now < OPEN_DATE && !isDeveloper) {
-            alert("🔒 雜誌預覽中。正式發售時間為 2/8 00:00，敬請期待！");
+            alert("🔒 雜誌預覽中。正式發售時間為 2/8 AM 10:00，敬請期待！");
             return;
         }
         if (isPreviewMode && !isDeveloper) return;
@@ -217,7 +217,7 @@
                 <p style="color: #aaa; font-size: 13px; line-height: 1.5;">
                     💡 <span style="color: #fff;">裁縫師的小提醒：</span><br>
                     持有的魚幣愈多，代表您在本次活動中的<br>
-                    <span style="color: #ff4b4b; font-weight: bold;">「珍藏品抽獎機率」就愈高！</span><br>
+                    <span style="color: #ff4b4b; font-weight: bold;">「抽獎機率」就愈高！</span><br>
                     請務必領取獎勵並完成最後的資格登記。
                 </p>
             </div>
@@ -320,6 +320,7 @@
 </script>
 </body>
 </html>
+
 
 
 
