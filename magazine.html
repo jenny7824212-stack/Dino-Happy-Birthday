@@ -134,7 +134,7 @@
         const hasEntered = localStorage.getItem('dino_market_entered');
 
         // 強制隱藏判斷：預覽模式 OR (未到時間且非開發者)
-        if (isPreviewMode || (now < OPEN_DATE && !isDeveloper)) {
+        if (isPreviewMode || (now < OPEN_DATE)) {
             btn.style.display = 'none';
             return;
         }
@@ -168,17 +168,16 @@
     ];
 
    function openMarket() {
-    // --- 新增：進入前的警告提醒 ---
     const hasEnteredBefore = localStorage.getItem('dino_market_entered');
     
-    // 如果不是開發者，且還沒進去過，就跳出警告
-    if (!isDeveloper && hasEnteredBefore !== 'true') {
+    // --- 修改：不論是不是管理員，只要沒進去過，都跳提醒 ---
+    if (hasEnteredBefore !== 'true') {
         const confirmEntry = confirm("⚠️ 注意：黑市挑戰機會只有一次！\n一旦進入，無論是否完成測驗，大門都將關閉。\n\n你準備好證明你對李燦的了解了嗎？");
-        if (!confirmEntry) return; // 如果點取消，就不進去
+        if (!confirmEntry) return; 
     }
 
-    // 確定進入後，紀錄狀態
-    if (!isDeveloper) localStorage.setItem('dino_market_entered', 'true');
+    // --- 修改：不論是不是管理員，點擊「確定」後都紀錄「已進入」 ---
+    localStorage.setItem('dino_market_entered', 'true');
     
     checkMarketStatus();
     document.getElementById('black-market-overlay').style.display = 'block';
@@ -320,6 +319,7 @@
 </script>
 </body>
 </html>
+
 
 
 
