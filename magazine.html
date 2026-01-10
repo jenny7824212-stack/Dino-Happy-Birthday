@@ -1,69 +1,57 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dino's Atelier - Magazine</title>
+    <title>DINO'S ATELIER | MAGAZINE</title>
     <style>
-        body { background: #000; color: #fff; font-family: "Courier New", Courier, monospace; margin: 0; padding: 0; overflow-x: hidden; }
-        #top-nav { display: flex; justify-content: space-between; padding: 20px; border-bottom: 1px solid #333; position: sticky; top: 0; background: #000; z-index: 1000; transition: top 0.3s; }
+        /* 基礎樣式 */
+        body { background-color: #000; color: #fff; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; margin: 0; overflow-x: hidden; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; text-align: center; }
         
-        .magazine-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 40px; 
-            padding: 40px; 
-            max-width: 1200px; 
-            margin: 0 auto;
+        /* 頂部狀態欄 */
+        .status-bar { position: fixed; top: 0; width: 100%; background: rgba(0,0,0,0.8); padding: 10px 0; z-index: 1000; border-bottom: 1px solid #333; }
+        .coin-display { font-size: 18px; font-weight: bold; color: #ffd700; }
+
+        /* 雜誌內容 */
+        .magazine-cover { width: 100%; border: 1px solid #333; margin-top: 60px; cursor: pointer; transition: transform 0.3s; }
+        .magazine-cover:hover { transform: scale(1.02); }
+
+        /* 黑市按鈕 (右下角懸浮) */
+        #floating-market-btn {
+            position: fixed; bottom: 30px; right: 30px;
+            background: #ff4b4b; color: white; border: none;
+            padding: 15px 25px; border-radius: 50px;
+            font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 75, 75, 0.4);
+            z-index: 1500; display: none;
         }
-        
-        .item { text-align: center; position: relative; margin-bottom: 20px; }
-        .item img { width: 100%; height: auto; border: 1px solid #222; transition: transform 0.3s, border-color 0.3s; }
-        .item img:hover { border-color: #fff; transform: scale(1.02); }
-        .sold-out { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,0,0,0.8); color: white; padding: 12px 20px; font-weight: bold; pointer-events: none; z-index: 10; }
-        
-        #black-market-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; padding: 20px; box-sizing: border-box; overflow-y: auto; }
-        .quiz-container { max-width: 600px; margin: 50px auto; text-align: center; }
-        .quiz-coin-board {
-    display: flex;
-    justify-content: space-between;
-    background: #ffffff;
-    padding: 12px 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    color: #000;
-}
-        .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #111; color: #fff; border: 1px solid #444; cursor: pointer; text-align: left; font-size: 16px; }
-        .option-btn:hover { background: #fff; color: #000; }
-        
-        /* 預設黑市按鈕為隱藏，由 JS 控制顯示 */
-        #floating-market-btn { display: none; position: fixed; bottom: 30px; right: 30px; background: #fff; color: #000; padding: 15px 25px; cursor: pointer; font-weight: bold; border-radius: 50px; z-index: 1000; box-shadow: 0 4px 15px rgba(255,255,255,0.2); }
-        #floating-market-btn.disabled { background: #333; color: #888; cursor: not-allowed; }
-        #refresh-btn { position: fixed; bottom: 30px; left: 30px; background: rgba(255,255,255,0.1); color: #fff; padding: 10px 15px; cursor: pointer; font-size: 12px; border: 1px solid #444; z-index: 1000; }
-        
-        @media (max-width: 600px) {
-            .magazine-grid { grid-template-columns: repeat(1, 1fr); padding: 20px; }
+        #floating-market-btn.disabled { background: #555; cursor: not-allowed; box-shadow: none; }
+
+        /* 黑市測驗視窗 */
+        .option-btn {
+            display: block; width: 100%; padding: 15px; margin: 10px 0;
+            background: #222; color: #fff; border: 1px solid #444;
+            border-radius: 8px; cursor: pointer; text-align: left; transition: 0.2s;
         }
+        .option-btn:hover { background: #333; border-color: #fff; }
+
+        /* DEV 按鈕 (左下角) */
+        .dev-badge { position: fixed; bottom: 10px; left: 10px; background: red; color: white; font-size: 10px; padding: 3px 6px; cursor: pointer; opacity: 0.5; z-index: 10000; }
     </style>
 </head>
 <body>
 
-<div id="browser-notice" style="display:none; background:#ff4b4b; color:white; padding:12px; font-size:13px; text-align:center; position:fixed; top:0; width:100%; z-index:10000; letter-spacing:1px; line-height:1.4;">
-    ⚠️ 偵測到您正使用 App 內建瀏覽器。建議點選右上角「使用瀏覽器開啟」以確保下單順暢。
-    <span onclick="this.parentElement.style.display='none'" style="margin-left:15px; cursor:pointer; font-weight:bold; text-decoration:underline;">[ 關閉 X ]</span>
+<div class="status-bar">
+    <div class="coin-display">持有魚幣: <span id="coin-count">0</span> 🐟</div>
 </div>
 
-<nav id="top-nav">
-    <div id="nav-back" style="cursor:pointer;" onclick="window.location.href='index.html'">← ATELIER</div>
-    <div style="letter-spacing:5px; font-weight: bold;">DINO'S MAGAZINE</div>
-    <div id="coin-display">COINS: <span id="coin-count">3</span> 🐟</div>
-</nav>
+<div class="container">
+    <img src="https://via.placeholder.com/800x1100?text=MAGAZINE+COVER" class="magazine-cover" onclick="tryBuyItem()" alt="雜誌封面">
+    <p style="color: #888; margin-top: 20px;">- 點擊封面查看珍藏品詳情 -</p>
+</div>
 
-<div class="magazine-grid" id="magazine-grid"></div>
-
-<div id="floating-market-btn" onclick="openMarket()">{ 進入黑市 }</div>
-<div id="refresh-btn" onclick="manualRefresh()">🔄 SYNC STOCK</div>
+<button id="floating-market-btn" onclick="openMarket()">{ 進入黑市 }</button>
 
 <div id="black-market-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:2000; overflow-y:auto;">
     <div class="quiz-container" style="max-width: 600px; margin: 50px auto; text-align: center; padding: 20px;">
@@ -88,98 +76,19 @@
 </div>
 
 <script>
-    const STOCK_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv';
-    const ORDER_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScWck40_ZDTAutZ6PT6cq3koXbHUyplsl8lcoASe2ACTlZXOg/viewform';
-    const BLACK_MARKET_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScv7hqzJEcDXYX7BpIEfs5c2NmNfLOpUnWIxa1blxE9gU9afw/viewform';
-    const OPEN_DATE = new Date("Feb 08, 2026 10:00:00").getTime(); 
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const isPreviewMode = urlParams.get('mode') === 'preview';
-    const isDeveloper = urlParams.get('dev') === 'otter921008';
-
-    let coins = localStorage.getItem('dino_coins') !== null ? parseInt(localStorage.getItem('dino_coins')) : 3;
-    let hasOrdered = localStorage.getItem('dino_ordered') === 'true';
-    let inventory = {};
+    // --- 核心變數設定 ---
+    const OPEN_DATE = new Date("Feb 08, 2026 10:00:00").getTime(); // 24小時制
+    const BLACK_MARKET_FORM_URL = "https://docs.google.com/forms/your-form-url";
+    
+    let coins = parseInt(localStorage.getItem('dino_coins')) || 3;
+    let temporaryCoins = 0;
     let currentQuiz = -1;
 
-    function renderGrid() {
-        const grid = document.getElementById('magazine-grid');
-        grid.innerHTML = '';
-        const now = new Date().getTime();
-        for (let i = 1; i <= 12; i++) {
-            const stock = inventory[i] !== undefined ? inventory[i] : '...';
-            const isSoldOut = (stock !== '...' && stock <= 0);
-            const item = document.createElement('div');
-            item.className = 'item';
-            const canClick = !isPreviewMode && (now >= OPEN_DATE || isDeveloper);
-            const cursorStyle = (isSoldOut || !canClick) ? "default" : "pointer";
-            item.innerHTML = `
-                <img src="cloth${i}.jpg?v=0109" style="cursor: ${cursorStyle};" onclick="orderItem(${i})">
-                <h3>ITEM #${String(i).padStart(3, '0')}</h3>
-                <p style="color:#aaa; font-size:11px;">PRICE: 3 🐟</p>
-                <p>STOCK: ${stock}</p>
-                ${isSoldOut ? '<div class="sold-out">SOLD OUT</div>' : ''}
-            `;
-            grid.appendChild(item);
-        }
-    }
+    // --- 管理員權限判定 ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDeveloper = urlParams.get('dev') === 'otter921008';
 
-    function safeOpen(url) {
-        const newWin = window.open(url, '_blank');
-        if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') window.location.href = url;
-    }
-
-    function orderItem(id) {
-        const now = new Date().getTime();
-        if (now < OPEN_DATE && !isDeveloper) {
-            alert("🔒 雜誌預覽中。正式發售時間為 2/8 AM 10:00，敬請期待！");
-            return;
-        }
-        if (isPreviewMode && !isDeveloper) return;
-        if (hasOrdered && !isDeveloper) { alert("裁縫師提醒：每人限購一件！"); return; }
-        if (inventory[id] <= 0) return;
-        if (coins < 3) { alert("魚幣不足！"); return; }
-        
-        if (confirm(`確定兌換 ITEM #${String(id).padStart(3, '0')}？`)) {
-            coins -= 3; hasOrdered = true;
-            localStorage.setItem('dino_coins', coins);
-            localStorage.setItem('dino_ordered', 'true');
-            document.getElementById('coin-count').innerText = coins;
-            safeOpen(`${ORDER_FORM_URL}?usp=pp_url&entry.94643144=${encodeURIComponent("#"+id)}`);
-            renderGrid();
-        }
-    }
-
-    function checkMarketStatus() {
-    const btn = document.getElementById('floating-market-btn');
-    const now = new Date().getTime();
-    const hasEntered = localStorage.getItem('dino_market_entered');
-
-    // --- 關鍵修改：如果是管理員，直接跳過時間檢查 ---
-    if (isDeveloper) {
-        // 管理員模式：按鈕永遠顯示，除非你想要測試「進入後關閉」的效果
-        btn.style.display = 'block'; 
-    } else {
-        // 一般訪客模式：檢查是否到達開啟日期
-        if (now < OPEN_DATE) {
-            btn.style.display = 'none';
-            return;
-        }
-        btn.style.display = 'block';
-    }
-
-    // --- 檢查是否已進入過 ---
-    if (hasEntered === 'true') {
-        btn.innerHTML = "{ 黑市已關閉 }";
-        btn.classList.add('disabled');
-        btn.onclick = () => alert("機會只有一次，黑市大門已關閉。");
-    } else {
-        btn.innerHTML = "{ 進入黑市 }";
-        btn.classList.remove('disabled');
-        btn.onclick = openMarket;
-    }
-}
-
+    // 題目資料
     const questions = [
         { story: "「國王的生日?」", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
         { story: "「鏡子裡所照的我十分陌生。」", q: "問題 2：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
@@ -194,193 +103,139 @@
         { story: "「Dino啊 再來一題100分的吧^^」", q: "問題 9：李燦是哪一女團的粉絲?", a: ["Apink", "f(x)", "EXID", "2NE1"], correct: 0 },
         { story: "封面寫著——《水獺觀察日記》", q: "問題 12：以下哪一個「沒有」被收錄在hys_921008《水獺觀察日記》中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 },
         { story: "「有一個顏色十分耀眼。」", q: "問題 13：水獺裁縫師最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
-    ];
+     ];
 
-   // --- 黑市邏輯核心變數 ---
-let currentQuiz = -1;
-let temporaryCoins = 0; 
-
-// 1. 檢查黑市按鈕狀態 (管理員無視時間鎖)
-function checkMarketStatus() {
-    const btn = document.getElementById('floating-market-btn');
-    const now = new Date().getTime();
-    const hasEntered = localStorage.getItem('dino_market_entered');
-
-    // 管理員直接顯示，訪客需等 2/8 10:00
-    if (isDeveloper) {
-        btn.style.display = 'block'; 
-    } else {
-        if (now < OPEN_DATE) {
-            btn.style.display = 'none';
-            return;
-        }
-        btn.style.display = 'block';
-    }
-
-    // 檢查是否已消耗掉唯一一次機會
-    if (hasEntered === 'true') {
-        btn.innerHTML = "{ 黑市已關閉 }";
-        btn.classList.add('disabled');
-        btn.onclick = () => alert("機會只有一次，黑市大門已關閉。");
-    } else {
-        btn.innerHTML = "{ 進入黑市 }";
-        btn.classList.remove('disabled');
-        btn.onclick = openMarket;
-    }
-}
-
-// 2. 執行開啟黑市 (管理員也會跳警告)
-function openMarket() {
-    const hasEnteredBefore = localStorage.getItem('dino_market_entered');
-    
-    if (hasEnteredBefore !== 'true') {
-        const confirmEntry = confirm("⚠️ 注意：黑市挑戰機會只有一次！\n一旦進入，無論是否完成測驗，大門都將關閉。\n\n你準備好證明你對李燦的了解了嗎？");
-        if (!confirmEntry) return; 
-    }
-
-    // 只要點了確定，就紀錄已進入（管理員也可測試此邏輯）
-    localStorage.setItem('dino_market_entered', 'true');
-    checkMarketStatus();
-    
-    document.getElementById('black-market-overlay').style.display = 'block';
-    document.getElementById('quiz-coin-board').style.display = 'flex';
-    currentQuiz = -1;
-    temporaryCoins = 0; 
-    showQuestion();
-}
-
-// 3. 處理題目顯示與魚幣看板
-function showQuestion() {
-    const storyP = document.getElementById('quiz-story');
-    const questionP = document.getElementById('quiz-question');
-    const optionsDiv = document.getElementById('quiz-options');
-    const board = document.getElementById('quiz-coin-board');
-    
-    // 即時刷新看板數字
-    document.getElementById('quiz-orig-coins').innerText = coins;
-    document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
-
-    // 初始說明畫面
-    if (currentQuiz === -1) {
-        storyP.innerText = "尋找傳說中的設計師——水獺裁縫師。";
-        questionP.innerHTML = "證明你對李燦的了解，才能見到他的真面目。";
-        optionsDiv.innerHTML = `<button class="option-btn" onclick="currentQuiz=0; showQuestion();">開始挑戰</button>`;
-        return;
-    }
-    
-    // 挑戰結束結算畫面
-    if (currentQuiz >= questions.length) {
-        board.style.display = 'none'; 
-        storyP.innerText = "挑戰結束！裁縫師認可了你的誠意。";
-        const totalPotential = coins + temporaryCoins; 
-        
-        questionP.innerHTML = `
-            <div style="background: #ffffff; padding: 25px; border-radius: 15px; text-align: center; color: #000; margin-top:10px;">
-                <p style="color: #666; font-size: 14px; margin-bottom: 5px;">本次獲得額外：+${temporaryCoins} 🐟</p>
-                <p style="font-size: 26px; font-weight: 900; margin: 0;">最終持有：${totalPotential} 🐟</p>
-                <div style="margin: 15px 0; border-top: 1px dashed #ccc;"></div>
-                <p style="color: #ff4b4b; font-size: 14px; font-weight: bold; line-height:1.5;">
-                    💡 裁縫師提醒：魚幣持有量愈多，<br>抽獎機率就愈高！請點擊下方領取。
-                </p>
-            </div>
-        `;
-        optionsDiv.innerHTML = `<button class="option-btn" style="background:#fff; color:#000; font-weight:bold; border:2px solid #000; margin-top:15px;" onclick="finalizeMarketCoins()">確認領取並登記抽獎</button>`;
-        return;
-    }
-
-    // 正常答題過程
-    const data = questions[currentQuiz];
-    storyP.innerText = data.story;
-    questionP.innerText = data.q;
-    optionsDiv.innerHTML = '';
-    data.a.forEach((txt, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
-        btn.onclick = () => {
-            if (idx === data.correct) {
-                temporaryCoins += 2;
-                alert("正確！");
-            } else {
-                alert("答錯了...沒關係繼續努力。");
-            }
-            currentQuiz++; 
-            showQuestion(); // 答完刷新看板
-        };
-        optionsDiv.appendChild(btn);
-    });
-}
-
-// 4. 最後確認領取（將暫存魚幣轉為正式魚幣）
-function finalizeMarketCoins() {
-    coins += temporaryCoins;
-    localStorage.setItem('dino_coins', coins);
-    document.getElementById('coin-count').innerText = coins;
-
-    const verifyCode = (coins * 17) + 211;
-    const targetUrl = `${BLACK_MARKET_FORM_URL}?usp=pp_url&entry.94782409=${coins}&entry.1993098186=${verifyCode}`;
-    
-    alert("獎勵已成功存入！即將跳轉登記表單。");
-    safeOpen(targetUrl);
-    document.getElementById('black-market-overlay').style.display = 'none';
-}
-
-// 5. 中途退出確認
-function confirmCloseMarket() {
-    if (confirm("⚠️ 注意：一旦關閉視窗，本次賺取的魚幣將會消失，且無法再次進入。確定要離開？")) {
-        document.getElementById('black-market-overlay').style.display = 'none';
-    }
-}
-    
-   
-
-    async function syncStock() {
-        try {
-            const res = await fetch(`${STOCK_CSV_URL}&t=${new Date().getTime()}`);
-            const text = await res.text();
-            const rows = text.split('\n').filter(r => r.trim() !== '').slice(1);
-            rows.forEach(row => {
-                const cols = row.split(',');
-                if (cols.length >= 3) {
-                    const id = parseInt(cols[0]);
-                    const count = parseInt(cols[2]);
-                    if (!isNaN(id)) inventory[id] = count;
-                }
-            });
-            renderGrid();
-        } catch (e) { console.log(e); }
-    }
-
-    function manualRefresh() { syncStock(); alert("同步成功！"); }
-
-    function initDevMode() {
-        if (isDeveloper) {
-            const devBtn = document.createElement('div');
-            devBtn.innerHTML = "🛠️ DEV";
-            devBtn.style = "position:fixed; bottom:20px; left:120px; background:red; color:white; padding:10px; z-index:9999; cursor:pointer; font-size:10px;";
-            devBtn.onclick = () => {
-                const choice = prompt("1: 設定幣, 2: 重置購買, 3: 重置黑市");
-                if (choice === "1") { 
-                    let n = prompt("數量?"); if(n) { coins = parseInt(n); localStorage.setItem('dino_coins', coins); document.getElementById('coin-count').innerText = coins; }
-                } else if (choice === "2") { localStorage.setItem('dino_ordered', 'false'); hasOrdered = false; renderGrid(); }
-                else if (choice === "3") { localStorage.removeItem('dino_market_entered'); checkMarketStatus(); }
-            };
-            document.body.appendChild(devBtn);
-        }
-    }
-
-    window.onload = () => {
-        const ua = navigator.userAgent || navigator.vendor || window.opera;
-        if (/FBAN|FBAV|Instagram|Line/i.test(ua)) {
-            document.getElementById('browser-notice').style.display = 'block';
-            document.getElementById('top-nav').style.top = '45px';
-        }
+    // 初始化頁面
+    window.onload = function() {
         document.getElementById('coin-count').innerText = coins;
         checkMarketStatus();
-        initDevMode();
-        syncStock();
+        if (isDeveloper) addDevTool();
     };
+
+    // 檢查按鈕狀態 (管理員無視時間)
+    function checkMarketStatus() {
+        const btn = document.getElementById('floating-market-btn');
+        const now = new Date().getTime();
+        const hasEntered = localStorage.getItem('dino_market_entered');
+
+        if (isDeveloper || now >= OPEN_DATE) {
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+        }
+
+        if (hasEntered === 'true') {
+            btn.innerHTML = "{ 黑市已關閉 }";
+            btn.classList.add('disabled');
+            btn.onclick = () => alert("機會只有一次，黑市大門已關閉。");
+        } else {
+            btn.innerHTML = "{ 進入黑市 }";
+            btn.classList.remove('disabled');
+            btn.onclick = openMarket;
+        }
+    }
+
+    // 開啟黑市
+    function openMarket() {
+        const hasEnteredBefore = localStorage.getItem('dino_market_entered');
+        if (hasEnteredBefore !== 'true') {
+            const confirmEntry = confirm("⚠️ 注意：黑市挑戰機會只有一次！\n一旦進入，無論是否完成測驗，大門都將關閉。");
+            if (!confirmEntry) return; 
+        }
+        localStorage.setItem('dino_market_entered', 'true');
+        checkMarketStatus();
+        
+        document.getElementById('black-market-overlay').style.display = 'block';
+        document.getElementById('quiz-coin-board').style.display = 'flex';
+        currentQuiz = -1;
+        temporaryCoins = 0; 
+        showQuestion();
+    }
+
+    // 題目邏輯
+    function showQuestion() {
+        const storyP = document.getElementById('quiz-story');
+        const questionP = document.getElementById('quiz-question');
+        const optionsDiv = document.getElementById('quiz-options');
+        const board = document.getElementById('quiz-coin-board');
+        
+        document.getElementById('quiz-orig-coins').innerText = coins;
+        document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
+
+        if (currentQuiz === -1) {
+            storyP.innerText = "尋找傳說中的設計師——水獺裁縫師。";
+            questionP.innerHTML = "證明你對李燦的了解，才能見到他的真面目。";
+            optionsDiv.innerHTML = `<button class="option-btn" onclick="currentQuiz=0; showQuestion();">開始挑戰</button>`;
+            return;
+        }
+        
+        if (currentQuiz >= questions.length) {
+            board.style.display = 'none'; 
+            storyP.innerText = "挑戰結束！";
+            const total = coins + temporaryCoins;
+            questionP.innerHTML = `
+                <div style="background: #fff; padding: 25px; border-radius: 15px; color: #000;">
+                    <p style="color: #666; margin: 0;">本次獲得：+${temporaryCoins} 🐟</p>
+                    <p style="font-size: 26px; font-weight: 900; margin: 5px 0;">最終持有：${total} 🐟</p>
+                    <p style="color: #ff4b4b; font-size: 13px; font-weight: bold; margin-top: 15px;">💡 魚幣愈多，中獎機率愈大！</p>
+                </div>`;
+            optionsDiv.innerHTML = `<button class="option-btn" style="background:#fff; color:#000; font-weight:bold;" onclick="finalizeMarketCoins()">確認領取並登記</button>`;
+            return;
+        }
+
+        const data = questions[currentQuiz];
+        storyP.innerText = data.story;
+        questionP.innerText = data.q;
+        optionsDiv.innerHTML = '';
+        data.a.forEach((txt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
+            btn.onclick = () => {
+                if (idx === data.correct) { temporaryCoins += 2; alert("正確！"); }
+                else { alert("答錯了。"); }
+                currentQuiz++; showQuestion();
+            };
+            optionsDiv.appendChild(btn);
+        });
+    }
+
+    function finalizeMarketCoins() {
+        coins += temporaryCoins;
+        localStorage.setItem('dino_coins', coins);
+        alert("獎勵已成功領取！即將跳轉。");
+        window.location.href = BLACK_MARKET_FORM_URL;
+    }
+
+    function confirmCloseMarket() {
+        if (confirm("⚠️ 注意：關閉後賺取的魚幣將消失且無法再次進入。")) {
+            document.getElementById('black-market-overlay').style.display = 'none';
+        }
+    }
+
+    function tryBuyItem() {
+        const now = new Date().getTime();
+        if (now < OPEN_DATE && !isDeveloper) {
+            alert("🔒 雜誌預覽中。正式發售時間為 2/8 10:00，敬請期待！");
+        } else {
+            alert("正在打開珍藏品訂購單 (消耗 3 魚幣)...");
+        }
+    }
+
+    function addDevTool() {
+        const devBtn = document.createElement('div');
+        devBtn.className = 'dev-badge';
+        devBtn.innerText = '🛠️ DEV';
+        devBtn.onclick = () => {
+            let cmd = prompt("DEV 選單：\n1. 增加魚幣(+10)\n2. 清空魚幣(Reset to 3)\n3. 重置黑市次數");
+            if (cmd === '1') { coins += 10; localStorage.setItem('dino_coins', coins); location.reload(); }
+            if (cmd === '2') { localStorage.setItem('dino_coins', 3); location.reload(); }
+            if (cmd === '3') { localStorage.removeItem('dino_market_entered'); checkMarketStatus(); alert("黑市已重置"); }
+        };
+        document.body.appendChild(devBtn);
+    }
 </script>
+
 </body>
 </html>
 
