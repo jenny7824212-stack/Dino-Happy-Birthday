@@ -160,27 +160,34 @@
     }
 
     function checkMarketStatus() {
-        const btn = document.getElementById('floating-market-btn');
-        const now = new Date().getTime();
-        const hasEntered = localStorage.getItem('dino_market_entered');
+    const btn = document.getElementById('floating-market-btn');
+    const now = new Date().getTime();
+    const hasEntered = localStorage.getItem('dino_market_entered');
 
-        // 強制隱藏判斷：預覽模式 OR (未到時間且非開發者)
-        if (isPreviewMode || (now < OPEN_DATE)) {
+    // --- 關鍵修改：如果是管理員，直接跳過時間檢查 ---
+    if (isDeveloper) {
+        // 管理員模式：按鈕永遠顯示，除非你想要測試「進入後關閉」的效果
+        btn.style.display = 'block'; 
+    } else {
+        // 一般訪客模式：檢查是否到達開啟日期
+        if (now < OPEN_DATE) {
             btn.style.display = 'none';
             return;
         }
-
         btn.style.display = 'block';
-        if (hasEntered === 'true' && !isDeveloper) {
-            btn.innerHTML = "{ 黑市已關閉 }";
-            btn.classList.add('disabled');
-            btn.onclick = () => alert("機會只有一次。");
-        } else {
-            btn.innerHTML = "{ 進入黑市 }";
-            btn.classList.remove('disabled');
-            btn.onclick = openMarket;
-        }
     }
+
+    // --- 檢查是否已進入過 ---
+    if (hasEntered === 'true') {
+        btn.innerHTML = "{ 黑市已關閉 }";
+        btn.classList.add('disabled');
+        btn.onclick = () => alert("機會只有一次，黑市大門已關閉。");
+    } else {
+        btn.innerHTML = "{ 進入黑市 }";
+        btn.classList.remove('disabled');
+        btn.onclick = openMarket;
+    }
+}
 
     const questions = [
         { story: "「國王的生日?」", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
@@ -349,6 +356,7 @@
 </script>
 </body>
 </html>
+
 
 
 
