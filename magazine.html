@@ -24,6 +24,16 @@
         
         #black-market-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; padding: 20px; box-sizing: border-box; overflow-y: auto; }
         .quiz-container { max-width: 600px; margin: 50px auto; text-align: center; }
+        .quiz-coin-board {
+    display: flex;
+    justify-content: space-between;
+    background: #ffffff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    color: #000;
+}
         .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #111; color: #fff; border: 1px solid #444; cursor: pointer; text-align: left; font-size: 16px; }
         .option-btn:hover { background: #fff; color: #000; }
         
@@ -58,6 +68,27 @@
 <div id="black-market-overlay">
     <div style="text-align: right;"><button onclick="confirmCloseMarket()" style="background:none; color:#fff; border:none; font-size:24px; cursor:pointer;">×</button></div>
     <div class="quiz-container">
+        <div id="black-market-overlay" style="display:none;">
+    <div class="quiz-container">
+        <div id="quiz-coin-board" class="quiz-coin-board">
+            <div style="text-align: left;">
+                <span style="color: #666; font-size: 12px; font-weight: bold;">雜誌持有</span><br>
+                <span id="quiz-orig-coins" style="font-size: 20px; font-weight: 900;">0</span> 🐟
+            </div>
+            <div style="text-align: right;">
+                <span style="color: #888; font-size: 12px; font-weight: bold;">黑市賺取</span><br>
+                <span style="font-size: 18px;">+</span>
+                <span id="quiz-temp-coins" style="font-size: 20px; font-weight: 900;">0</span> 🐟
+            </div>
+        </div>
+
+        <p id="quiz-story"></p>
+        <p id="quiz-question" style="font-size: 20px; font-weight: bold; margin-bottom: 30px;"></p>
+        <div id="quiz-options"></div>
+        <button class="close-btn" onclick="confirmCloseMarket()">×</button>
+    </div>
+</div>
+       
         <p id="quiz-story" style="color:#888; font-style:italic; margin-bottom:20px; min-height:60px;"></p>
         <p id="quiz-question" style="font-size:20px; font-weight:bold; margin-bottom:30px;"></p>
         <div id="quiz-options"></div>
@@ -178,8 +209,11 @@
 
     // --- 修改：不論是不是管理員，點擊「確定」後都紀錄「已進入」 ---
     localStorage.setItem('dino_market_entered', 'true');
-    
     checkMarketStatus();
+    
+    // 確保看板是顯示的
+    document.getElementById('quiz-coin-board').style.display = 'flex';
+    
     document.getElementById('black-market-overlay').style.display = 'block';
     currentQuiz = -1;
     showQuestion();
@@ -188,65 +222,61 @@
    let temporaryCoins = 0; 
 
     function showQuestion() {
-        const storyP = document.getElementById('quiz-story');
-        const questionP = document.getElementById('quiz-question');
-        const optionsDiv = document.getElementById('quiz-options');
+    const storyP = document.getElementById('quiz-story');
+    const questionP = document.getElementById('quiz-question');
+    const optionsDiv = document.getElementById('quiz-options');
+    const board = document.getElementById('quiz-coin-board');
+    
+    // 更新看板上的數字
+    document.getElementById('quiz-orig-coins').innerText = coins;
+    document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
 
-        // 初始畫面
-        if (currentQuiz === -1) {
-            temporaryCoins = 0; 
-            storyP.innerText = "尋找傳說中的設計師——水獺裁縫師。";
-            questionP.innerHTML = "證明你對李燦的了解，才能見到他的真面目。";
-            optionsDiv.innerHTML = `<button class="option-btn" onclick="currentQuiz=0; showQuestion();">開始挑戰</button>`;
-            return;
-        }
-        
-        // 結束畫面：只有到這一步才顯示正式領取按鈕
-        // 結束畫面：提醒魚幣與抽獎機率的關係
+    if (currentQuiz === -1) {
+        temporaryCoins = 0; 
+        board.style.display = 'flex'; // 顯示看板
+        storyP.innerText = "尋找傳說中的設計師——水獺裁縫師。";
+        questionP.innerHTML = "證明你對李燦的了解，才能見到他的真面目。";
+        optionsDiv.innerHTML = `<button class="option-btn" onclick="currentQuiz=0; showQuestion();">開始挑戰</button>`;
+        return;
+    }
+    
     if (currentQuiz >= questions.length) {
-        storyP.innerText = "挑戰結束！裁縫師認可了你的誠意。";
-        
+        board.style.display = 'none'; // 結束時隱藏看板
+        storyP.innerText = "挑戰結束！";
         const totalPotential = coins + temporaryCoins; 
         
         questionP.innerHTML = `
-            <div style="background: #111; border: 1px solid #444; padding: 15px; border-radius: 8px; margin-top: 10px;">
-                <p style="color: #ffd700; font-size: 18px; margin: 5px 0;">本次獲得額外：${temporaryCoins} 🐟</p>
-                <p style="font-size: 20px; margin: 5px 0;">領取後總計持有：${totalPotential} 🐟</p>
-                <hr style="border: 0; border-top: 1px solid #333; margin: 10px 0;">
-                <p style="color: #aaa; font-size: 13px; line-height: 1.5;">
-                    💡 <span style="color: #fff;">裁縫師的小提醒：</span><br>
-                    持有的魚幣愈多，代表您在本次活動中的<br>
-                    <span style="color: #ff4b4b; font-weight: bold;">「抽獎機率」就愈高！</span><br>
-                    請務必領取獎勵並完成最後的資格登記。
-                </p>
+            <div style="background: #ffffff; padding: 25px; border-radius: 15px; text-align: center; color: #000;">
+                <p style="color: #666; margin-bottom: 5px;">本次獲得額外：+${temporaryCoins} 🐟</p>
+                <p style="font-size: 24px; font-weight: 900; margin: 0;">最終持有：${totalPotential} 🐟</p>
+                <p style="color: #ff4b4b; font-size: 13px; font-weight: bold; margin-top: 15px;">💡 魚幣愈多，抽獎機率愈高！</p>
             </div>
         `;
-
-        optionsDiv.innerHTML = `<button class="option-btn" style="background:#fff; color:#000; font-weight:bold; margin-top:15px;" onclick="finalizeMarketCoins()">確認領取並登記抽獎資格</button>`;
+        optionsDiv.innerHTML = `<button class="option-btn" style="background:#fff; color:#000; font-weight:bold; border:2px solid #000;" onclick="finalizeMarketCoins()">確認領取並登記</button>`;
         return;
     }
 
-        const data = questions[currentQuiz];
-        storyP.innerText = data.story;
-        questionP.innerText = data.q;
-        optionsDiv.innerHTML = '';
-        data.a.forEach((txt, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
-            btn.onclick = () => {
-                if (idx === data.correct) {
-                    temporaryCoins += 2; // 只加在暫存，不改左上角實體錢包
-                    alert("正確！(暫時獲得 2 🐟)");
-                } else {
-                    alert("答錯了，沒關係繼續挑戰。");
-                }
-                currentQuiz++; 
-                showQuestion();
-            };
-            optionsDiv.appendChild(btn);
-        });
-    }
+    const data = questions[currentQuiz];
+    storyP.innerText = data.story;
+    questionP.innerText = data.q;
+    optionsDiv.innerHTML = '';
+    data.a.forEach((txt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
+        btn.onclick = () => {
+            if (idx === data.correct) {
+                temporaryCoins += 2;
+                alert("正確！");
+            } else {
+                alert("答錯了...沒關係繼續挑戰。");
+            }
+            currentQuiz++; 
+            showQuestion();
+        };
+        optionsDiv.appendChild(btn);
+    });
+}
 
     // 正式把暫存魚幣存入 localStorage
     function finalizeMarketCoins() {
@@ -319,6 +349,7 @@
 </script>
 </body>
 </html>
+
 
 
 
