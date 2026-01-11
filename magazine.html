@@ -291,7 +291,7 @@
     }
 
     function handlePenaltyClose() {
-        if (confirm("⚠️ 現在離開，魚幣將直接回歸為 3 個（初始值）！確定嗎？")) {
+        if (confirm("⚠️ 現在離開，魚幣將直接回歸為 3 個（初始值）！且無法再進入黑市 !! 確定嗎？")) {
             coins = 3;
             localStorage.setItem('dino_coins', coins);
             updateCoinDisplay();
@@ -322,6 +322,7 @@
 </script>
 </body>
 </html>
+
 
 
 
