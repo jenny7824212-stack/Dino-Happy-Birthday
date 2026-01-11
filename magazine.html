@@ -14,10 +14,10 @@
         }
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; text-align: center; }
 
-        /* 2. 狀態欄改為純白半透明 */
+        /* 狀態欄 */
         .status-bar { 
             position: fixed; top: 0; width: 100%; 
-            background: rgba(255, 255, 255, 0.9); 
+            background: rgba(255, 255, 255, 0.95); 
             padding: 12px 0; z-index: 1000; 
             border-bottom: 1px solid #eee;
             display: flex; justify-content: space-around; align-items: center;
@@ -30,13 +30,20 @@
         }
         .back-home-btn:hover { border-color: #d4af37; color: #d4af37; }
 
-        /* 魚幣顯示在淺色底建議用深色 */
         .coin-display { font-size: 16px; font-weight: bold; color: #333; }
+
+        /* 更新按鈕 */
+        .refresh-btn {
+            background: #fff; color: #333; border: 1px solid #333; padding: 5px 12px;
+            border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .refresh-btn:hover { background: #333; color: #fff; }
 
         .header-section { margin-top: 100px; margin-bottom: 30px; }
         .price-tag { color: #b8860b !important; font-weight: bold; font-size: 14px; }
 
-        /* 3. 照片卡片改為純白底＋淺陰影 */
+        /* 照片卡片 */
         .magazine-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 10px; }
         .magazine-card { 
             background: #ffffff; 
@@ -45,24 +52,40 @@
             border: 1px solid #eee; 
             transition: 0.3s; 
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* 輕微陰影 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
         }
         .magazine-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: #d4af37; }
         .magazine-card img { width: 100%; height: auto; display: block; }
         
         .card-info { padding: 15px; background: #ffffff; border-top: 1px solid #eee; text-align: center; }
         .buy-tag { 
-            color: #333333 !important; /* 強制文字為深灰色 */
+            color: #333333; 
             font-weight: 800; 
             font-size: 14px;
             letter-spacing: 1px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .stock-label { font-size: 12px; color: #888; }
+        .stock-count { font-weight: bold; color: #d9534f; }
+
+        /* 售罄覆蓋 */
+        .sold-out { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
+        .sold-out-badge { 
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); 
+            background: rgba(217, 83, 79, 0.9); color: white; padding: 8px 16px; 
+            border: 2px solid white; font-weight: bold; z-index: 10; border-radius: 4px; display: none; 
         }
 
-        /* 4. 黑市挑戰按鈕維持顯眼紅色 */
+        /* 開發者模式標籤 */
+        .dev-badge { position: fixed; top: 70px; right: 10px; background: #333; color: #fff; padding: 5px; border-radius: 5px; font-size: 10px; cursor: pointer; z-index: 2000; }
+
+        /* 黑市挑戰按鈕 */
         #floating-market-btn { position: fixed; bottom: 30px; right: 30px; background: #ff4b4b; color: white; border: none; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 1500; display: none; box-shadow: 0 4px 15px rgba(255, 75, 75, 0.3); }
 
-        /* 測驗彈窗 (黑市通常維持暗色系較有氣氛) */
-        #black-market-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:2000; overflow-y:auto; }
+        /* 測驗彈窗 */
+        #black-market-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:2000; overflow-y:auto; }
         .quiz-container { max-width: 600px; margin: 40px auto; text-align: center; padding: 20px; color: white; }
         .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #252525; color: #fff; border: 1px solid #444; border-radius: 10px; cursor: pointer; text-align: left; }
     </style>
@@ -72,6 +95,9 @@
 <div class="status-bar">
     <a href="index.html" class="back-home-btn">← 回到首頁</a>
     <div class="coin-display">持有魚幣: <span id="coin-count">0</span> 🐟</div>
+    <button id="refresh-data" class="refresh-btn" onclick="fetchStockData()">
+        <span>🔄</span> 更新庫存
+    </button>
 </div>
 
 <div class="container">
@@ -85,7 +111,7 @@
 
 <button id="floating-market-btn" onclick="openMarket()">{ 進入黑市挑戰 }</button>
 
-<div id="black-market-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:2000; overflow-y:auto;">
+<div id="black-market-overlay">
     <div class="quiz-container">
         <div id="quiz-coin-board" style="display: flex; justify-content: space-between; background: #ffffff; padding: 15px 25px; border-radius: 15px; margin-bottom: 25px; color: #000;">
             <div style="text-align: left;"><span style="color: #888; font-size: 12px; font-weight: bold;">原本魚幣</span><br><span id="quiz-orig-coins" style="font-size: 20px; font-weight: 900;">0</span> 🐟</div>
@@ -99,12 +125,11 @@
 </div>
 
 <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv";
     const OPEN_DATE = new Date("Feb 08, 2026 10:00:00").getTime();
     const BASE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScWck40_ZDTAutZ6PT6cq3koXbHUyplsl8lcoASe2ACTlZXOg/viewform?usp=pp_url";
     const BLACK_MARKET_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLScv7hqzJEcDXYX7BpIEfs5c2NmNfLOpUnWIxa1blxE9gU9afw/viewform?usp=pp_url";
-    const GITHUB_USER = "jenny7824212-stack"; 
-    const GITHUB_REPO = "Dino-Happy-Birthday";
-    const GITHUB_BRANCH = "main"; 
+    const GITHUB_ASSETS = "https://raw.githubusercontent.com/jenny7824212-stack/Dino-Happy-Birthday/main/";
 
     let coins = parseInt(localStorage.getItem('dino_coins')) || 3;
     let temporaryCoins = 0;
@@ -134,20 +159,49 @@
         for (let i = 1; i <= 12; i++) {
             const card = document.createElement('div');
             card.className = 'magazine-card';
+            card.id = `card-${i}`;
             card.onclick = () => handlePurchase(i);
-            const img = document.createElement('img');
-            img.src = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/cloth${i}.jpg`;
-            const info = document.createElement('div');
-            info.className = 'card-info';
-            info.innerHTML = `<span style="color:#fff; font-weight:bold;">CLOTH #${i}</span>`;
-            card.appendChild(img);
-            card.appendChild(info);
+            card.innerHTML = `
+                <div id="badge-${i}" class="sold-out-badge">SOLD OUT</div>
+                <img src="${GITHUB_ASSETS}cloth${i}.jpg">
+                <div class="card-info">
+                    <span class="buy-tag">CLOTH #${i}</span>
+                    <span class="stock-label">剩餘數量：<span id="stock-${i}" class="stock-count">--</span></span>
+                </div>
+            `;
             gallery.appendChild(card);
         }
         updateCoinDisplay();
+        fetchStockData();
         checkMarketStatus();
         if (isDeveloper) addDevTool();
     };
+
+    async function fetchStockData() {
+        const btn = document.getElementById('refresh-data');
+        btn.innerText = "更新中...";
+        try {
+            const response = await fetch(`${CSV_URL}&t=${new Date().getTime()}`);
+            const data = await response.text();
+            const rows = data.split('\n').map(row => row.split(','));
+
+            for (let i = 1; i <= 12; i++) {
+                if (rows[i]) {
+                    const currentStock = parseInt(rows[i][2]); // C欄: 庫存
+                    document.getElementById(`stock-${i}`).innerText = currentStock;
+
+                    if (currentStock <= 0) {
+                        document.getElementById(`card-${i}`).classList.add('sold-out');
+                        document.getElementById(`badge-${i}`).style.display = 'block';
+                    } else {
+                        document.getElementById(`card-${i}`).classList.remove('sold-out');
+                        document.getElementById(`badge-${i}`).style.display = 'none';
+                    }
+                }
+            }
+        } catch (e) { console.error("更新失敗", e); }
+        finally { btn.innerHTML = "<span>🔄</span> 更新庫存"; }
+    }
 
     function updateCoinDisplay() {
         document.getElementById('coin-count').innerText = coins;
@@ -155,9 +209,15 @@
 
     function handlePurchase(itemId) {
         const now = new Date().getTime();
+        const stock = parseInt(document.getElementById(`stock-${itemId}`).innerText);
+        
         if (now < OPEN_DATE && !isDeveloper) { alert("🔒 2/8 10:00 正式開啟。"); return; }
-        if (coins < 3) { alert("⚠️ 魚幣不足 3 枚！請前往黑市挑戰。"); return; }
-        if (confirm(`消耗 3 魚幣購買 [ CLOTH #${itemId} ]？`)) {
+        if (stock <= 0) { alert("此商品已售罄！"); return; }
+        
+        // 魚幣不足 3 枚時靜默結束
+        if (coins < 3) { return; }
+
+        if (confirm(`消耗 3 魚幣購買 [ CLOTH #${itemId} ]？\n(注意：每人僅限登記購買一件)`)) {
             coins -= 3;
             localStorage.setItem('dino_coins', coins);
             updateCoinDisplay();
@@ -167,7 +227,9 @@
 
     function checkMarketStatus() {
         const btn = document.getElementById('floating-market-btn');
-        if (isDeveloper || new Date().getTime() >= OPEN_DATE) btn.style.display = 'block';
+        const now = new Date().getTime();
+        if (isDeveloper || now >= OPEN_DATE) btn.style.display = 'block';
+        
         if (localStorage.getItem('dino_market_entered') === 'true') {
             btn.innerHTML = "{ 挑戰已結束 }";
             btn.style.background = "#333";
@@ -221,7 +283,6 @@
         });
     }
 
-    // 重點功能：中途退出懲罰
     function handlePenaltyClose() {
         if (confirm("⚠️ 現在離開，魚幣將直接回歸為 3 個（初始值）！確定嗎？")) {
             coins = 3;
@@ -245,7 +306,7 @@
         devBtn.className = 'dev-badge'; devBtn.innerText = '🛠️ DEV';
         devBtn.onclick = () => {
             let cmd = prompt("1.+10 / 2.Reset / 3.Finish");
-            if (cmd==='1') { coins+=10; localStorage.setItem('dino_coins', coins); location.reload(); }
+            if (cmd==='1') { coins+=10; localStorage.setItem('dino_coins', coins); updateCoinDisplay(); }
             if (cmd==='2') { localStorage.setItem('dino_coins', 3); localStorage.removeItem('dino_market_entered'); location.reload(); }
             if (cmd==='3') { currentQuiz = questions.length; showQuestion(); }
         };
@@ -254,10 +315,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
