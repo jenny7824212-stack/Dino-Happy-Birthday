@@ -246,7 +246,7 @@
 
     function openMarket() {
         if (localStorage.getItem('dino_market_entered') === 'true') return;
-        if (!confirm("⚠️ 警告：進入黑市若中途退出，魚幣將重置為 3 個！確定進入？")) return;
+        if (!confirm("⚠️ 警告：進入黑市若中途退出，魚幣將重置為 3 個！且黑市若是中途退出將無法再次進入!!確定進入？")) return;
         localStorage.setItem('dino_market_entered', 'true');
         checkMarketStatus();
         document.getElementById('black-market-overlay').style.display = 'block';
@@ -322,6 +322,7 @@
 </script>
 </body>
 </html>
+
 
 
 
