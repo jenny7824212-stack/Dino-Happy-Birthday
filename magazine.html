@@ -111,7 +111,7 @@
     <div class="header-section">
         <h2 style="letter-spacing: 4px; font-weight: 900;">[ DINO 27TH BIRTHDAY ]</h2>
         <p>點擊下方照片即可進行訂購登記</p>
-        <p class="price-tag">每一本需消耗 3 魚幣</p>
+        <p class="price-tag">每套需消耗 3 魚幣，也請注意水獺尺寸!</p>
     </div>
     <div id="magazine-gallery" class="magazine-gallery"></div>
 </div>
@@ -158,7 +158,7 @@
         { story: "是被哥哥們圍繞的忙內啊~", q: "問題 10：2020年成員慶祝生日，送的花代表李燦的是什麼顏色?", a: ["黃色", "藍色", "紅色", "粉色"], correct: 0 },
         { story: "「Dino啊 再來一題100分的吧^^」", q: "問題 11：李燦是哪一女團的粉絲?", a: ["Apink", "f(x)", "EXID", "2NE1"], correct: 0 },
         { story: "封面寫著——《水獺觀察日記》(出這種題目很不好意思...)", q: "問題 12：以下哪一個「沒有」被收錄在hys_921008《水獺觀察日記》中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 },
-        { story: "「有一個顏色十分耀眼。」(出這種題目很不好意思...)", q: "問題 13：水獺裁縫師(hys_921008)最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
+        { story: "「有一個顏色十分耀眼。」(出這種題目真的很不好意思...)", q: "問題 13：水獺裁縫師(hys_921008)最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
     ];
 
     window.onload = function() {
@@ -261,7 +261,7 @@
         document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
 
         if (currentQuiz === -1) {
-            storyP.innerText = "來看看你對李燦了解多少...";
+            storyP.innerText = "藉由你對李燦的了解，深入黑市...";
             questionP.innerHTML = "裁縫師的挑戰：13 道題";
             optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center;" onclick="currentQuiz=0; showQuestion();">開始測驗</button>`;
             return;
@@ -322,5 +322,6 @@
 </script>
 </body>
 </html>
+
 
 
