@@ -148,7 +148,7 @@
     const questions = [
         { story: "「國王的生日?」", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
         { story: "「鏡子裡所照的我十分陌生。」", q: "問題 2：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
-        { story: "「但你不是一個人。」", q: "問題 3：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
+        { story: "「他是忙內，謝謝大家，請多多關照。」", q: "問題 3：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
         { story: "經過一排展示架,上面放著演唱會服裝。", q: "問題 4：SEVENTEEN RIGHT HERE演唱會「韓國場」Rain舞台第一天與第二天表演有何不同?", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2 },
         { story: "秋天的落葉好多。", q: "問題 5：Dino Danceology中,和知秀一起在哪裡拍攝舞蹈的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
         { story: "「第一次身旁沒有成員站上了何處的國際舞台?」", q: "問題 6：李燦今年獨自一人出國表演,是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯", "法國"], correct: 2 },
@@ -268,6 +268,11 @@
         }
         if (currentQuiz >= questions.length) {
             document.getElementById('quiz-coin-board').style.display = 'none';
+            storyP.innerHTML = "感謝你的參與~🦦<br>" + 
+                               "<span style='font-size:14px; color:#bbb;'>無論答對題數多寡，都是因為喜愛DINO才會點開網頁，希望這次活動能覺得有趣</span><br>" +
+                               "<span style='font-size:14px; color:#bbb;'>下面表單除了活動的東西，也可以寫點東西給我，再次感謝你的參與!!🦦🦦🦦</span>"; 
+            
+            storyP.style.lineHeight = "1.6";
             const finalCoins = coins + temporaryCoins;
             questionP.innerHTML = `<div style="background:#fff;padding:20px;border-radius:15px;color:#000;">挑戰成功！<br>獲得獎勵：+${temporaryCoins} 🐟<br>結算：${finalCoins} 🐟</div>`;
             optionsDiv.innerHTML = `<button class="option-btn" style="background:#ffd700;color:#000;font-weight:bold;text-align:center;" onclick="finalizeMarketCoins()">確認領取並登記</button>`;
@@ -322,6 +327,7 @@
 </script>
 </body>
 </html>
+
 
 
 
