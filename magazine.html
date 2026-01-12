@@ -350,13 +350,13 @@
         document.getElementById('quiz-orig-coins').innerText = coins;
         document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
 
-        // --- 結算畫面 (維持你剛才要求的長感言版本) ---
+        // --- 結算畫面  ---
         if (currentQuiz >= questions.length) {
             document.getElementById('quiz-coin-board').style.display = 'none';
             storyP.style.color = "#ffffff"; 
             storyP.style.lineHeight = "1.8";
             storyP.innerHTML = 
-                "<span style='color:#ffd700; font-size:18px; font-weight:bold;'>「原來...大家都這麼了解國王嗎？」</span><br>" + 
+                "<span style='color:#eedd82; font-size:18px; font-weight:bold;'>「原來...大家都這麼了解國王嗎？」</span><br>" + 
                 "你推開屏風，發現裁縫師滿臉驚訝地看著你手中的線索。<br>" +
                 "裁縫師羞愧地低頭：「我一直以為自己只是個卑微的粉絲，不敢高攀國王的訂製服...」<br>" +
                 "「但看到你如此精準地避開所有誤導，對國王的足跡瞭若指掌，我終於明白...」<br>" +
@@ -380,7 +380,7 @@
             // 3. 下方：確認按鈕
             optionsDiv.innerHTML = `
                 <button class="option-btn" 
-                        style="background:#ffd700; color:#000; font-weight:bold; text-align:center; border:none; margin-top:20px;" 
+                        style="background:#eedd82; color:#000; font-weight:bold; text-align:center; border:none; margin-top:20px;" 
                         onclick="finalizeMarketCoins()">
                     確認領取並登記
                 </button>`;
@@ -466,14 +466,6 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
 
 
 
