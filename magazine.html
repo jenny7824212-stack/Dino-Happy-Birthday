@@ -177,7 +177,7 @@
         correct: 3 
     },
     { 
-        story: "你藉由情報商知道，水獺國王底下的三位忠臣也曾來過這裡，卻因為水獺國家需要他們創造神曲打敗SEVENTEEN，才離開這裡。", 
+        story: "你藉由情報商知道，水獺國王底下的三位忠臣也曾來過這裡，但因為水獺國需要他們創造神曲打敗SEVENTEEN，才會離開這裡。", 
         q: "問題 6：下列哪一個不是鐵人大叔底下藝人?", 
         a: ["趙乙好", "Charles", "碩珉", "Leo"], 
         correct: 0 
@@ -208,7 +208,7 @@
     },
     { 
         story: "牆上貼滿了各類 Challenge 的合作記錄，裁縫師似乎在感嘆國王的活躍。", 
-        q: "問題 11：李燦 2025年共有幾次「隊外」Challenge 合作?", 
+        q: "問題 11：李燦 2025年共有幾次「隊外」Challenge 合作(HxW、BSS、CxM算入隊內)?", 
         a: ["4 次", "5 次", "6 次", "7 次"], 
         correct: 2 
     },
@@ -360,12 +360,15 @@
                 "你推開屏風，發現裁縫師滿臉驚訝地看著你手中的線索。<br>" +
                 "裁縫師羞愧地低頭：「我一直以為自己只是個卑微的粉絲，不敢高攀國王的訂製服...」<br>" +
                 "「但看到你如此精準地避開所有誤導，對國王的足跡瞭若指掌，我終於明白...」<br>" +
-                "<span style='color:#ffd700; font-weight:bold;'>這份愛就是最好的資格。</span><br>" +
+                "<span style='color:#eedd82; font-weight:bold;'>我必須更加努力展現水獺國王魅力 <br>" +
+                "<span style='color:#eedd82; font-weight:bold;'>讓更多人像你一樣，愛上SEVENTEEN DINO。</span><br>" +
                 "<span style='font-size:13px; color:#bbb;'>裁縫師找回了自信，決定帶上他的心血與你一起前往時裝週。</span><br>" +
                 "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
-                "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，都是因為喜愛 DINO 才會點開網頁，</span><br>" +
+                "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，</span><br>" +
+                "<span style='font-size:14px; color:#fff;'>都是因為喜愛 DINO 才會點開網頁，</span><br>" +
                 "<span style='font-size:14px; color:#fff;'>希望這次活動能覺得有趣。</span><br>" +
-                "<span style='font-size:14px; color:#bbb;'>下面表單除了活動的東西，也可以寫點東西給我，再次感謝你的參與!!🦦🦦🦦</span>";
+                "<span style='font-size:14px; color:#bbb;'>下面表單除了活動的東西，也可以寫點東西給我 <br>" +
+                "<span style='font-size:14px; color:#bbb;'>再次感謝你的參與!!🦦🦦🦦</span>";
             const finalCoins = coins + temporaryCoins;
             questionP.innerHTML = `
                 <div style="background:#fff; padding:25px; border-radius:15px; color:#000; margin-top:20px; box-shadow: 0 0 20px rgba(255,215,0,0.3);">
@@ -400,7 +403,7 @@
         if (showingStory) {
             // 【故事頁面樣式】
             storyP.innerHTML = `
-                <div style="font-size:20px; color:#ffd700; line-height:1.6; margin:40px 0; min-height:100px;">
+                <div style="font-size:20px; color:#eedd82; line-height:1.6; margin:40px 0; min-height:100px;">
                     「 ${data.story} 」
                 </div>`;
             questionP.innerText = ""; // 故事頁不顯示題目
@@ -463,6 +466,7 @@
 </script>
 </body>
 </html>
+
 
 
 
