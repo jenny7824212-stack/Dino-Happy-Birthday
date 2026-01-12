@@ -317,6 +317,8 @@
         currentQuiz = -1; temporaryCoins = 0; showQuestion();
     }
 
+    let showingStory = true; // 新增：用來切換「故事頁」或「題目頁」
+
     function showQuestion() {
         const storyP = document.getElementById('quiz-story');
         const questionP = document.getElementById('quiz-question');
@@ -324,60 +326,85 @@
         document.getElementById('quiz-orig-coins').innerText = coins;
         document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
 
-        // --- 階段 1：故事開頭 ---
-    if (currentQuiz === -1) {
-        storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>" +
-                           "但首席裁縫師竟然留下一句「我不夠格」就失蹤了！<br>" +
-                           "唯有通過這些關於國王的線索，才能找回躲起來的他。";
-        questionP.innerHTML = "尋找裁縫師的下落...";
-        optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center;" onclick="currentQuiz=0; showQuestion();">開始追尋線索</button>`;
-        return;
-    }
+        // --- 結算畫面 (維持你剛才要求的長感言版本) ---
+        if (currentQuiz >= questions.length) {
+            document.getElementById('quiz-coin-board').style.display = 'none';
+            storyP.style.color = "#ffffff"; 
+            storyP.style.lineHeight = "1.8";
+            storyP.innerHTML = 
+                "<span style='color:#ffd700; font-size:18px; font-weight:bold;'>「原來...大家都這麼了解國王嗎？」</span><br>" + 
+                "你推開屏風，發現裁縫師滿臉驚訝地看著你手中的線索。<br>" +
+                "裁縫師羞愧地低頭：「我一直以為自己只是個卑微的粉絲，不敢高攀國王的訂製服...」<br>" +
+                "「但看到你如此精準地避開所有誤導，對國王的足跡瞭若指掌，我終於明白...」<br>" +
+                "<span style='color:#ffd700; font-weight:bold;'>這份愛就是最好的資格。</span><br>" +
+                "<span style='font-size:13px; color:#bbb;'>裁縫師找回了自信，決定帶上他的心血與你一起前往時裝週。</span><br>" +
+                "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
+                "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，都是因為喜愛 DINO 才會點開網頁，</span><br>" +
+                "<span style='font-size:14px; color:#fff;'>希望這次活動能覺得有趣。</span><br>" +
+                "<span style='font-size:14px; color:#bbb;'>下面表單除了活動的東西，也可以寫點東西給我，再次感謝你的參與!!🦦🦦🦦</span>";
+            const finalCoins = coins + temporaryCoins;
+            questionP.innerHTML = `
+                <div style="background:#fff; padding:25px; border-radius:15px; color:#000; margin-top:20px; box-shadow: 0 0 20px rgba(255,215,0,0.3);">
+                    <span style="font-size:14px; color:#666;">來自裁縫師的報償</span><br>
+                    <div style="margin:10px 0; font-size:26px; font-weight:900;">獎勵：+${temporaryCoins} 🐟</div>
+                    <div style="border-top:1px solid #eee; padding-top:10px; font-size:16px;">總持有魚幣：${finalCoins} 🐟</div>
+                </div>`;
+            
+            // 3. 下方：確認按鈕
+            optionsDiv.innerHTML = `
+                <button class="option-btn" 
+                        style="background:#ffd700; color:#000; font-weight:bold; text-align:center; border:none; margin-top:20px;" 
+                        onclick="finalizeMarketCoins()">
+                    確認領取並登記
+                </button>`;
+            return;
+        }
+            
+            
 
-    // --- 階段 2：故事結算 ---
-    if (currentQuiz >= questions.length) {
-        document.getElementById('quiz-coin-board').style.display = 'none';
-        
-        storyP.style.color = "#ffffff"; 
-        storyP.style.lineHeight = "1.8";
-        storyP.innerHTML = 
-            "<span style='color:#ffd700; font-size:18px; font-weight:bold;'>「原來...大家都這麼了解國王嗎？」</span><br>" + 
-            "你推開屏風，發現裁縫師滿臉驚訝地看著你手中的線索。<br>" +
-            "裁縫師羞愧地低頭：「我一直以為自己只是個卑微的粉絲，不敢高攀國王的訂製服...」<br>" +
-            "「但看到你如此精準地避開所有誤導，對國王的足跡瞭若指掌，我終於明白...」<br>" +
-            "<span style='color:#ffd700; font-weight:bold;'>這份愛就是最好的資格。</span><br>" +
-            "<span style='font-size:13px; color:#bbb;'>裁縫師找回了自信，決定帶上他的心血與你一起前往時裝週。</span><br>" +
-            "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
-            "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，都是因為喜愛 DINO 才會點開網頁，</span><br>" +
-            "<span style='font-size:14px; color:#fff;'>希望這次活動能覺得有趣。</span><br>" +
-            "<span style='font-size:14px; color:#bbb;'>下面表單除了活動的東西，也可以寫點東西給我，再次感謝你的參與!!🦦🦦🦦</span>";
-        
-        const finalCoins = coins + temporaryCoins;
-        questionP.innerHTML = `
-            <div style="background:#fff;padding:25px;border-radius:15px;color:#000;box-shadow: 0 0 20px rgba(255,215,0,0.3);">
-                <span style="font-size:16px;color:#666;">來自裁縫師的謝禮</span><br>
-                <div style="margin:15px 0; font-size:28px; font-weight:900;">獎勵：+${temporaryCoins} 🐟</div>
-                <div style="border-top:1px solid #eee; padding-top:10px; font-size:18px;">最終持有：${finalCoins} 🐟</div>
-            </div>`;
-        
-        optionsDiv.innerHTML = `<button class="option-btn" style="background:#ffd700;color:#000;font-weight:bold;text-align:center;border:none;" onclick="finalizeMarketCoins()">確認領取並登記</button>`;
-        return;
-    }
+        // --- 開頭畫面 ---
+        if (currentQuiz === -1) {
+            storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>但首席裁縫師竟然留下一句「我不夠格」就失蹤了！";
+            questionP.innerHTML = "唯有找回線索，才能尋回失蹤的他。";
+            optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center;" onclick="currentQuiz=0; showingStory=true; showQuestion();">開始尋找裁縫師</button>`;
+            return;
+        }
+
         const data = questions[currentQuiz];
-        storyP.innerText = data.story;
-        questionP.innerText = data.q;
-        optionsDiv.innerHTML = '';
-        data.a.forEach((txt, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
-            btn.onclick = () => {
-                if (idx === data.correct) { temporaryCoins += 2; alert("正確！+2 魚幣"); }
-                else { alert("答錯了...沒關係繼續挑戰。"); }
-                currentQuiz++; showQuestion();
-            };
-            optionsDiv.appendChild(btn);
-        });
+
+        // --- 核心邏輯：獨立故事頁 vs 題目頁 ---
+        if (showingStory) {
+            // 【故事頁面樣式】
+            storyP.innerHTML = `
+                <div style="font-size:20px; color:#ffd700; line-height:1.6; margin:40px 0; min-height:100px;">
+                    「 ${data.story} 」
+                </div>`;
+            questionP.innerText = ""; // 故事頁不顯示題目
+            optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#444;" onclick="showingStory=false; showQuestion();">查看下一個線索 (挑戰題) →</button>`;
+        } else {
+            // 【題目頁面樣式】
+            storyP.innerHTML = `<div style="color:#888; font-size:14px; margin-bottom:10px;">線索追蹤中...</div>`;
+            questionP.style.fontSize = "24px";
+            questionP.innerText = data.q;
+            optionsDiv.innerHTML = '';
+            data.a.forEach((txt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
+                btn.onclick = () => {
+                    if (idx === data.correct) { 
+                        temporaryCoins += 2; 
+                        alert("正確！獲得 2 魚幣線索。"); 
+                    } else { 
+                        alert("雖然答錯了，但你的誠意感動了裁縫師...繼續追蹤。"); 
+                    }
+                    currentQuiz++; 
+                    showingStory = true; // 下一題先顯示故事
+                    showQuestion();
+                };
+                optionsDiv.appendChild(btn);
+            });
+        }
     }
 
     function handlePenaltyClose() {
@@ -412,6 +439,7 @@
 </script>
 </body>
 </html>
+
 
 
 
