@@ -146,21 +146,85 @@
     const isDeveloper = urlParams.get('dev') === 'otter921008';
 
     const questions = [
-        { story: "「國王的生日?」", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
-        { story: "「鏡子裡所照的我十分陌生。」", q: "問題 2：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
-        { story: "「他是忙內，謝謝大家，請多多關照。」", q: "問題 3：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
-        { story: "經過一排展示架,上面放著演唱會服裝。", q: "問題 4：SEVENTEEN RIGHT HERE演唱會「韓國場」Rain舞台第一天與第二天表演有何不同?", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2 },
-        { story: "秋天的落葉好多。", q: "問題 5：Dino Danceology中,和知秀一起在哪裡拍攝舞蹈的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
-        { story: "「第一次身旁沒有成員站上了何處的國際舞台?」", q: "問題 6：李燦今年獨自一人出國表演,是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯", "法國"], correct: 2 },
-        { story: "「去年,李燦走出了多少次『隊伍以外』?」", q: "問題 7：李燦 2025年共有幾次「隊外」合作?", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
-        { story: "DINO'S DANCEOLOGY Reaction", q: "問題 8：是哪一年的生日直播，李燦做了 danceology 的回顧?", a: ["2018", "2019", "2020", "2021"], correct: 3 },
-        { story: "在月光之下跳舞，目光只注視著你。", q: "問題 9：Lilili Yabbay 十三月的舞 舞蹈躺著部分，李燦從「上面」數來第幾層?", a: ["1", "2", "3", "4"], correct: 1 },
-        { story: "是被哥哥們圍繞的忙內啊~", q: "問題 10：2020年成員慶祝生日，送的花代表李燦的是什麼顏色?", a: ["黃色", "藍色", "紅色", "粉色"], correct: 0 },
-        { story: "「Dino啊 再來一題100分的吧^^」", q: "問題 11：李燦是哪一女團的粉絲?", a: ["Apink", "f(x)", "EXID", "2NE1"], correct: 0 },
-        { story: "封面寫著——《水獺觀察日記》(出這種題目很不好意思...)", q: "問題 12：以下哪一個「沒有」被收錄在hys_921008《水獺觀察日記》中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 },
-        { story: "「有一個顏色十分耀眼。」(出這種題目真的很不好意思...)", q: "問題 13：水獺裁縫師(hys_921008)最喜歡李燦的哪一個髮色?", a: ["黑色", "金色", "紅色", "藍色"], correct: 3 }
-    ];
-
+    { 
+        story: "「這是國王的行程表...」你在工作室桌上發現一張紙，記載著國王的生辰。", 
+        q: "問題 1：李燦的生日是幾號?", 
+        a: ["2/10", "2/11", "2/12", "3/11"], 
+        correct: 1 
+    },
+    { 
+        story: "牆上掛著一件舊校服，口袋裡塞著一張曲譜草稿。", 
+        q: "問題 2：李燦成年高中畢業的Solo曲是?", 
+        a: ["Wait", "Last Order", "Zero", "High Five"], 
+        correct: 2 
+    },
+    { 
+        story: "角落播放著紀錄片，裁縫師似乎反覆觀看著國王拍攝《Wait》時，成員們到場加油的畫面。", 
+        q: "問題 3：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", 
+        a: ["10", "11", "12", "13"], 
+        correct: 2 
+    },
+    { 
+        story: "你走進服裝展示間，這裡整齊地掛著 RIGHT HERE 演唱會的打歌服，但裁縫師似乎對細節極度偏執...", 
+        q: "問題 4：SEVENTEEN RIGHT HERE演唱會「韓國場」Rain舞台第一天與第二天表演有何不同?", 
+        a: ["鞋子", "手套", "臂環", "麥克風"], 
+        correct: 2 
+    },
+    { 
+        story: "桌上的攝影機停格在一個美麗的秋日背景下，裁縫師正研究著國王與成員共舞的線條。", 
+        q: "問題 5：Dino Danceology中,和知秀一起在哪裡拍攝舞蹈的?", 
+        a: ["東京", "大阪", "首爾", "名古屋"], 
+        correct: 3 
+    },
+    { 
+        story: "「這是國王獨自啟程的直播照片...」裁縫師似乎一直默默計算著國王獨自站上舞台的勇氣。", 
+        q: "問題 6：李燦今年獨自一人出國表演,是去哪裡?", 
+        a: ["日本", "美國", "沙烏地阿拉伯", "法國"], 
+        correct: 2 
+    },
+    { 
+        story: "牆上貼滿了各類 Challenge 的合作記錄，裁縫師似乎在感嘆國王的活躍。", 
+        q: "問題 7：李燦 2025年共有幾次「隊外」Challenge 合作?", 
+        a: ["4 次", "5 次", "6 次", "7 次"], 
+        correct: 2 
+    },
+    { 
+        story: "抽屜裡有一張被翻爛的清單，上面記錄著國王歷年的生日回顧片段。", 
+        q: "問題 8：是哪一年的生日直播，李燦做了 danceology 的回顧?", 
+        a: ["2018", "2019", "2020", "2021"], 
+        correct: 3 
+    },
+    { 
+        story: "你在黑暗中發現一疊慢速攝影的照片，每一幀都在分析《十三月的舞》中，國王那輕盈如月的姿態。", 
+        q: "問題 9：Lilili Yabbay 十三月的舞 舞蹈躺著部分，李燦從「上面」數來第幾層?", 
+        a: ["1", "2", "3", "4"], 
+        correct: 1 
+    },
+    { 
+        story: "窗邊放著一束乾燥後的玫瑰花，雖然褪色了，但裁縫師在筆記本上特別標註了其中一朵的特殊意義。", 
+        q: "問題 10：2020年成員慶祝李燦生日，送了13朵玫瑰，送的花代表李燦的是什麼顏色?", 
+        a: ["黃色", "藍色", "紅色", "粉色"], 
+        correct: 0 
+    },
+    { 
+        story: "裁縫師的耳機裡傳來了輕快的曲調，看來國王的愛好他也一併熱愛著。", 
+        q: "問題 11：李燦是哪一女團的粉絲?", 
+        a: ["Apink", "f(x)", "EXID", "2NE1"], 
+        correct: 0 
+    },
+    { 
+        story: "「這是最後的線索了...」你發現了一本手繪的《水獺觀察日記》，每一頁都充滿了愛與顫抖的筆跡。", 
+        q: "問題 12：以下哪一個「沒有」被收錄在hys_921008《水獺觀察日記》中?", 
+        a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], 
+        correct: 3 
+    },
+    { 
+        story: "屏風後傳來了裁縫師的聲音：「我真的...能做出配得上國王的作品嗎？」他望著那張最耀眼的髮色照片自言自語。", 
+        q: "問題 13：水獺裁縫師(hys_921008)最喜歡李燦的哪一個髮色?", 
+        a: ["黑色", "金色", "紅色", "藍色"], 
+        correct: 3 
+    }
+];
     window.onload = function() {
         const gallery = document.getElementById('magazine-gallery');
         for (let i = 1; i <= 12; i++) {
@@ -260,24 +324,45 @@
         document.getElementById('quiz-orig-coins').innerText = coins;
         document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
 
-        if (currentQuiz === -1) {
-            storyP.innerText = "藉由你對李燦的了解，深入黑市...(黑市內請勿重整網頁!!)";
-            questionP.innerHTML = "🦦裁縫師的挑戰🦦";
-            optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center;" onclick="currentQuiz=0; showQuestion();">開始測驗</button>`;
-            return;
-        }
-        if (currentQuiz >= questions.length) {
-            document.getElementById('quiz-coin-board').style.display = 'none';
-            storyP.innerHTML = "感謝你的參與~🦦<br>" + 
-                               "<span style='font-size:14px; color:#bbb;'>無論答對題數多寡，都是因為喜愛DINO才會點開網頁，希望這次活動能覺得有趣</span><br>" +
-                               "<span style='font-size:14px; color:#bbb;'>下面表單除了活動的東西，也可以寫點東西給我，再次感謝你的參與!!🦦🦦🦦</span>"; 
-            
-            storyP.style.lineHeight = "1.6";
-            const finalCoins = coins + temporaryCoins;
-            questionP.innerHTML = `<div style="background:#fff;padding:20px;border-radius:15px;color:#000;">挑戰成功！<br>獲得獎勵：+${temporaryCoins} 🐟<br>結算：${finalCoins} 🐟</div>`;
-            optionsDiv.innerHTML = `<button class="option-btn" style="background:#ffd700;color:#000;font-weight:bold;text-align:center;" onclick="finalizeMarketCoins()">確認領取並登記</button>`;
-            return;
-        }
+        // --- 階段 1：故事開頭 ---
+    if (currentQuiz === -1) {
+        storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>" +
+                           "但首席裁縫師竟然留下一句「我不夠格」就失蹤了！<br>" +
+                           "唯有通過這些關於國王的線索，才能找回躲起來的他。";
+        questionP.innerHTML = "尋找裁縫師的下落...";
+        optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center;" onclick="currentQuiz=0; showQuestion();">開始追尋線索</button>`;
+        return;
+    }
+
+    // --- 階段 2：故事結算 ---
+    if (currentQuiz >= questions.length) {
+        document.getElementById('quiz-coin-board').style.display = 'none';
+        
+        storyP.style.color = "#ffffff"; 
+        storyP.style.lineHeight = "1.8";
+        storyP.innerHTML = 
+            "<span style='color:#ffd700; font-size:18px; font-weight:bold;'>「原來...大家都這麼了解國王嗎？」</span><br>" + 
+            "你推開屏風，發現裁縫師滿臉驚訝地看著你手中的線索。<br>" +
+            "裁縫師羞愧地低頭：「我一直以為自己只是個卑微的粉絲，不敢高攀國王的訂製服...」<br>" +
+            "「但看到你如此精準地避開所有誤導，對國王的足跡瞭若指掌，我終於明白...」<br>" +
+            "<span style='color:#ffd700; font-weight:bold;'>這份愛就是最好的資格。</span><br>" +
+            "<span style='font-size:13px; color:#bbb;'>裁縫師找回了自信，決定帶上他的心血與你一起前往時裝週。</span><br>" +
+            "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
+            "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，都是因為喜愛 DINO 才會點開網頁，</span><br>" +
+            "<span style='font-size:14px; color:#fff;'>希望這次活動能覺得有趣。</span><br>" +
+            "<span style='font-size:14px; color:#bbb;'>下面表單除了活動的東西，也可以寫點東西給我，再次感謝你的參與!!🦦🦦🦦</span>";
+        
+        const finalCoins = coins + temporaryCoins;
+        questionP.innerHTML = `
+            <div style="background:#fff;padding:25px;border-radius:15px;color:#000;box-shadow: 0 0 20px rgba(255,215,0,0.3);">
+                <span style="font-size:16px;color:#666;">來自裁縫師的謝禮</span><br>
+                <div style="margin:15px 0; font-size:28px; font-weight:900;">獎勵：+${temporaryCoins} 🐟</div>
+                <div style="border-top:1px solid #eee; padding-top:10px; font-size:18px;">最終持有：${finalCoins} 🐟</div>
+            </div>`;
+        
+        optionsDiv.innerHTML = `<button class="option-btn" style="background:#ffd700;color:#000;font-weight:bold;text-align:center;border:none;" onclick="finalizeMarketCoins()">確認領取並登記</button>`;
+        return;
+    }
         const data = questions[currentQuiz];
         storyP.innerText = data.story;
         questionP.innerText = data.q;
@@ -327,6 +412,7 @@
 </script>
 </body>
 </html>
+
 
 
 
