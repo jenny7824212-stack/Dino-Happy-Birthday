@@ -400,6 +400,7 @@
         if (currentQuiz === -1) {
             storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>但首席裁縫師竟然留下一句「我不夠格」就失蹤了！";
             questionP.innerHTML = "唯有找回線索，才能尋回失蹤的他。";
+            questionP.innerHTML = "黑市中請不要重整畫面，會導致離開黑市無法再次進入!。";
             optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center;" onclick="currentQuiz=0; showingStory=true; showQuestion();">開始尋找裁縫師</button>`;
             return;
         }
@@ -473,6 +474,7 @@
 </script>
 </body>
 </html>
+
 
 
 
