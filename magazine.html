@@ -396,22 +396,22 @@
             
             
 
-        // --- 開頭畫面 ---
-if (currentQuiz === -1) {
-    // 1. 主故事內容
-    storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>但首席裁縫師竟然留下一句「我不夠格」就失蹤了！";
-    
-    // 2. 加上警告語，使用不同的樣式
-    questionP.innerHTML = 
-        "唯有找回線索，才能尋回失蹤的他。<br>" + 
-        "<span style='font-size: 13px; color: #ff4b4b; display: block; margin-top: 15px; font-weight: normal;'>" +
-        "⚠️ 注意：黑市中請不要重整畫面，否則將強制離開且無法再次進入。" +
-        "</span>";
+      // --- 開頭畫面 ---
+        if (currentQuiz === -1) {
+            storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>但首席裁縫師竟然留下一句「我不夠格」就失蹤了！";
+            
+            // 將原本的內容與警告語結合
+            questionP.innerHTML = 
+                "唯有找回線索，才能尋回失蹤的他。<br>" + 
+                "<div style='font-size: 14px; color: #ff6b6b; margin-top: 15px; font-weight: normal; background: rgba(255,107,107,0.1); padding: 10px; border-radius: 8px; border: 1px dashed #ff6b6b;'>" +
+                "⚠️ 注意：黑市中請不要重整畫面，<br>這會導致離開黑市且無法再次進入！" +
+                "</div>";
+                
+            optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#ffd026; color:#000; font-weight:bold;" onclick="currentQuiz=0; showingStory=true; showQuestion();">開始尋找裁縫師</button>`;
+            return;
+        }
 
-    // 3. 開始按鈕
-    optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#ffd026; color:#000; font-weight:bold;" onclick="currentQuiz=0; showingStory=true; showQuestion();">開始尋找裁縫師</button>`;
-    return;
-}
+        // --- 核心邏輯：獨立故事頁 vs 題目頁 ---
         const data = questions[currentQuiz];
 
         // --- 核心邏輯：獨立故事頁 vs 題目頁 ---
@@ -481,6 +481,7 @@ if (currentQuiz === -1) {
 </script>
 </body>
 </html>
+
 
 
 
