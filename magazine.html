@@ -124,7 +124,7 @@
             <div style="text-align: left;"><span style="color: #888; font-size: 12px; font-weight: bold;">原本魚幣</span><br><span id="quiz-orig-coins" style="font-size: 20px; font-weight: 900;">0</span> 🐟</div>
             <div style="text-align: right;"><span style="color: #666; font-size: 12px; font-weight: bold;">獲得獎勵</span><br><span id="quiz-temp-coins" style="font-size: 20px; font-weight: 900;">0</span> 🐟</div>
         </div>
-        <p id="quiz-story" style="color:#ffe154; font-style:italic; margin-bottom:10px;"></p>
+        <p id="quiz-story" style="color:#ffd026; font-style:italic; margin-bottom:10px;"></p>
         <p id="quiz-question" style="font-size:22px; font-weight:bold; margin-bottom:30px; color:#fff;"></p>
         <div id="quiz-options"></div>
         <p id="quiz-leave" onclick="handlePenaltyClose()" style="margin-top:50px; color:#888; cursor:pointer; text-decoration:underline;">LEAVE MARKET</p>
@@ -363,12 +363,12 @@
             storyP.style.color = "#ffffff"; 
             storyP.style.lineHeight = "1.8";
             storyP.innerHTML = 
-                "<span style='color:#ffe154; font-size:18px; font-weight:bold;'>「原來...大家都這麼了解國王嗎？」</span><br>" + 
+                "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「原來...大家都這麼了解國王嗎？」</span><br>" + 
                 "你推開屏風，發現裁縫師滿臉驚訝地看著你手中的線索。<br>" +
                 "裁縫師羞愧地低頭：「我一直以為自己只是個卑微的粉絲，不敢高攀國王的訂製服...」<br>" +
                 "「但看到你如此精準地避開所有誤導，對國王的足跡瞭若指掌，我終於明白...」<br>" +
-                "<span style='color:#ffe154; font-weight:bold;'>我必須更加努力展現水獺國王魅力 <br>" +
-                "<span style='color:#ffe154; font-weight:bold;'>讓更多人像你一樣，愛上SEVENTEEN DINO。</span><br>" +
+                "<span style='color:#ffd026; font-weight:bold;'>我必須更加努力展現水獺國王魅力 <br>" +
+                "<span style='color:#ffd026; font-weight:bold;'>讓更多人像你一樣，愛上SEVENTEEN DINO。</span><br>" +
                 "<span style='font-size:13px; color:#bbb;'>裁縫師找回了自信，決定帶上他的心血與你一起前往時裝週。</span><br>" +
                 "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
                 "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，</span><br>" +
@@ -410,7 +410,7 @@
         if (showingStory) {
             // 【故事頁面樣式】
             storyP.innerHTML = `
-                <div style="font-size:20px; color:#ffe154; line-height:1.6; margin:40px 0; min-height:100px;">
+                <div style="font-size:20px; color:#ffd026; line-height:1.6; margin:40px 0; min-height:100px;">
                     「 ${data.story} 」
                 </div>`;
             questionP.innerText = ""; // 故事頁不顯示題目
@@ -473,6 +473,7 @@
 </script>
 </body>
 </html>
+
 
 
 
