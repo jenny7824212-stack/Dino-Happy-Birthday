@@ -395,22 +395,21 @@
 
         // --- 結算畫面  ---
         if (currentQuiz >= questions.length) {
-            document.getElementById('quiz-coin-board').style.display = 'none';
-            storyP.style.color = "#ffffff"; 
-            storyP.style.lineHeight = "1.8";
-            storyP.innerHTML = 
-                "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「你找到李燦各種面貌的碎片了呢...」</span><br>" + 
-                "你推開屏風，發現了裁縫師在那等者你。<br>" +
-                "裁縫師說：「國王的各種面貌你都十分了解...」<br>" +
-                "「不管是綜藝、舞台、直播...」<br>" +
-                "<span style='color:#ffd026; font-weight:bold;'>那麼就寫下你想要的獨屬於國王的衣服吧! <br>" +
-                "<span style='font-size:13px; color:#bbb;'>裁縫師整理你的想法，讓你帶著作品成功完成國王的時裝秀。</span><br>" +
-                "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
-                "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，</span><br>" +
-                "<span style='font-size:14px; color:#fff;'>都是因為喜愛 DINO 才會點開網頁，</span><br>" +
-                "<span style='font-size:14px; color:#fff;'>希望這次活動能覺得有趣。</span><br>" +
-                "<span style='font-size:14px; color:#bbb;'>下面表單除了活動的東西，也可以寫點東西給我 <br>" +
-                "<span style='font-size:14px; color:#bbb;'>再次感謝你的參與!!🦦🦦🦦</span>";
+    document.getElementById('quiz-coin-board').style.display = 'none';
+    storyP.style.color = "#ffffff"; 
+    storyP.style.lineHeight = "1.8";
+    storyP.innerHTML = 
+        "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「你找到李燦各種面貌的碎片了呢...」</span><br>" + 
+        "你推開屏風，發現了裁縫師在那等著你。<br>" +
+        "裁縫師說：「國王的各種面貌你都十分了解...」<br>" +
+        "「不管是綜藝、舞台、直播...」<br>" +
+        "<span style='color:#ffd026; font-weight:bold;'>那麼就寫下你想要的獨屬於國王的衣服吧！</span><br>" + 
+        "<span style='font-size:13px; color:#bbb;'>裁縫師整理你的想法，讓你帶著作品成功完成國王的時裝秀。</span><br>" + 
+        "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
+        "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，</span><br>" +
+        "<span style='font-size:14px; color:#fff;'>都是因為喜愛 DINO 才會點開網頁，</span><br>" +
+        "<span style='font-size:14px; color:#fff;'>希望這次活動能覺得有趣。</span><br>" +
+        "<span style='font-size:14px; color:#bbb;'>下面表單除了活動的東西，也可以寫點東西給我。</span>";
             const finalCoins = coins + temporaryCoins;
             questionP.innerHTML = `
                 <div style="background:#fff; padding:25px; border-radius:15px; color:#000; margin-top:20px; box-shadow: 0 0 20px rgba(255,215,0,0.3);">
@@ -516,6 +515,7 @@
 </script>
 </body>
 </html>
+
 
 
 
