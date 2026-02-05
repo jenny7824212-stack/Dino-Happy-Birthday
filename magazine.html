@@ -7,11 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
     <style>
         h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 42px;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-}
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 42px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
         body { 
             background-color: #FAF9F6; 
             color: #333333; 
@@ -85,16 +85,12 @@
             border: 2px solid white; font-weight: bold; z-index: 10; border-radius: 4px; display: none; 
         }
 
-        /* 開發者模式標籤 */
-        .dev-badge { position: fixed; top: 70px; right: 10px; background: #333; color: #fff; padding: 5px; border-radius: 5px; font-size: 10px; cursor: pointer; z-index: 2000; }
-
-        /* 黑市挑戰按鈕 */
-        #floating-market-btn { position: fixed; bottom: 30px; right: 30px; background: #ff4b4b; color: white; border: none; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 1500; display: none; box-shadow: 0 4px 15px rgba(255, 75, 75, 0.3); }
-
-        /* 測驗彈窗 */
+        /* 測驗彈窗樣式 */
         #black-market-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:2000; overflow-y:auto; }
         .quiz-container { max-width: 600px; margin: 40px auto; text-align: center; padding: 20px; color: white; }
         .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #252525; color: #fff; border: 1px solid #444; border-radius: 10px; cursor: pointer; text-align: left; }
+        #floating-market-btn { position: fixed; bottom: 30px; right: 30px; background: #ff4b4b; color: white; border: none; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 1500; display: none; box-shadow: 0 4px 15px rgba(255, 75, 75, 0.3); }
+        .dev-badge { position: fixed; top: 70px; right: 10px; background: #333; color: #fff; padding: 5px; border-radius: 5px; font-size: 10px; cursor: pointer; z-index: 2000; }
     </style>
 </head>
 <body>
@@ -134,6 +130,8 @@
 <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv";
     const OPEN_DATE = new Date("Feb 08, 2026 10:00:00").getTime();
+    
+    // Google 表單連結設定
     const BASE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScWck40_ZDTAutZ6PT6cq3koXbHUyplsl8lcoASe2ACTlZXOg/viewform?usp=pp_url";
     const BLACK_MARKET_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLScv7hqzJEcDXYX7BpIEfs5c2NmNfLOpUnWIxa1blxE9gU9afw/viewform?usp=pp_url";
     const GITHUB_ASSETS = "https://raw.githubusercontent.com/jenny7824212-stack/Dino-Happy-Birthday/main/";
@@ -141,160 +139,125 @@
     let coins = parseInt(localStorage.getItem('dino_coins')) || 3;
     let temporaryCoins = 0;
     let currentQuiz = -1;
+    let showingStory = true;
 
     const urlParams = new URLSearchParams(window.location.search);
     const isDeveloper = urlParams.get('dev') === 'otter921008';
 
     const questions = [
     { 
-        story: "Dino 又增加一歲了呢，輸入數字進入黑市吧。",
-        "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 這一天克拉都期待直播見到獺。</div>",
+        story: "Dino 又增加一歲了呢，輸入數字進入黑市吧。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 這一天克拉都期待直播見到獺。</span>",
         q: "問題 1：李燦的生日是幾號?", 
         a: ["2/10", "2/11", "2/12", "3/11"], 
         correct: 1 
     },
     { 
-        story: "你注意到了一個正在撥放的收音機。",
-        "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 李燦的日文電台總是很有趣，而且學習日文十分努力呢。</div>",
+        story: "你注意到了一個正在播放的收音機。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦的日文電台總是很有趣，而且學習日文十分努力呢。</span>",
         q: "問題 2：李燦主持的SCHOOL OF LOCK 是固定每個月第幾週更新?", 
         a: ["1", "2", "3", "4"], 
         correct: 1 
     },
     { 
-        story: "商人販賣國王讀書時期的相關情報。",
-        "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 李燦開心開直播拿著畢業證書，十分驕傲。</div>",
+        story: "商人販賣國王讀書時期的相關情報。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦開心開直播拿著畢業證書，十分驕傲。</span>",
         q: "問題 3：李燦成年高中畢業的Solo曲是?", 
         a: ["Wait", "Last Order", "Zero", "High Five"], 
         correct: 2 
     },
     { 
-        story: "你進入一間酒館，酒保說只要回答問題正確，能提供2023年的紅酒給你。",
-        "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— Wait 連續拍攝24小時真的好辛苦，但哥哥們都來加油了。</div>",
+        story: "你進入一間酒館，酒保說只要回答問題正確，能提供2023年的紅酒給你。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— Wait 連續拍攝24小時真的好辛苦，但哥哥們都來加油了。</span>",
         q: "問題 4：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", 
         a: ["10", "11", "12", "13"], 
         correct: 2 
     },
     { 
-        story: "你在黑市找到一張地圖，發現黑市分成了三區。",
-        "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— Wait 還得換地方拍攝，但最後的作品真的超好看。</div>",
-        q: "問題 5：拍攝 wait MV 以下非拍攝地點? (取自2023.12.07直播) ", 
+        story: "你在黑市找到一張地圖，發現黑市分成了三區。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— Wait 還得換地方拍攝，最後的作品真的超好看。</span>",
+        q: "問題 5：拍攝 wait MV 以下非拍攝地點?", 
         a: ["鍾路區", "廣津區", "龍山區", "松島"], 
         correct: 2 
     },
-     { 
-        story: "你在黑市遇到了一位老奶奶，她拿了一盒醬蟹鼓勵你。",
-        "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 李燦奶奶的醬蟹，燦一眼就知道是哪個。</div>",
+    { 
+        story: "你在黑市遇到了一位老奶奶，她拿了一盒醬蟹鼓勵你。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦奶奶的醬蟹，燦一眼就知道是哪個。</span>",
         q: "問題 6：李燦奶奶的醬蟹是哪裡的風格?", 
         a: ["慶尚道", "江原道", "忠清道", "全羅道"], 
         correct: 3 
     },
     { 
-        story: "找到了以前國王拍攝的綜藝片段，扮演大叔真的好像。", 
-         "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 除了舞台，李燦的演技真的好厲害。</div>",
+        story: "找到了以前國王拍攝的綜藝片段，扮演大叔真的好像。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 除了舞台，李燦的演技真的好厲害。</span>",
         q: "問題 7：下列哪一個不是鐵人大叔底下藝人?", 
         a: ["趙乙好", "Charles", "碩珉", "Leo"], 
         correct: 0 
     },
     { 
-        story: "經過了一家牙齒診所，發現黑市曾經因為水獺國王的關係，流行過牙齒貼鑽。",
-         "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 笑的時候會露出牙鑽，還會不好意思遮住。</div>",
-        q: "問題 8：李燦在face the sun 做了牙鑽造型，請問做了幾顆牙? ", 
+        story: "經過了一家牙齒診所，發現黑市曾流行過牙齒貼鑽。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 笑的時候會露出牙鑽，還會不好意思遮住。</span>",
+        q: "問題 8：李燦在face the sun 做了牙鑽造型，做了幾顆牙?", 
         a: ["2", "3", "4", "5"], 
         correct: 1 
     },
     { 
-        story: "只要是子民都知道國王的啟蒙偶像是麥可·傑克森，跟著散落著這位傳奇海報的路，你往前走了過去。",
-         "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 燦真的成為了非常耀眼的明星呢。</div>",
-        q: "問題 9：在李燦參加的李茂珍Service中，唱的是麥可·傑克森的哪一首歌曲?", 
+        story: "子民都知道國王的啟蒙偶像是麥可·傑克森。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 燦真的成為了非常耀眼的明星呢。</span>",
+        q: "問題 9：在李茂珍Service中，唱的是麥可的哪首歌曲?", 
         a: ["Beat It", "Thriller", "Billie Jean", "Heal The World"], 
         correct: 3 
     },
     { 
-        story: "你發現了一間服飾店，這裡整齊地掛著 RIGHT HERE 演唱會的服飾。", 
-         "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 雖然很漂亮，但卻設計不良受傷了。</div>",
-        q: "問題 10：SEVENTEEN RIGHT HERE「高陽場」Rain舞台第一天與第二天表演有何不同?", 
+        story: "發現一間服飾店，掛著 RIGHT HERE 演唱會的服飾。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 雖然很漂亮，但卻設計不良受傷了。</span>",
+        q: "問題 10：高陽場Rain舞台第一天與第二天表演有何不同?", 
         a: ["鞋子", "手套", "臂環", "麥克風"], 
         correct: 2 
     },
     { 
-        story: "桌上的攝影機停格在一個美麗的秋日背景下，是國王與成員共舞的線條。", 
-         "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 燦幫成員設計舞蹈真的特別適合。</div>",
-        q: "問題 11：Dino Danceology中,和知秀一起在哪裡拍攝舞蹈的?", 
+        story: "攝影機停格在一個秋日背景下，是與成員共舞的線條。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 燦幫成員設計舞蹈真的特別適合。</span>",
+        q: "問題 11：Danceology中,和知秀在哪裡拍攝的?", 
         a: ["東京", "大阪", "首爾", "名古屋"], 
         correct: 3 
     },
     { 
-        story: "你在桌上找到國王遠渡海洋及大陸，獨自站上舞台。",
-         "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 深夜看著直播，真的很開心，燦能站上大舞台上表演。</div>",
-        q: "問題 12：李燦2025獨自一人出國表演,是去哪裡?", 
+        story: "找到國王遠渡海洋，獨自站上舞台的照片。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 深夜看著直播，真的很開心。</span>",
+        q: "問題 12：2025獨自一人出國表演是去哪裡?", 
         a: ["日本", "美國", "沙烏地阿拉伯", "法國"], 
         correct: 2 
     },
     { 
-        story: "注意到牆上貼滿了各類 Challenge 的合作記錄。", 
-         "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 李燦跳任何舞蹈都完美消化歌曲風格。</div>",
-        q: "問題 13：李燦 2025年共有幾次「隊外」Challenge 合作(HxW、BSS、CxM算入隊內)?", 
+        story: "牆上貼滿了各類 Challenge 的合作記錄。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦跳任何舞蹈都完美消化。</span>",
+        q: "問題 13：2025年共有幾次隊外 Challenge 合作?", 
         a: ["4 次", "5 次", "6 次", "7 次"], 
         correct: 2 
     },
     { 
-        story: "抽屜裡有一張被翻爛的清單，上面記錄著國王歷年的生日回顧片段。", 
-         "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 生日直播的蛋糕都很有趣，但味道...</div>",
-        q: "問題 14：是哪一年的生日直播，李燦做了 danceology 的回顧?", 
+        story: "抽屜裡有一張記錄著國王歷年生日回顧的清單。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 生日直播的蛋糕都很有趣。</span>",
+        q: "問題 14：哪一年的生日直播做了 danceology 的回顧?", 
         a: ["2018", "2019", "2020", "2021"], 
         correct: 3 
     },
     { 
-        story: "你在黑暗中發現一疊慢速攝影的照片，每一幀都在分析《十三月的舞》中，國王那輕盈如月的姿態。",
-         "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 十三月的舞，在不存在的時空，站在月光下跳舞，這首歌的歌詞真的十分優美。</div>",
-        q: "問題 15：Lilili Yabbay 十三月的舞 舞蹈躺著部分，李燦從「上面」數來第幾層?", 
+        story: "每一幀都在分析《十三月的舞》中，國王那輕盈的姿態。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 這首歌的歌詞真的十分優美。</span>",
+        q: "問題 15：十三月的舞躺著部分，李燦從上面數來第幾層?", 
         a: ["1", "2", "3", "4"], 
         correct: 1 
     },
     { 
-        story: "窗邊放著一張號碼牌，似乎曾經在等什麼。",
-         "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 最後一幕紅色毛衣的燦，心總是在那空了一拍。</div>",
+        story: "窗邊放著一張號碼牌，似乎曾經在等什麼。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 最後一幕紅色毛衣的燦，心總是在那空了一拍。</span>",
         q: "問題 16：在wait MV中李燦的號碼牌是幾號?", 
         a: ["365", "211", "526", "214"], 
         correct: 0 
     },
     { 
-        story: "掛著的外套口袋裡打結的耳機裡傳來了輕快女團的曲調。", 
-         "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 在綜藝開心跳著前輩的舞蹈，特別可愛。</div>",
+        story: "外套口袋裡傳來了輕快女團的曲調。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 綜藝開心跳著前輩的舞蹈，特別可愛。</span>",
         q: "問題 17：李燦是哪一女團的粉絲?", 
         a: ["Apink", "f(x)", "EXID", "2NE1"], 
         correct: 0 
     },
     { 
-        story: "「這是最後...」你發現了一本手繪的《水獺觀察日記》，記錄著李燦的每個瞬間。", 
-         "<div style='font-size: 13px; color:#fac12f; margin-top: 10px; font-weight: normal; opacity: 0.8;'>" +
-           "—— 感謝走到這裡。</div>",
-        q: "特別問題 1：以下哪一個「沒有」被收錄在hys_921008《水獺觀察日記》中?", 
+        story: "最後，你發現了一本手繪的《水獺觀察日記》。<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 感謝走到這裡。</span>",
+        q: "特別問題：以下哪一個「沒有」被收錄在日記中?", 
         a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], 
         correct: 3 
-    },
-    
-];
+    }
+    ];
+
     window.onload = function() {
         const gallery = document.getElementById('magazine-gallery');
-        for (let i = 1; i <= 12; i++) {
+        for (let i = 1; i <= 10; i++) {
             const card = document.createElement('div');
             card.className = 'magazine-card';
             card.id = `card-${i}`;
@@ -323,9 +286,9 @@
             const data = await response.text();
             const rows = data.split('\n').map(row => row.split(','));
 
-            for (let i = 1; i <= 12; i++) {
+            for (let i = 1; i <= 10; i++) {
                 if (rows[i]) {
-                    const currentStock = parseInt(rows[i][2]); // C欄: 庫存
+                    const currentStock = parseInt(rows[i][2]); 
                     document.getElementById(`stock-${i}`).innerText = currentStock;
 
                     if (currentStock <= 0) {
@@ -347,18 +310,18 @@
 
     function handlePurchase(itemId) {
         const now = new Date().getTime();
-        const stock = parseInt(document.getElementById(`stock-${itemId}`).innerText);
+        const stockEl = document.getElementById(`stock-${itemId}`);
+        const stock = stockEl ? parseInt(stockEl.innerText) : 0;
         
         if (now < OPEN_DATE && !isDeveloper) { alert("🔒 2/8 10:00 正式開啟。"); return; }
         if (stock <= 0) { alert("此商品已售罄！"); return; }
-        
-        // 魚幣不足 3 枚時靜默結束
-        if (coins < 3) { return; }
+        if (coins < 3) { alert("魚幣不足！請前往黑市獲取。"); return; }
 
         if (confirm(`消耗 3 魚幣購買 [ CLOTH #${itemId} ]？\n(注意：每人僅限登記購買一件)`)) {
             coins -= 3;
             localStorage.setItem('dino_coins', coins);
             updateCoinDisplay();
+            // 一般購買表單跳轉：ID = 94643144
             window.location.href = `${BASE_FORM_URL}&entry.94643144=%23${itemId}`;
         }
     }
@@ -377,14 +340,12 @@
 
     function openMarket() {
         if (localStorage.getItem('dino_market_entered') === 'true') return;
-        if (!confirm("⚠️ 警告：進入黑市若中途退出，魚幣將重置為 3 個！且黑市若是中途退出將無法再次進入!!確定進入？")) return;
+        if (!confirm("⚠️ 警告：進入黑市中途退出，魚幣將重置！確定進入？")) return;
         localStorage.setItem('dino_market_entered', 'true');
         checkMarketStatus();
         document.getElementById('black-market-overlay').style.display = 'block';
         currentQuiz = -1; temporaryCoins = 0; showQuestion();
     }
-
-    let showingStory = true; // 新增：用來切換「故事頁」或「題目頁」
 
     function showQuestion() {
         const storyP = document.getElementById('quiz-story');
@@ -393,74 +354,51 @@
         document.getElementById('quiz-orig-coins').innerText = coins;
         document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
 
-        // --- 結算畫面  ---
         if (currentQuiz >= questions.length) {
-    document.getElementById('quiz-coin-board').style.display = 'none';
-    storyP.style.color = "#ffffff"; 
-    storyP.style.lineHeight = "1.8";
-    storyP.innerHTML = 
-        "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「你找到李燦各種面貌的碎片了呢...」</span><br>" + 
-        "你推開屏風，發現了裁縫師在那等著你。<br>" +
-        "裁縫師說：「國王的各種面貌你都十分了解...」<br>" +
-        "「不管是綜藝、舞台、直播...」<br>" +
-        "<span style='color:#ffd026; font-weight:bold;'>那麼就寫下你想要的獨屬於國王的衣服吧！</span><br>" + 
-        "<span style='font-size:13px; color:#bbb;'>裁縫師整理你的想法，讓你帶著作品成功完成國王的時裝秀。</span><br>" + 
-        "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
-        "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，</span><br>" +
-        "<span style='font-size:14px; color:#fff;'>都是因為喜愛 DINO 才會點開網頁，</span><br>" +
-        "<span style='font-size:14px; color:#fff;'>希望這次活動能覺得有趣。</span><br>" +
-        "<span style='font-size:14px; color:#bbb;'>下面表單除了活動的東西，也可以寫點東西給我。</span>";
-            const finalCoins = coins + temporaryCoins;
+            document.getElementById('quiz-coin-board').style.display = 'none';
+            storyP.style.color = "#ffffff"; 
+            storyP.style.lineHeight = "1.8";
+            storyP.innerHTML = 
+                "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「你找到李燦各種面貌的碎片了呢...」</span><br>" + 
+                "你推開屏風，發現了裁縫師在那等著你。<br>" +
+                "裁縫師說：「國王的各種面貌你都十分了解...」<br>" +
+                "「不管是綜藝、舞台、直播...」<br>" +
+                "<span style='color:#ffd026; font-weight:bold;'>那麼就寫下你想要的獨屬於國王的衣服吧！</span><br>" + 
+                "<span style='font-size:13px; color:#bbb;'>裁縫師整理你的想法，讓你帶著作品成功完成國王的時裝秀。</span><br>" + 
+                "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
+                "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，都是因為喜愛 DINO 才會點開網頁。</span><br>" +
+                "<span style='font-size:14px; color:#bbb;'>下面表單除了活動登記，也可以寫點東西給我。</span>";
+            
             questionP.innerHTML = `
-                <div style="background:#fff; padding:25px; border-radius:15px; color:#000; margin-top:20px; box-shadow: 0 0 20px rgba(255,215,0,0.3);">
+                <div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;">
                     <span style="font-size:14px; color:#666;">來自裁縫師的謝禮</span><br>
-                    <div style="margin:10px 0; font-size:26px; font-weight:900;">獎勵：+${temporaryCoins} 🐟</div>
-                    <div style="border-top:1px solid #eee; padding-top:10px; font-size:16px;">總持有魚幣：${finalCoins} 🐟</div>
+                    <div style="margin:10px 0; font-size:24px; font-weight:900;">獎勵：+${temporaryCoins} 🐟</div>
+                    <div style="border-top:1px solid #eee; padding-top:10px; font-size:16px;">總持有魚幣：${coins + temporaryCoins} 🐟</div>
                 </div>`;
             
-            // 3. 下方：確認按鈕
             optionsDiv.innerHTML = `
                 <button class="option-btn" 
-                        style="background:#ffe154; color:#000; font-weight:bold; text-align:center; border:none; margin-top:20px;" 
+                        style="background:#ffd026; color:#000; font-weight:bold; text-align:center; border:none;" 
                         onclick="finalizeMarketCoins()">
                     確認領取並登記
                 </button>`;
             return;
         }
-            
-            
 
-      // --- 開頭畫面 ---
         if (currentQuiz === -1) {
-            storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>裁縫師寄出邀請，只要完成她所設的難關，便會幫助你完成最重要的服裝";
-            
-            // 將原本的內容與警告語結合
-            questionP.innerHTML = 
-                "在過程中了解李燦的各種面貌，最後交出獨屬於你的設計。<br>" + 
-                "<div style='font-size: 14px; color: #ff6b6b; margin-top: 15px; font-weight: normal; background: rgba(255,107,107,0.1); padding: 10px; border-radius: 8px; border: 1px dashed #ff6b6b;'>" +
-                "⚠️ 注意：黑市中請不要重整畫面，<br>這會導致離開黑市且無法再次進入！" +
-                "</div>";
-                
+            storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>裁縫師寄出邀請，只要完成難關，便會幫助你完成最重要的服裝。";
+            questionP.innerHTML = "在過程中了解李燦的面貌，交出專屬設計。<br><div style='font-size: 13px; color: #ff6b6b; margin-top: 10px; border: 1px dashed #ff6b6b; padding: 10px;'>⚠️ 黑市中請勿重整，否則將失去再次進入的機會！</div>";
             optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#ffd026; color:#000; font-weight:bold;" onclick="currentQuiz=0; showingStory=true; showQuestion();">開始尋找裁縫師</button>`;
             return;
         }
 
-        // --- 核心邏輯：獨立故事頁 vs 題目頁 ---
         const data = questions[currentQuiz];
-
-        // --- 核心邏輯：獨立故事頁 vs 題目頁 ---
         if (showingStory) {
-            // 【故事頁面樣式】
-            storyP.innerHTML = `
-                <div style="font-size:20px; color:#ffd026; line-height:1.6; margin:40px 0; min-height:100px;">
-                    「 ${data.story} 」
-                </div>`;
-            questionP.innerText = ""; // 故事頁不顯示題目
-            optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#444;" onclick="showingStory=false; showQuestion();">查看下一個線索 (挑戰題) →</button>`;
+            storyP.innerHTML = `<div style="font-size:20px; color:#ffd026; line-height:1.6; margin:40px 0;">「 ${data.story} 」</div>`;
+            questionP.innerText = "";
+            optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#444;" onclick="showingStory=false; showQuestion();">查看挑戰題 →</button>`;
         } else {
-            // 【題目頁面樣式】
-            storyP.innerHTML = `<div style="color:#888; font-size:14px; margin-bottom:10px;">線索追蹤中...</div>`;
-            questionP.style.fontSize = "24px";
+            storyP.innerHTML = `<div style="color:#888; font-size:14px;">線索追蹤中...</div>`;
             questionP.innerText = data.q;
             optionsDiv.innerHTML = '';
             data.a.forEach((txt, idx) => {
@@ -468,15 +406,9 @@
                 btn.className = 'option-btn';
                 btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
                 btn.onclick = () => {
-                    if (idx === data.correct) { 
-                        temporaryCoins += 2; 
-                        alert("正確！獲得 2 魚幣。"); 
-                    } else { 
-                        alert("雖然答錯了，但你的誠意感動了裁縫師...繼續追蹤。"); 
-                    }
-                    currentQuiz++; 
-                    showingStory = true; // 下一題先顯示故事
-                    showQuestion();
+                    if (idx === data.correct) { temporaryCoins += 2; alert("正確！獲得 2 魚幣。"); }
+                    else { alert("答錯了...但靈感依然在閃爍，繼續追蹤。"); }
+                    currentQuiz++; showingStory = true; showQuestion();
                 };
                 optionsDiv.appendChild(btn);
             });
@@ -484,10 +416,8 @@
     }
 
     function handlePenaltyClose() {
-        if (confirm("⚠️ 現在離開，魚幣將直接回歸為 3 個（初始值）！且無法再進入黑市 !! 確定嗎？")) {
-            coins = 3;
-            localStorage.setItem('dino_coins', coins);
-            updateCoinDisplay();
+        if (confirm("離開黑市，魚幣將歸回初始值 (3)！確定嗎？")) {
+            coins = 3; localStorage.setItem('dino_coins', 3); updateCoinDisplay();
             document.getElementById('black-market-overlay').style.display = 'none';
         }
     }
@@ -497,7 +427,9 @@
         coins = finalCoins;
         localStorage.setItem('dino_coins', coins);
         updateCoinDisplay();
+        // 驗證碼公式
         const verifyCode = (finalCoins * 17) + 211;
+        // 黑市表單跳轉：魚幣 ID = 94782409, 驗證碼 ID = 1993098186
         window.location.href = `${BLACK_MARKET_BASE_URL}&entry.94782409=${finalCoins}&entry.1993098186=${verifyCode}`;
     }
 
@@ -515,9 +447,4 @@
 </script>
 </body>
 </html>
-
-
-
-
-
 
