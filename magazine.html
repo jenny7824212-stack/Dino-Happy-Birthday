@@ -394,7 +394,7 @@
 
         const data = questions[currentQuiz];
         if (showingStory) {
-            storyP.innerHTML = `<div style="font-size:20px; color:#ffd026; line-height:1.6; margin:40px 0;">「 ${data.story} 」</div>`;
+            storyP.innerHTML = `<div style="font-size:20px; color:#ffd026; line-height:1.6; margin:40px 0;"> ${data.story} </div>`;
             questionP.innerText = "";
             optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#444;" onclick="showingStory=false; showQuestion();">查看挑戰題 →</button>`;
         } else {
@@ -447,6 +447,7 @@
 </script>
 </body>
 </html>
+
 
 
 
