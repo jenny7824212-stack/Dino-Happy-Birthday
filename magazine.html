@@ -359,15 +359,15 @@
             storyP.style.color = "#ffffff"; 
             storyP.style.lineHeight = "1.8";
             storyP.innerHTML = 
-                "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「你找到李燦各種面貌的碎片了呢...」</span><br>" + 
+                "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「感謝你找到李燦各種面貌的碎片...」</span><br>" + 
                 "你推開服裝店的後門，發現了裁縫師在那等著你。<br>" +
                 "裁縫師說：「國王的各種面貌你都十分了解...」<br>" +
                 "「不管是綜藝、舞台、直播...」<br>" +
-                "<span style='color:#ffd026; font-weight:bold;'>那麼就寫下你想要的獨屬於國王的衣服吧！</span><br>" + 
+                "<span style='color:#ffd026; font-weight:bold;'>提出你想要的獨屬於國王的衣服吧！</span><br>" + 
                 "<span style='font-size:13px; color:#bbb;'>裁縫師整理你的想法，讓你帶著作品成功完成國王的時裝秀。</span><br>" + 
                 "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
                 "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，都是因為喜愛 DINO 才會點開網頁。</span><br>" +
-                "<span style='font-size:14px; color:#bbb;'>下面表單除了活動登記，也可以寫點東西給我。</span>";
+                "<span style='font-size:14px; color:#bbb;'>下面表單除了活動登記，也可以寫點東西給我(拜託啦~)。</span>";
             
             questionP.innerHTML = `
                 <div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;">
@@ -387,7 +387,7 @@
 
         if (currentQuiz === -1) {
             storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>裁縫師寄出邀請，只要進入黑市完成一連串難關，便會幫助你完成最重要的服裝。";
-            questionP.innerHTML = "在過程中了解李燦的各種面貌，在最後提出專屬設計。<br><div style='font-size: 13px; color: #ff6b6b; margin-top: 10px; border: 1px dashed #ff6b6b; padding: 10px;'>⚠️ 黑市中請勿重整，否則將失去再次進入的機會！</div>";
+            questionP.innerHTML = "在過程中了解李燦的各種面貌的碎片，在最後提出專屬設計。<br><div style='font-size: 13px; color: #ff6b6b; margin-top: 10px; border: 1px dashed #ff6b6b; padding: 10px;'>⚠️ 黑市中請勿重整，否則將失去再次進入的機會！</div>";
             optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#ffd026; color:#000; font-weight:bold;" onclick="currentQuiz=0; showingStory=true; showQuestion();">開始尋找裁縫師</button>`;
             return;
         }
@@ -407,7 +407,7 @@
                 btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
                 btn.onclick = () => {
                     if (idx === data.correct) { temporaryCoins += 2; alert("正確！獲得 2 魚幣。"); }
-                    else { alert("答錯了...但靈感依然在閃爍，繼續追蹤。"); }
+                    else { alert("答錯了...但李燦的面貌碎片依然在閃爍，繼續探索。"); }
                     currentQuiz++; showingStory = true; showQuestion();
                 };
                 optionsDiv.appendChild(btn);
@@ -447,6 +447,7 @@
 </script>
 </body>
 </html>
+
 
 
 
