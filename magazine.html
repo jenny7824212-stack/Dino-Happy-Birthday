@@ -289,11 +289,25 @@
        const currentDataPool = isPractice ? loungeExtraQuestions : questions;
         if (currentQuiz >= currentDataPool.length) {
             document.getElementById('quiz-coin-board').style.display = 'none';
+            if (currentQuiz >= currentDataPool.length) {
+            document.getElementById('quiz-coin-board').style.display = 'none';
             if (isPractice) {
+                // 休息室挑戰結束畫面
                 storyP.innerHTML = "<h2 style='color:#ffd026;'>挑戰結束！</h2><p>休息室練習完成。</p>";
+                
+                // 這裡放上妳剛剛產生的排行榜連結
+                const leaderboardUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQwkbg05CbAg70XRAKLAIPv7VlNlCj4175NA5q8NkIHd8Xogdl6hdngca8Rc3CS3484pBhOG5k-n2Nl/pubhtml?gid=1871742235&single=true"; 
                 const practiceFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfrUlyB14ebD9DKTFJ3GlHFynv2alSnuoXppOT7P1Fs5mB4kg/viewform?usp=pp_url&entry.999984790=${temporaryCoins}`;
-                optionsDiv.innerHTML = `<button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${practiceFormUrl}')">🏆 登記排行榜 / 題目投稿</button><button class="option-btn" style="text-align:center;" onclick="location.reload()">↩️ 回到商店首頁</button>`;
+                
+                optionsDiv.innerHTML = `
+                    <button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${practiceFormUrl}')">🏆 登記分數 / 題目投稿</button>
+                    
+                    <button class="option-btn" style="background:#ffffff; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${leaderboardUrl}')">📊 查看即時排行榜</button>
+                    
+                    <button class="option-btn" style="text-align:center;" onclick="location.reload()">↩️ 回到商店首頁</button>
+                `;
             } else {
+                // ... (正式挑戰結束的內容，維持原樣)
                 storyP.innerHTML = 
                     "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「感謝你找到李燦各種面貌的碎片...」</span><br>" + 
                     "你推開服裝店的後門，發現了裁縫師在那等著你。<br>" +
@@ -371,6 +385,7 @@
 </script>
 </body>
 </html>
+
 
 
 
