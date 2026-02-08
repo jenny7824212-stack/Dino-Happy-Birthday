@@ -248,24 +248,30 @@
         
         btn.style.display = 'block';
         const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
+        const entered = localStorage.getItem('dino_market_entered') === 'true';
 
         if (isPractice) {
+            // 已經通關過 -> 進入休息室
             btn.innerHTML = "🦦 休息室 ⟡";
             btn.style.background = "#1a1a1a";
             btn.style.border = "1px solid #ffd026";
             btn.style.color = "#ffd026";
             btn.onclick = openMarket;
-        } else if (localStorage.getItem('dino_market_entered') === 'true') {
-            btn.innerHTML = "{ 挑戰已結束 }";
-            btn.style.background = "#333";
-            btn.onclick = () => alert("挑戰機會只有一次。");
+        } else if (entered) {
+            // 進入過但沒通關 (可能中途退出或出錯)
+            btn.innerHTML = "🦦 進入練習模式";
+            btn.style.background = "#555";
+            btn.onclick = () => {
+                localStorage.setItem('dino_cleared_market', 'true'); 
+                location.reload();
+            };
         } else {
+            // 第一次參加
             btn.innerHTML = "{ 進入黑市挑戰 }";
             btn.style.background = "#ff4b4b";
             btn.onclick = openMarket;
         }
     }
-
     function openMarket() {
         const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
         if (!isPractice) {
@@ -391,6 +397,7 @@
 </script>
 </body>
 </html>
+
 
 
 
