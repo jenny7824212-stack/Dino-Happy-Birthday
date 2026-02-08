@@ -111,6 +111,16 @@
     </div>
     <div id="magazine-gallery" class="magazine-gallery"></div>
 </div>
+    <div id="lounge-section" style="display:none; margin: 40px auto; max-width: 800px; padding: 30px; border: 2px #ffd026 solid; border-radius: 20px; background: #1a1a1a; color: white; text-align: center;">
+    <h2 style="color:#ffd026; font-family: 'Montserrat';">🦦 休息室 ⟡ 𝓛𝓸𝓾𝓷𝓰𝓮</h2>
+    <p>恭喜通關！您可以在此無限次刷題，或向裁縫師投稿您的題目。</p>
+    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+        <button class="refresh-btn" style="padding: 10px 25px;" 
+        onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSfrUlyB14ebD9DKTFJ3GlHFynv2alSnuoXppOT7P1Fs5mB4kg/viewform?usp=pp_url')">
+        ✍️ 我要投稿 / 登記排名
+</button>
+    </div>
+</div>
 
 <button id="floating-market-btn" onclick="openMarket()">{ 進入黑市挑戰 }</button>
 
@@ -254,6 +264,27 @@
         correct: 3 
     }
     ];
+    const loungeQuestions = [
+    { q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
+    { q: "問題 2：李燦主持的SCHOOL OF LOCK 是固定每個月第幾週更新?", a: ["1", "2", "3", "4"], correct: 1 },
+    { q: "問題 3：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
+    { q: "問題 4：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
+    { q: "問題 5：拍攝 wait MV 以下非拍攝地點?", a: ["鍾路區", "廣津區", "龍山區", "松島"], correct: 2 },
+    { q: "問題 6：在wait MV中李燦的號碼牌是幾號?", a: ["365", "211", "526", "214"], correct: 0 },
+    { q: "問題 7：李燦奶奶的醬蟹是哪裡的風格?", a: ["慶尚道", "江原道", "忠清道", "全羅道"], correct: 3 },
+    { q: "問題 8：下列哪一個不是鐵人大叔底下藝人?", a: ["趙乙好", "Charles", "碩珉", "Leo"], correct: 0 },
+    { q: "問題 9：在李茂珍Service中，唱的是麥可的哪首歌曲?", a: ["Beat It", "Thriller", "Billie Jean", "Heal The World"], correct: 3 },
+    { q: "問題 10：高陽場Rain舞台第一天與第二天表演服裝有何處不同?", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2 },
+    { q: "問題 11：李燦在face the sun 做了牙鑽造型，做了幾顆牙?", a: ["2", "3", "4", "5"], correct: 1 },
+    { q: "問題 12：Danceology中,和知秀在哪裡拍攝的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
+    { q: "問題 13：2025獨自一人出國表演是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯", "法國"], correct: 2 },
+    { q: "問題 14：2025年共有幾次隊外 Challenge 合作?", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
+    { q: "問題 15：哪一年的生日直播做了 danceology 的回顧?", a: ["2018", "2019", "2020", "2021"], correct: 3 },
+    { q: "問題 16：十三月的舞躺著部分，李燦從上面數來第幾層?", a: ["1", "2", "3", "4"], correct: 1 },
+    { q: "問題 17：李燦是哪一女團的粉絲?", a: ["Apink", "f(x)", "EXID", "2NE1"], correct: 0 },
+    // 💡 以後想增加額外題目，就直接在下面補上：
+    // , { q: "新題目？", a: ["A", "B", "C", "D"], correct: 0 }
+];
 
     window.onload = function() {
         const gallery = document.getElementById('magazine-gallery');
@@ -276,6 +307,9 @@
         fetchStockData();
         checkMarketStatus();
         if (isDeveloper) addDevTool();
+        if (localStorage.getItem('dino_cleared_market') === 'true') {
+            document.getElementById('lounge-section').style.display = 'block';
+        }
     };
 
     async function fetchStockData() {
@@ -348,72 +382,86 @@
     }
 
     function showQuestion() {
-        const storyP = document.getElementById('quiz-story');
-        const questionP = document.getElementById('quiz-question');
-        const optionsDiv = document.getElementById('quiz-options');
-        document.getElementById('quiz-orig-coins').innerText = coins;
-        document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
+    const storyP = document.getElementById('quiz-story');
+    const questionP = document.getElementById('quiz-question');
+    const optionsDiv = document.getElementById('quiz-options');
+    document.getElementById('quiz-orig-coins').innerText = coins;
+    document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
 
-        if (currentQuiz >= questions.length) {
-            document.getElementById('quiz-coin-board').style.display = 'none';
-            storyP.style.color = "#ffffff"; 
-            storyP.style.lineHeight = "1.8";
-            storyP.innerHTML = 
-                "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「感謝你找到李燦各種面貌的碎片...」</span><br>" + 
-                "你推開服裝店的後門，發現了裁縫師在那等著你。<br>" +
-                "裁縫師說：「國王的各種面貌你都十分了解...」<br>" +
-                "「不管是綜藝、舞台、直播...」<br>" +
-                "<span style='color:#ffd026; font-weight:bold;'>提出你想要的獨屬於國王的衣服吧！</span><br>" + 
-                "<span style='font-size:13px; color:#bbb;'>裁縫師整理你的想法，讓你帶著作品成功完成國王的時裝秀。</span><br>" + 
-                "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
-                "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，都是因為喜愛 DINO 才會點開網頁。</span><br>" +
-                "<span style='font-size:14px; color:#bbb;'>下面表單除了活動登記，也可以寫點東西給我(拜託啦~)。</span>";
-            
-            questionP.innerHTML = `
-                <div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;">
-                    <span style="font-size:14px; color:#666;">來自裁縫師的謝禮</span><br>
-                    <div style="margin:10px 0; font-size:24px; font-weight:900;">獎勵：+${temporaryCoins} 🐟</div>
-                    <div style="border-top:1px solid #eee; padding-top:10px; font-size:16px;">總持有魚幣：${coins + temporaryCoins} 🐟</div>
-                </div>`;
-            
-            optionsDiv.innerHTML = `
-                <button class="option-btn" 
-                        style="background:#ffd026; color:#000; font-weight:bold; text-align:center; border:none;" 
-                        onclick="finalizeMarketCoins()">
-                    確認領取並登記
-                </button>`;
-            return;
-        }
+    // 通關後的結束畫面（保留原本所有文本）
+    if (currentQuiz >= questions.length) {
+        document.getElementById('quiz-coin-board').style.display = 'none';
+        storyP.style.color = "#ffffff"; 
+        storyP.style.lineHeight = "1.8";
+        
+        // --- 完整保留妳要求的文本開始 ---
+        storyP.innerHTML = 
+            "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「感謝你找到李燦各種面貌的碎片...」</span><br>" + 
+            "你推開服裝店的後門，發現了裁縫師在那等著你。<br>" +
+            "裁縫師說：「國王的各種面貌你都十分了解...」<br>" +
+            "「不管是綜藝、舞台、直播...」<br>" +
+            "<span style='color:#ffd026; font-weight:bold;'>提出你想要的獨屬於國王的衣服吧！</span><br>" + 
+            "<span style='font-size:13px; color:#bbb;'>裁縫師整理你的想法，讓你帶著作品成功完成國王的時裝秀。</span><br>" + 
+            "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
+            "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，都是因為喜愛 DINO 才會點開網頁。</span><br>" +
+            "<span style='font-size:14px; color:#bbb;'>下面表單除了活動登記，也可以寫點東西給我(拜託啦~)。</span>";
+        // --- 完整保留妳要求的文本結束 ---
+        
+        questionP.innerHTML = `
+            <div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;">
+                <span style="font-size:14px; color:#666;">來自裁縫師的謝禮</span><br>
+                <div style="margin:10px 0; font-size:24px; font-weight:900;">獎勵：+${temporaryCoins} 🐟</div>
+                <div style="border-top:1px solid #eee; padding-top:10px; font-size:16px;">總持有魚幣：${coins + temporaryCoins} 🐟</div>
+            </div>`;
+        
+        // 判斷：如果是已經領取過魚幣的子民，按鈕導向排行榜表單；如果是第一次，則執行原本的登記
+        const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
+        // ... 在 showQuestion 函數內練習模式結尾處 ...
+    if (isPractice) {
+       storyP.innerHTML = "<h2 style='color:#ffd026;'>挑戰結束！</h2><p>你對國王的愛意已成功送達。</p>";
+    
+       // 這裡使用了妳提供的 Entry ID: 999984790
+       const practiceFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfrUlyB14ebD9DKTFJ3GlHFynv2alSnuoXppOT7P1Fs5mB4kg/viewform?usp=pp_url&entry.999984790=${temporaryCoins}`;
+    
+       optionsDiv.innerHTML = `
+           <button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${practiceFormUrl}')">🏆 登記排行榜分數</button>
+           <button class="option-btn" style="text-align:center;" onclick="location.reload()">↩️ 回到休息室</button>`;
+   }
 
-        if (currentQuiz === -1) {
-            storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>裁縫師寄出邀請，只要進入黑市完成一連串難關，便會幫助你完成最重要的服裝。";
-            questionP.innerHTML = "在過程中了解李燦的各種面貌的碎片，在最後提出專屬設計。<br><div style='font-size: 13px; color: #ff6b6b; margin-top: 10px; border: 1px dashed #ff6b6b; padding: 10px;'>⚠️ 黑市中請勿重整，否則將失去再次進入的機會！</div>";
-            optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#ffd026; color:#000; font-weight:bold;" onclick="currentQuiz=0; showingStory=true; showQuestion();">開始尋找裁縫師</button>`;
-            return;
-        }
-
-        const data = questions[currentQuiz];
-        if (showingStory) {
-            storyP.innerHTML = `<div style="font-size:20px; color:#ffd026; line-height:1.6; margin:40px 0;"> ${data.story} </div>`;
-            questionP.innerText = "";
-            optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#444;" onclick="showingStory=false; showQuestion();">查看挑戰題 →</button>`;
-        } else {
-            storyP.innerHTML = `<div style="color:#888; font-size:14px;">碎片收集中...</div>`;
-            questionP.innerText = data.q;
-            optionsDiv.innerHTML = '';
-            data.a.forEach((txt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
-                btn.onclick = () => {
-                    if (idx === data.correct) { temporaryCoins += 2; alert("正確！獲得 2 魚幣。"); }
-                    else { alert("答錯了...但李燦的面貌碎片依然在閃爍，繼續探索。"); }
-                    currentQuiz++; showingStory = true; showQuestion();
-                };
-                optionsDiv.appendChild(btn);
-            });
-        }
+    // --- 進入題目邏輯 ---
+    if (currentQuiz === -1) {
+        storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>裁縫師寄出邀請，只要進入黑市完成一連串難關，便會幫助你完成最重要的服裝。";
+        questionP.innerHTML = "在過程中了解李燦的各種面貌的碎片，在最後提出專屬設計。<br><div style='font-size: 13px; color: #ff6b6b; margin-top: 10px; border: 1px dashed #ff6b6b; padding: 10px;'>⚠️ 黑市中請勿重整，否則將失去再次進入的機會！</div>";
+        optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#ffd026; color:#000; font-weight:bold;" onclick="currentQuiz=0; showingStory=false; showQuestion();">開始尋找裁縫師</button>`;
+        return;
     }
+
+    const data = questions[currentQuiz];
+    const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
+
+    // 核心修改：如果是「休息室」開啟後的再次挑戰，直接跳過故事顯示題目
+    if (isPractice || !showingStory) {
+        storyP.innerHTML = `<div style="color:#888; font-size:14px;">碎片收集紀錄：Q${currentQuiz + 1}</div>`;
+        questionP.innerText = data.q;
+        optionsDiv.innerHTML = '';
+        data.a.forEach((txt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
+            btn.onclick = () => {
+                if (idx === data.correct) { temporaryCoins += 2; alert("正確！獲得 2 魚幣。"); }
+                else { alert("答錯了...但李燦的面貌碎片依然在閃爍，繼續探索。"); }
+                currentQuiz++; showingStory = true; showQuestion();
+            };
+            optionsDiv.appendChild(btn);
+        });
+    } else {
+        // 第一次正式挑戰的人才會看到故事
+        storyP.innerHTML = `<div style="font-size:20px; color:#ffd026; line-height:1.6; margin:40px 0;"> ${data.story} </div>`;
+        questionP.innerText = "";
+        optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#444;" onclick="showingStory=false; showQuestion();">查看挑戰題 →</button>`;
+    }
+}
 
     function handlePenaltyClose() {
         if (confirm("離開黑市，魚幣將歸回初始值 (3)！確定嗎？")) {
@@ -432,6 +480,9 @@
         // 黑市表單跳轉：魚幣 ID = 94782409, 驗證碼 ID = 1993098186
         window.location.href = `${BLACK_MARKET_BASE_URL}&entry.94782409=${finalCoins}&entry.1993098186=${verifyCode}`;
     }
+        localStorage.setItem('dino_cleared_market', 'true');
+        updateCoinDisplay();// 標記已完成第一次正式登記
+    }
 
     function addDevTool() {
         const devBtn = document.createElement('div');
@@ -447,6 +498,7 @@
 </script>
 </body>
 </html>
+
 
 
 
