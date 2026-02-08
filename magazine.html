@@ -21,7 +21,6 @@
         }
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; text-align: center; }
 
-        /* 狀態欄 */
         .status-bar { 
             position: fixed; top: 0; width: 100%; 
             background: rgba(255, 255, 255, 0.95); 
@@ -39,7 +38,6 @@
 
         .coin-display { font-size: 16px; font-weight: bold; color: #333; }
 
-        /* 更新按鈕 */
         .refresh-btn {
             background: #fff; color: #333; border: 1px solid #333; padding: 5px 12px;
             border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.3s;
@@ -50,7 +48,6 @@
         .header-section { margin-top: 100px; margin-bottom: 30px; }
         .price-tag { color: #b8860b !important; font-weight: bold; font-size: 14px; }
 
-        /* 照片卡片 */
         .magazine-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 10px; }
         .magazine-card { 
             background: #ffffff; 
@@ -77,7 +74,6 @@
         .stock-label { font-size: 12px; color: #888; }
         .stock-count { font-weight: bold; color: #d9534f; }
 
-        /* 售罄覆蓋 */
         .sold-out { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
         .sold-out-badge { 
             position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); 
@@ -85,7 +81,6 @@
             border: 2px solid white; font-weight: bold; z-index: 10; border-radius: 4px; display: none; 
         }
 
-        /* 測驗彈窗樣式 */
         #black-market-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:2000; overflow-y:auto; }
         .quiz-container { max-width: 600px; margin: 40px auto; text-align: center; padding: 20px; color: white; }
         .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #252525; color: #fff; border: 1px solid #444; border-radius: 10px; cursor: pointer; text-align: left; }
@@ -111,18 +106,6 @@
     </div>
     <div id="magazine-gallery" class="magazine-gallery"></div>
 </div>
-    <div id="lounge-section" style="...">
-    <h2 ...>🦦 休息室 ⟡ 𝓛𝓸𝓾𝓷𝓰𝓮</h2>
-    <p>恭喜通關！您可以在此無限次刷題，或向裁縫師投稿您的題目。</p>
-    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
-        <button class="refresh-btn" style="padding: 10px 25px;" onclick="openMarket()">🔄 再次挑戰 (刷題模式)</button>
-        
-        <button class="refresh-btn" style="padding: 10px 25px;" 
-                onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSfrUlyB14ebD9DKTFJ3GlHFynv2alSnuoXppOT7P1Fs5mB4kg/viewform?usp=pp_url')">
-                ✍️ 我要投稿 / 登記排名
-        </button>
-    </div>
-</div>
 
 <button id="floating-market-btn" onclick="openMarket()">{ 進入黑市挑戰 }</button>
 
@@ -142,8 +125,6 @@
 <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv";
     const OPEN_DATE = new Date("Feb 08, 2026 10:00:00").getTime();
-    
-    // Google 表單連結設定
     const BASE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScWck40_ZDTAutZ6PT6cq3koXbHUyplsl8lcoASe2ACTlZXOg/viewform?usp=pp_url";
     const BLACK_MARKET_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLScv7hqzJEcDXYX7BpIEfs5c2NmNfLOpUnWIxa1blxE9gU9afw/viewform?usp=pp_url";
     const GITHUB_ASSETS = "https://raw.githubusercontent.com/jenny7824212-stack/Dino-Happy-Birthday/main/";
@@ -156,118 +137,31 @@
     const urlParams = new URLSearchParams(window.location.search);
     const isDeveloper = urlParams.get('dev') === 'otter921008';
 
+    // 1. 正式題庫（完整保留）
     const questions = [
-    { 
-        story: "「 Dino 又增加一歲了呢，輸入數字進入黑市吧。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 這一天克拉都期待直播見到獺。</span>",
-        q: "問題 1：李燦的生日是幾號?", 
-        a: ["2/10", "2/11", "2/12", "3/11"], 
-        correct: 1 
-    },
-    { 
-        story: "「 你注意到了一個正在播放的收音機。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦的日文電台總是很有趣，而且學習日文十分努力呢。</span>",
-        q: "問題 2：李燦主持的SCHOOL OF LOCK 是固定每個月第幾週更新?", 
-        a: ["1", "2", "3", "4"], 
-        correct: 1 
-    },
-    { 
-        story: "「 商人正販賣國王讀書時期的相關情報。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦開心開直播拿著畢業證書，十分驕傲。</span>",
-        q: "問題 3：李燦成年高中畢業的Solo曲是?", 
-        a: ["Wait", "Last Order", "Zero", "High Five"], 
-        correct: 2 
-    },
-    { 
-        story: "「 你進入一間酒館，酒保說只要回答問題正確，能提供1999年的紅酒給你。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— Wait 連續拍攝24小時真的好辛苦，但哥哥們都來加油了。</span>",
-        q: "問題 4：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", 
-        a: ["10", "11", "12", "13"], 
-        correct: 2 
-    },
-    { 
-        story: "「 你在黑市找到一張地圖，發現黑市分成了三區。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— Wait 還得換地方拍攝，但最後的作品真的超級好看。</span>",
-        q: "問題 5：拍攝 wait MV 以下非拍攝地點?", 
-        a: ["鍾路區", "廣津區", "龍山區", "松島"], 
-        correct: 2 
-    },
-    { 
-        story: "「 路邊的咖啡廳窗口，留著一張號碼牌。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 最後一幕紅色毛衣的燦，心總是在那空了一拍。</span>",
-        q: "問題 6：在wait MV中李燦的號碼牌是幾號?", 
-        a: ["365", "211", "526", "214"], 
-        correct: 0 
-    },
-    { 
-        story: "「 你在黑市遇到了一位老奶奶，拿了一盒醬蟹給你，為你加油。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦奶奶的醬蟹，燦一眼就知道是哪個。</span>",
-        q: "問題 7：李燦奶奶的醬蟹是哪裡的風格?", 
-        a: ["慶尚道", "江原道", "忠清道", "全羅道"], 
-        correct: 3 
-    },
-    { 
-        story: "「 黑市的動態廣告牆正播著以前國王拍攝的綜藝片段，扮演大叔真的好像呢。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 除了舞台，李燦的演技也好厲害。</span>",
-        q: "問題 8：下列哪一個不是鐵人大叔底下藝人?", 
-        a: ["趙乙好", "Charles", "碩珉", "Leo"], 
-        correct: 0 
-    },
-    { 
-        story: "「 子民都知道國王的啟蒙偶像是麥可·傑克森。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 燦真的成為了非常耀眼的明星呢。</span>",
-        q: "問題 9：在李茂珍Service中，唱的是麥可的哪首歌曲?", 
-        a: ["Beat It", "Thriller", "Billie Jean", "Heal The World"], 
-        correct: 3 
-    },
-    { 
-        story: "「 發現一間服飾店，掛著國王在 RIGHT HERE 演唱會的服飾。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 雖然很漂亮，但卻設計不良受傷了。</span>",
-        q: "問題 10：高陽場Rain舞台第一天與第二天表演服裝有何處不同?", 
-        a: ["鞋子", "手套", "臂環", "麥克風"], 
-        correct: 2 
-    },
-    { 
-        story: "「 國王每次見子民時，都會做特殊造型，染髮、燙髮、留長....還有牙鑽，這裡有各種造型的海報。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 笑的時候會露出牙鑽，還會不好意思遮住。</span>",
-        q: "問題 11：李燦在face the sun 做了牙鑽造型，做了幾顆牙?", 
-        a: ["2", "3", "4", "5"], 
-        correct: 1 
-    },
-    { 
-        story: "「 攝影機停格在一個秋日背景下，是與成員共舞的線條。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 燦幫成員設計舞蹈真的特別適合。</span>",
-        q: "問題 12：Danceology中,和知秀在哪裡拍攝的?", 
-        a: ["東京", "大阪", "首爾", "名古屋"], 
-        correct: 3 
-    },
-    { 
-        story: "「 找到國王遠渡海洋，獨自站上舞台的照片。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 深夜看著直播，真的很開心。</span>",
-        q: "問題 13：2025獨自一人出國表演是去哪裡?", 
-        a: ["日本", "美國", "沙烏地阿拉伯", "法國"], 
-        correct: 2 
-    },
-    { 
-        story: "「 牆上貼滿了各類 Challenge 的合作記錄。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦跳任何舞蹈都完美消化。</span>",
-        q: "問題 14：2025年共有幾次隊外 Challenge 合作?", 
-        a: ["4 次", "5 次", "6 次", "7 次"], 
-        correct: 2 
-    },
-    { 
-        story: "「 抽屜裡有一張記錄著國王歷年生日回顧的清單。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 生日直播的蛋糕都很可愛，但感覺不好吃。</span>",
-        q: "問題 15：哪一年的生日直播做了 danceology 的回顧?", 
-        a: ["2018", "2019", "2020", "2021"], 
-        correct: 3 
-    },
-    { 
-        story: "「 桌上擺放國王表演的舞蹈照片，其中十三月的舞白色的外袍，特別像月光下的仙子。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 這首歌的歌詞真的十分優美。</span>",
-        q: "問題 16：十三月的舞躺著部分，李燦從上面數來第幾層?", 
-        a: ["1", "2", "3", "4"], 
-        correct: 1 
-    },
-    { 
-        story: "「 掛著的外套口袋裡傳來了女團的歌曲旋律。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 綜藝開心跳著前輩的舞蹈，特別可愛。</span>",
-        q: "問題 17：李燦是哪一女團的粉絲?", 
-        a: ["Apink", "f(x)", "EXID", "2NE1"], 
-        correct: 0 
-    },
-    { 
-        story: "「 最後，你發現了一本手繪的《水獺觀察日記》。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 感謝走到這裡。</span>",
-        q: "特別問題：以下哪一個「沒有」被收錄在日記中?", 
-        a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], 
-        correct: 3 
-    }
+        { story: "「 Dino 又增加一歲了呢，輸入數字進入黑市吧。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 這一天克拉都期待直播見到獺。</span>", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
+        { story: "「 你注意到了一個正在播放的收音機。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦的日文電台總是很有趣，而且學習日文十分努力呢。</span>", q: "問題 2：李燦主持的SCHOOL OF LOCK 是固定每個月第幾週更新?", a: ["1", "2", "3", "4"], correct: 1 },
+        { story: "「 商人正販賣國王讀書時期的相關情報。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦開心開直播拿著畢業證書，十分驕傲。</span>", q: "問題 3：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
+        { story: "「 你進入一間酒館，酒保說只要回答問題正確，能提供1999年的紅酒給你。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— Wait 連續拍攝24小時真的好辛苦，但哥哥們都來加油了。</span>", q: "問題 4：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
+        { story: "「 你在黑市找到一張地圖，發現黑市分成了三區。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— Wait 還得換地方拍攝，但最後的作品真的超級好看。</span>", q: "問題 5：拍攝 wait MV 以下非拍攝地點?", a: ["鍾路區", "廣津區", "龍山區", "松島"], correct: 2 },
+        { story: "「 路邊的咖啡廳窗口，留著一張號碼牌。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 最後一幕紅色毛衣的燦，心總是在那空了一拍。</span>", q: "問題 6：在wait MV中李燦的號碼牌是幾號?", a: ["365", "211", "526", "214"], correct: 0 },
+        { story: "「 你在黑市遇到了一位老奶奶，拿了一盒醬蟹給你，為你加油。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦奶奶的醬蟹，燦一眼就知道是哪個。</span>", q: "問題 7：李燦奶奶的醬蟹是哪裡的風格?", a: ["慶尚道", "江原道", "忠清道", "全羅道"], correct: 3 },
+        { story: "「 黑市的動態廣告牆正播著以前國王拍攝的綜藝片段，扮演大叔真的好像呢。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 除了舞台，李燦的演技也好厲害。</span>", q: "問題 8：下列哪一個不是鐵人大叔底下藝人?", a: ["趙乙好", "Charles", "碩珉", "Leo"], correct: 0 },
+        { story: "「 子民都知道國王的啟蒙偶像是麥可·傑克森。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 燦真的成為了非常耀眼的明星呢。</span>", q: "問題 9：在李茂珍Service中，唱的是麥可的哪首歌曲?", a: ["Beat It", "Thriller", "Billie Jean", "Heal The World"], correct: 3 },
+        { story: "「 發現一間服飾店，掛著國王在 RIGHT HERE 演唱會的服飾。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 雖然很漂亮，但卻設計不良受傷了。</span>", q: "問題 10：高陽場Rain舞台第一天與第二天表演服裝有何處不同?", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2 },
+        { story: "「 國王每次見子民時，都會做特殊造型，染髮、燙髮、留長....還有牙鑽，這裡有各種造型的海報。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 笑的時候會露出牙鑽，還會不好意思遮住。</span>", q: "問題 11：李燦在face the sun 做了牙鑽造型，做了幾顆牙?", a: ["2", "3", "4", "5"], correct: 1 },
+        { story: "「 攝影機停格在一個秋日背景下，是與成員共舞的線條。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 燦幫成員設計舞蹈真的特別適合。</span>", q: "問題 12：Danceology中,和知秀在哪裡拍攝的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
+        { story: "「 找到國王遠渡海洋，獨自站上舞台的照片。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 深夜看著直播，真的很開心。</span>", q: "問題 13：2025獨自一人出國表演是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯", "法國"], correct: 2 },
+        { story: "「 牆上貼滿了各類 Challenge 的合作記錄。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦跳任何舞蹈都完美消化。</span>", q: "問題 14：2025年共有幾次隊外 Challenge 合作?", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
+        { story: "「 抽屜裡有一張記錄著國王歷年生日回顧的清單。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 生日直播的蛋糕都很可愛，但感覺不好吃。</span>", q: "問題 15：哪一年的生日直播做了 danceology 的回顧?", a: ["2018", "2019", "2020", "2021"], correct: 3 },
+        { story: "「 桌上擺放國王表演的舞蹈照片，其中十三月的舞白色的外袍，特別像月光下的仙子。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 這首歌的歌詞真的十分優美。</span>", q: "問題 16：十三月的舞躺著部分，李燦從上面數來第幾層?", a: ["1", "2", "3", "4"], correct: 1 },
+        { story: "「 掛著的外套口袋裡傳來了女團的歌曲旋律。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 綜藝開心跳著前輩的舞蹈，特別可愛。</span>", q: "問題 17：李燦是哪一女團的粉絲?", a: ["Apink", "f(x)", "EXID", "2NE1"], correct: 0 },
+        { story: "「 最後，你發現了一本手繪的《水獺觀察日記》。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 感謝走到這裡。</span>", q: "特別問題：以下哪一個「沒有」被收錄在日記中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 }
     ];
-    const loungeQuestions = [
-    { q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
+
+    // 2. 休息室專用新題庫（以後增加題目加在這裡）
+    const loungeExtraQuestions = [
+        { q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
     { q: "問題 2：李燦主持的SCHOOL OF LOCK 是固定每個月第幾週更新?", a: ["1", "2", "3", "4"], correct: 1 },
     { q: "問題 3：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
     { q: "問題 4：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
@@ -284,8 +178,9 @@
     { q: "問題 15：哪一年的生日直播做了 danceology 的回顧?", a: ["2018", "2019", "2020", "2021"], correct: 3 },
     { q: "問題 16：十三月的舞躺著部分，李燦從上面數來第幾層?", a: ["1", "2", "3", "4"], correct: 1 },
     { q: "問題 17：李燦是哪一女團的粉絲?", a: ["Apink", "f(x)", "EXID", "2NE1"], correct: 0 },
-    // 💡 以後想增加額外題目，就直接在下面補上：
-    // , { q: "新題目？", a: ["A", "B", "C", "D"], correct: 0 }
+    { q: "特別問題：以下哪一個「沒有」被收錄在日記中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 }
+    // 💡 以後想加題目，就從這裡開始往後貼：
+    // , { q: "新問題？", a: ["A", "B", "C", "D"], correct: 0 }
 ];
 
     window.onload = function() {
@@ -295,23 +190,13 @@
             card.className = 'magazine-card';
             card.id = `card-${i}`;
             card.onclick = () => handlePurchase(i);
-            card.innerHTML = `
-                <div id="badge-${i}" class="sold-out-badge">SOLD OUT</div>
-                <img src="${GITHUB_ASSETS}cloth${i}.jpg">
-                <div class="card-info">
-                    <span class="buy-tag">CLOTH #${i}</span>
-                    <span class="stock-label">剩餘數量：<span id="stock-${i}" class="stock-count">--</span></span>
-                </div>
-            `;
+            card.innerHTML = `<div id="badge-${i}" class="sold-out-badge">SOLD OUT</div><img src="${GITHUB_ASSETS}cloth${i}.jpg"><div class="card-info"><span class="buy-tag">CLOTH #${i}</span><span class="stock-label">剩餘數量：<span id="stock-${i}" class="stock-count">--</span></span></div>`;
             gallery.appendChild(card);
         }
         updateCoinDisplay();
         fetchStockData();
         checkMarketStatus();
         if (isDeveloper) addDevTool();
-        if (localStorage.getItem('dino_cleared_market') === 'true') {
-            document.getElementById('lounge-section').style.display = 'block';
-        }
     };
 
     async function fetchStockData() {
@@ -321,12 +206,10 @@
             const response = await fetch(`${CSV_URL}&t=${new Date().getTime()}`);
             const data = await response.text();
             const rows = data.split('\n').map(row => row.split(','));
-
             for (let i = 1; i <= 10; i++) {
                 if (rows[i]) {
                     const currentStock = parseInt(rows[i][2]); 
                     document.getElementById(`stock-${i}`).innerText = currentStock;
-
                     if (currentStock <= 0) {
                         document.getElementById(`card-${i}`).classList.add('sold-out');
                         document.getElementById(`badge-${i}`).style.display = 'block';
@@ -348,16 +231,13 @@
         const now = new Date().getTime();
         const stockEl = document.getElementById(`stock-${itemId}`);
         const stock = stockEl ? parseInt(stockEl.innerText) : 0;
-        
         if (now < OPEN_DATE && !isDeveloper) { alert("🔒 2/8 10:00 正式開啟。"); return; }
         if (stock <= 0) { alert("此商品已售罄！"); return; }
         if (coins < 3) { alert("魚幣不足！"); return; }
-
         if (confirm(`消耗 3 魚幣購買 [ CLOTH #${itemId} ]？\n(注意：每人僅限登記購買一件)`)) {
             coins -= 3;
             localStorage.setItem('dino_coins', coins);
             updateCoinDisplay();
-            // 一般購買表單跳轉：ID = 94643144
             window.location.href = `${BASE_FORM_URL}&entry.94643144=%23${itemId}`;
         }
     }
@@ -365,31 +245,39 @@
     function checkMarketStatus() {
         const btn = document.getElementById('floating-market-btn');
         const now = new Date().getTime();
-        if (isDeveloper || now >= OPEN_DATE) btn.style.display = 'block';
+        if (!isDeveloper && now < OPEN_DATE) { btn.style.display = 'none'; return; }
         
-        if (localStorage.getItem('dino_market_entered') === 'true') {
+        btn.style.display = 'block';
+        const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
+
+        if (isPractice) {
+            btn.innerHTML = "🦦 休息室 ⟡ 𝓛𝓸𝓾𝓷𝓰𝓮";
+            btn.style.background = "#1a1a1a";
+            btn.style.border = "1px solid #ffd026";
+            btn.style.color = "#ffd026";
+            btn.onclick = openMarket;
+        } else if (localStorage.getItem('dino_market_entered') === 'true') {
             btn.innerHTML = "{ 挑戰已結束 }";
             btn.style.background = "#333";
             btn.onclick = () => alert("挑戰機會只有一次。");
+        } else {
+            btn.innerHTML = "{ 進入黑市挑戰 }";
+            btn.style.background = "#ff4b4b";
+            btn.onclick = openMarket;
         }
     }
 
     function openMarket() {
-    // 檢查是否為練習模式
-    const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
-
-    // 如果不是練習模式，才要跳警告
-    if (!isPractice) {
-        if (localStorage.getItem('dino_market_entered') === 'true') return; // 防止重複點擊
-        if (!confirm("⚠️ 警告：進入黑市中途退出，魚幣將重置！確定進入？")) return;
-        localStorage.setItem('dino_market_entered', 'true');
+        const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
+        if (!isPractice) {
+            if (localStorage.getItem('dino_market_entered') === 'true') return;
+            if (!confirm("⚠️ 警告：進入黑市中途退出，魚幣將重置！也無法再次進入，確定進入？")) return;
+            localStorage.setItem('dino_market_entered', 'true');
+        }
+        checkMarketStatus();
+        document.getElementById('black-market-overlay').style.display = 'block';
+        currentQuiz = -1; temporaryCoins = 0; showQuestion();
     }
-
-    document.getElementById('black-market-overlay').style.display = 'block';
-    currentQuiz = -1; 
-    temporaryCoins = 0; 
-    showQuestion(); // 這裡就會執行妳問的那段 // 2. 初始進入畫面
-}
 
     function showQuestion() {
         const storyP = document.getElementById('quiz-story');
@@ -398,26 +286,19 @@
         document.getElementById('quiz-orig-coins').innerText = coins;
         document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
 
-        // 💡 關鍵修改：判斷現在該用哪一組題庫
         const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
-        const currentQuestionSet = isPractice ? loungeQuestions : questions;
+        // 休息室合併題庫並去除故事屬性
+        const currentDataPool = isPractice 
+            ? [...questions.map(i => ({q: i.q, a: i.a, correct: i.correct})), ...loungeExtraQuestions]
+            : questions;
 
-        // 1. 通關後的結束畫面
-        if (currentQuiz >= currentQuestionSet.length) {
+        if (currentQuiz >= currentDataPool.length) {
             document.getElementById('quiz-coin-board').style.display = 'none';
-            storyP.style.color = "#ffffff"; 
-            storyP.style.lineHeight = "1.8";
-            
             if (isPractice) {
-                // 練習模式結尾
-                storyP.innerHTML = "<h2 style='color:#ffd026;'>挑戰結束！</h2><p>你對國王的愛意已成功送達。</p>";
+                storyP.innerHTML = "<h2 style='color:#ffd026;'>挑戰結束！</h2><p>休息室練習完成。</p>";
                 const practiceFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfrUlyB14ebD9DKTFJ3GlHFynv2alSnuoXppOT7P1Fs5mB4kg/viewform?usp=pp_url&entry.999984790=${temporaryCoins}`;
-                
-                optionsDiv.innerHTML = `
-                    <button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${practiceFormUrl}')">🏆 登記排行榜分數</button>
-                    <button class="option-btn" style="text-align:center;" onclick="location.reload()">↩️ 回到休息室</button>`;
+                optionsDiv.innerHTML = `<button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${practiceFormUrl}')">🏆 登記排行榜 / 題目投稿</button><button class="option-btn" style="text-align:center;" onclick="location.reload()">↩️ 回到商店首頁</button>`;
             } else {
-                // 正式版結尾
                 storyP.innerHTML = 
                     "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「感謝你找到李燦各種面貌的碎片...」</span><br>" + 
                     "你推開服裝店的後門，發現了裁縫師在那等著你。<br>" +
@@ -430,28 +311,20 @@
                     "<span style='font-size:14px; color:#bbb;'>下面表單除了活動登記，也可以寫點東西給我(拜託啦~)。</span>";
                 optionsDiv.innerHTML = `<button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="finalizeMarketCoins()">確認領取並登記</button>`;
             }
-            
-            questionP.innerHTML = `
-                <div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;">
-                    <span style="font-size:14px; color:#666;">來自裁縫師的謝禮</span><br>
-                    <div style="margin:10px 0; font-size:24px; font-weight:900;">獎勵：+${temporaryCoins} 🐟</div>
-                </div>`;
+            questionP.innerHTML = `<div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;"><div style="margin:10px 0; font-size:24px; font-weight:900;">獎勵：+${temporaryCoins} 🐟</div></div>`;
             return;
         }
 
-        // 2. 初始進入畫面
         if (currentQuiz === -1) {
-            storyP.innerHTML = isPractice ? "歡迎回到休息室練習場" : "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...";
-            questionP.innerHTML = isPractice ? "這次能拿到滿分嗎？" : "在過程中了解李燦的各種面貌的碎片。<br><div style='font-size: 13px; color: #ff6b6b; margin-top: 10px; border: 1px dashed #ff6b6b; padding: 10px;'>⚠️ 黑市中請勿重整，否則將失去再次進入的機會！</div>";
+            storyP.innerHTML = isPractice ? "歡迎回到休息室練習場" : "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>裁縫師寄出邀請，只要進入黑市完成一連串難關，便會幫助你完成最重要的服裝。";
+            questionP.innerHTML = isPractice ? "在這裡你可以練習所有題目。" : "在過程中了解李燦的各種面貌的碎片。<br><div style='font-size: 13px; color: #ff6b6b; margin-top: 10px; border: 1px dashed #ff6b6b; padding: 10px;'>⚠️ 黑市中請勿重整，否則將失去再次進入的機會！</div>";
             optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#ffd026; color:#000; font-weight:bold;" onclick="currentQuiz=0; showingStory=false; showQuestion();">開始挑戰</button>`;
             return;
         }
 
-        // 3. 題目與故事顯示邏輯
-        const data = currentQuestionSet[currentQuiz];
-
+        const data = currentDataPool[currentQuiz];
         if (isPractice || !showingStory) {
-            storyP.innerHTML = `<div style="color:#888; font-size:14px;">Q${currentQuiz + 1} / ${currentQuestionSet.length}</div>`;
+            storyP.innerHTML = `<div style="color:#888; font-size:14px;">Q${currentQuiz + 1} / ${currentDataPool.length}</div>`;
             questionP.innerText = data.q;
             optionsDiv.innerHTML = '';
             data.a.forEach((txt, idx) => {
@@ -459,7 +332,7 @@
                 btn.className = 'option-btn';
                 btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
                 btn.onclick = () => {
-                    if (idx === data.correct) { temporaryCoins += 2; alert("正確！"); }
+                    if (idx === data.correct) { temporaryCoins += 2; alert("正確！獲得 2 魚幣。"); }
                     else { alert("答錯了..."); }
                     currentQuiz++; showingStory = true; showQuestion();
                 };
@@ -472,17 +345,6 @@
         }
     }
 
-    // 修正後的完成登記函數
-    function finalizeMarketCoins() {
-        const finalCoins = coins + temporaryCoins;
-        coins = finalCoins;
-        localStorage.setItem('dino_coins', coins);
-        localStorage.setItem('dino_cleared_market', 'true'); // 標記已通關
-        updateCoinDisplay();
-        
-        const verifyCode = (finalCoins * 17) + 211;
-        window.location.href = `${BLACK_MARKET_BASE_URL}&entry.94782409=${finalCoins}&entry.1993098186=${verifyCode}`;
-    }
     function handlePenaltyClose() {
         if (confirm("離開黑市，魚幣將歸回初始值 (3)！確定嗎？")) {
             coins = 3; localStorage.setItem('dino_coins', 3); updateCoinDisplay();
@@ -490,13 +352,15 @@
         }
     }
 
-     function finalizeMarketCoins() {
+    function finalizeMarketCoins() {
         const finalCoins = coins + temporaryCoins;
         coins = finalCoins;
         localStorage.setItem('dino_coins', coins);
-        localStorage.setItem('dino_cleared_market', 'true'); // 標記已通關
+        localStorage.setItem('dino_cleared_market', 'true');
         updateCoinDisplay();
-   }
+        const verifyCode = (finalCoins * 17) + 211;
+        window.location.href = `${BLACK_MARKET_BASE_URL}&entry.94782409=${finalCoins}&entry.1993098186=${verifyCode}`;
+    }
 
     function addDevTool() {
         const devBtn = document.createElement('div');
@@ -504,7 +368,7 @@
         devBtn.onclick = () => {
             let cmd = prompt("1.+3 / 2.Reset / 3.Finish");
             if (cmd==='1') { coins+=3; localStorage.setItem('dino_coins', coins); updateCoinDisplay(); }
-            if (cmd==='2') { localStorage.setItem('dino_coins', 3); localStorage.removeItem('dino_market_entered'); location.reload(); }
+            if (cmd==='2') { localStorage.clear(); location.reload(); }
             if (cmd==='3') { currentQuiz = questions.length; showQuestion(); }
         };
         document.body.appendChild(devBtn);
@@ -512,14 +376,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
