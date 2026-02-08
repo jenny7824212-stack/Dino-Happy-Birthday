@@ -375,13 +375,21 @@
     }
 
     function openMarket() {
-        if (localStorage.getItem('dino_market_entered') === 'true') return;
-        if (!confirm("⚠️ 警告：進入黑市中途退出，魚幣將重置！也無法再次進入，確定進入？")) return;
+    // 檢查是否為練習模式
+    const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
+
+    // 如果不是練習模式，才要跳警告
+    if (!isPractice) {
+        if (localStorage.getItem('dino_market_entered') === 'true') return; // 防止重複點擊
+        if (!confirm("⚠️ 警告：進入黑市中途退出，魚幣將重置！確定進入？")) return;
         localStorage.setItem('dino_market_entered', 'true');
-        checkMarketStatus();
-        document.getElementById('black-market-overlay').style.display = 'block';
-        currentQuiz = -1; temporaryCoins = 0; showQuestion();
     }
+
+    document.getElementById('black-market-overlay').style.display = 'block';
+    currentQuiz = -1; 
+    temporaryCoins = 0; 
+    showQuestion(); // 這裡就會執行妳問的那段 // 2. 初始進入畫面
+}
 
     function showQuestion() {
         const storyP = document.getElementById('quiz-story');
@@ -504,6 +512,7 @@
 </script>
 </body>
 </html>
+
 
 
 
