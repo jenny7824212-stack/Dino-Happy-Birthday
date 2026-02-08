@@ -121,18 +121,10 @@
             }
         }
 
-        // 密碼檢查機制
+        // 修改後的跳轉機制 (取消密碼)
         function checkPasscode() {
-            const password = prompt("請輸入發刊通行密碼：\n(提示：off-white 8碼");
-            const secretCode = "20240229"; // 這是妳設定的通行密碼
-
-            if (password === secretCode) {
-                // 密碼正確，進入正式版
-                window.location.href = "magazine.html";
-            } else if (password !== null) {
-                // 密碼錯誤
-                alert("通行碼錯誤。請注意本次應援主題時裝周日期。");
-            }
+            // 直接跳轉到正式頁面，不再跳出 prompt 詢問密碼
+            window.location.href = "magazine.html";
         }
 
         // 啟動定時器
@@ -141,6 +133,7 @@
     </script>
 </body>
 </html>
+
 
 
 
