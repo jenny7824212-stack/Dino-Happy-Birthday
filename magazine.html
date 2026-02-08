@@ -286,11 +286,7 @@
         document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
 
         const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
-        // 休息室合併題庫並去除故事屬性
-        const currentDataPool = isPractice 
-            ? [...questions.map(i => ({q: i.q, a: i.a, correct: i.correct})), ...loungeExtraQuestions]
-            : questions;
-
+       const currentDataPool = isPractice ? loungeExtraQuestions : questions;
         if (currentQuiz >= currentDataPool.length) {
             document.getElementById('quiz-coin-board').style.display = 'none';
             if (isPractice) {
@@ -375,5 +371,6 @@
 </script>
 </body>
 </html>
+
 
 
