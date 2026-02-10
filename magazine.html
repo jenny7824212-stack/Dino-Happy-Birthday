@@ -292,40 +292,47 @@
         document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
 
         const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
-        // 根據模式選擇題庫
         const currentDataPool = isPractice ? loungeExtraQuestions : questions;
 
-        // 1. 檢查是否完成所有題目
+        // --- 🏆 競賽時間邏輯 (2/11 10:00 - 24:00) ---
+        const now = new Date().getTime();
+        const compStart = new Date("Feb 11, 2026 10:00:00").getTime();
+        const compEnd = new Date("Feb 11, 2026 23:59:59").getTime();
+        const isCompetitionTime = (now >= compStart && now <= compEnd);
+
+        // 1. 檢查是否完成所有題目 (結算畫面)
         if (currentQuiz >= currentDataPool.length) {
             document.getElementById('quiz-coin-board').style.display = 'none';
             
             if (isPractice) {
-                // --- 休息室挑戰結束畫面 ---
-                storyP.innerHTML = "<h2 style='color:#ffd026;'>挑戰結束！</h2><p>休息室練習完成。</p>";
-                const leaderboardUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQwkbg05CbAg70XRAKLAIPv7VlNlCj4175NA5q8NkIHd8Xogdl6hdngca8Rc3CS3484pBhOG5k-n2Nl/pubhtml?gid=1871742235&single=true"; 
-                const practiceFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfrUlyB14ebD9DKTFJ3GlHFynv2alSnuoXppOT7P1Fs5mB4kg/viewform?usp=pp_url&entry.999984790=${temporaryCoins}`;
+                // --- 🔗 雙排行榜自動切換 ---
+                const oldLeaderboardUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQwkbg05CbAg70XRAKLAIPv7VlNlCj4175NA5q8NkIHd8Xogdl6hdngca8Rc3CS3484pBhOG5k-n2Nl/pubhtml?gid=1871742235&single=true"; 
+                const newLeaderboardUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXulW2YWAihp7nLnQskERNxA6JNS3L5Op3eKXX9BlXj4wYnuhT_AnAH3sGqtPv8TnHo8QHh0d6NZ0L/pubhtml?gid=770811598&single=true"; 
+                const finalLeaderboardUrl = isCompetitionTime ? newLeaderboardUrl : oldLeaderboardUrl;
+
+                // --- 🔗 雙表單自動切換 ---
+                const normalFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfrUlyB14ebD9DKTFJ3GlHFynv2alSnuoXppOT7P1Fs5mB4kg/viewform?usp=pp_url&entry.999984790=${temporaryCoins}`;
+                const competitionVerifyCode = (temporaryCoins + 211) * 13;
+                const competitionFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSdVxUqssvJQTRf89SvkIJ1cfR0UXs6vv0DBypK-X2GMYcjrvQ/viewform?usp=pp_url&entry.1663061856=${temporaryCoins}&entry.872829839=${competitionVerifyCode}`;
+                const finalFormUrl = isCompetitionTime ? competitionFormUrl : normalFormUrl;
+
+                if (isCompetitionTime) {
+                    storyP.innerHTML = "<h2 style='color:#ff4b4b;'>🏆 0211 競賽模式完成！</h2><p>第一名可從商店中任選一組商品！<br>請務必前往登記並上傳證明。</p>";
+                } else {
+                    storyP.innerHTML = "<h2 style='color:#ffd026;'>挑戰結束！</h2><p>休息室練習完成。</p>";
+                }
                 
                 optionsDiv.innerHTML = `
-                    <button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${practiceFormUrl}')">🏆 登記分數 / 題目投稿</button>
-                    <button class="option-btn" style="background:#ffffff; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${leaderboardUrl}')">📊 查看即時排行榜</button>
+                    <button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${finalFormUrl}')">${isCompetitionTime ? '🥇 登記競賽分數 (抽獎用)' : '🏆 登記分數 / 題目投稿'}</button>
+                    <button class="option-btn" style="background:#ffffff; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${finalLeaderboardUrl}')">${isCompetitionTime ? '📊 查看競賽即時榜' : '📊 查看練習排行榜'}</button>
                     <button class="option-btn" style="text-align:center;" onclick="location.reload()">↩️ 回到商店首頁</button>
                 `;
-                // 休息室只顯示本次得分
-                questionP.innerHTML = `<div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;"><div style="margin:10px 0; font-size:24px; font-weight:900;">本次得分：${temporaryCoins} 🐟</div><p style="font-size:12px; color:#666;">(練習模式不計入正式持有魚幣)</p></div>`;
+                
+                questionP.innerHTML = `<div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;"><div style="margin:10px 0; font-size:24px; font-weight:900;">本次得分：${temporaryCoins} 🐟</div>${isCompetitionTime ? `<div style="font-size:12px; color:#999; margin-top:5px;">驗證碼：${competitionVerifyCode}</div>` : ''}</div>`;
             } else {
-                // --- 正式挑戰結束畫面 ---
-                storyP.innerHTML = 
-                    "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「感謝你找到李燦各種面貌的碎片...」</span><br>" + 
-                    "你推開服裝店的後門，發現了裁縫師在那等著你。<br>" +
-                    "裁縫師說：「國王的各種面貌你都十分了解...」<br>" +
-                    "「不管是綜藝、舞台、直播...」<br>" +
-                    "<span style='color:#ffd026; font-weight:bold;'>提出你想要的獨屬於國王的衣服吧！</span><br>" + 
-                    "<span style='font-size:13px; color:#bbb;'>裁縫師整理你的想法，讓你帶著作品成功完成國王的時裝秀。</span><br>" + 
-                    "<hr style='border:0; border-top:1px solid #444; margin:15px 0;'>" + 
-                    "<span style='font-size:14px; color:#fff;'>無論答對題數多寡，都是因為喜愛 DINO 才會點開網頁。</span><br>" +
-                    "<span style='font-size:14px; color:#bbb;'>下面表單除了活動登記，也可以寫點東西給我(拜託啦~)。</span>";
+                // --- 黑市挑戰結束 ---
+                storyP.innerHTML = "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「感謝你找到李燦各種面貌的碎片...」</span><br>你推開服裝店的後門，發現了裁縫師在那等著你。";
                 optionsDiv.innerHTML = `<button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="finalizeMarketCoins()">確認領取並登記</button>`;
-                // 正式版顯示總計（3 + temporaryCoins）
                 questionP.innerHTML = `<div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;"><div style="margin:10px 0; font-size:24px; font-weight:900;">總計獲得：${coins + temporaryCoins} 🐟</div></div>`;
             }
             return;
@@ -333,16 +340,20 @@
 
         // 2. 顯示起始歡迎畫面
         if (currentQuiz === -1) {
-            storyP.innerHTML = isPractice ? "歡迎回到休息室練習場" : "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...<br>裁縫師寄出邀請，只要進入黑市完成一連串難關，便會幫助你完成最重要的服裝。";
-            questionP.innerHTML = isPractice ? "在這裡你可以練習所有題目。" : "在過程中了解李燦的各種面貌的碎片。<br><div style='font-size: 13px; color: #ff6b6b; margin-top: 10px; border: 1px dashed #ff6b6b; padding: 10px;'>⚠️ 黑市中請勿重整，否則將失去再次進入的機會！</div>";
+            if (isPractice) {
+                storyP.innerHTML = isCompetitionTime ? "<span style='color:#ff4b4b; font-size:24px; font-weight:bold;'>🔥 DINO 0211 競賽模式 🔥</span>" : "歡迎回到休息室練習場";
+                questionP.innerHTML = isCompetitionTime ? "挑戰第一名領取生日商品！<br>記得截圖分數畫面以便上傳證明。" : "在這裡你可以練習所有題目。";
+            } else {
+                storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...";
+                questionP.innerHTML = "在過程中了解李燦的各種面貌的碎片。";
+            }
             optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#ffd026; color:#000; font-weight:bold;" onclick="currentQuiz=0; showingStory=false; showQuestion();">開始挑戰</button>`;
             return;
         }
 
-        // 3. 顯示題目內容或故事
+        // 3. 題目內容顯示
         const data = currentDataPool[currentQuiz];
         if (isPractice || !showingStory) {
-            // 休息室不看故事，直接出題；正式挑戰在 !showingStory 時才出題
             storyP.innerHTML = `<div style="color:#888; font-size:14px;">Q${currentQuiz + 1} / ${currentDataPool.length}</div>`;
             questionP.innerText = data.q;
             optionsDiv.innerHTML = '';
@@ -351,8 +362,12 @@
                 btn.className = 'option-btn';
                 btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
                 btn.onclick = () => {
-                    if (idx === data.correct) { temporaryCoins += 2; alert("正確！獲得 2 魚幣。"); }
-                    else { alert("答錯了..."); }
+                    if (idx === data.correct) { 
+                        temporaryCoins += 2; 
+                        alert("正確！獲得 2 魚幣。"); 
+                    } else { 
+                        alert("答錯了..."); 
+                    }
                     currentQuiz++; 
                     showingStory = true; 
                     showQuestion();
@@ -360,7 +375,7 @@
                 optionsDiv.appendChild(btn);
             });
         } else {
-            // 正式挑戰顯示故事
+            // 正式挑戰的故事間幕
             storyP.innerHTML = `<div style="font-size:20px; color:#ffd026; line-height:1.6; margin:40px 0;"> ${data.story} </div>`;
             questionP.innerText = "";
             optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#444;" onclick="showingStory=false; showQuestion();">查看挑戰題 →</button>`;
@@ -397,6 +412,7 @@
 </script>
 </body>
 </html>
+
 
 
 
