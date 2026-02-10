@@ -6,81 +6,24 @@
     <title>DINO'S ATELIER | MAGAZINE SHOP</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
     <style>
-        h2 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 42px;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-        }
-        body { 
-            background-color: #FAF9F6; 
-            color: #333333; 
-            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; 
-            margin: 0; 
-            padding-bottom: 100px; 
-        }
+        h2 { font-family: 'Cormorant Garamond', serif; font-size: 42px; letter-spacing: 5px; text-transform: uppercase; }
+        body { background-color: #FAF9F6; color: #333333; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; margin: 0; padding-bottom: 100px; }
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; text-align: center; }
-
-        .status-bar { 
-            position: fixed; top: 0; width: 100%; 
-            background: rgba(255, 255, 255, 0.95); 
-            padding: 12px 0; z-index: 1000; 
-            border-bottom: 1px solid #eee;
-            display: flex; justify-content: space-around; align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .back-home-btn { 
-            background: transparent; color: #555; border: 1px solid #ccc; 
-            padding: 5px 15px; border-radius: 20px; text-decoration: none; font-size: 13px; 
-        }
-        .back-home-btn:hover { border-color: #d4af37; color: #d4af37; }
-
+        .status-bar { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.95); padding: 12px 0; z-index: 1000; border-bottom: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .back-home-btn { background: transparent; color: #555; border: 1px solid #ccc; padding: 5px 15px; border-radius: 20px; text-decoration: none; font-size: 13px; }
         .coin-display { font-size: 16px; font-weight: bold; color: #333; }
-
-        .refresh-btn {
-            background: #fff; color: #333; border: 1px solid #333; padding: 5px 12px;
-            border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.3s;
-            display: flex; align-items: center; gap: 5px;
-        }
-        .refresh-btn:hover { background: #333; color: #fff; }
-
+        .refresh-btn { background: #fff; color: #333; border: 1px solid #333; padding: 5px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .header-section { margin-top: 100px; margin-bottom: 30px; }
         .price-tag { color: #b8860b !important; font-weight: bold; font-size: 14px; }
-
         .magazine-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 10px; }
-        .magazine-card { 
-            background: #ffffff; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            border: 1px solid #eee; 
-            transition: 0.3s; 
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            position: relative;
-        }
-        .magazine-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: #d4af37; }
+        .magazine-card { background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #eee; transition: 0.3s; cursor: pointer; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .magazine-card:hover { transform: translateY(-8px); border-color: #d4af37; }
         .magazine-card img { width: 100%; height: auto; display: block; }
-        
-        .card-info { padding: 15px; background: #ffffff; border-top: 1px solid #eee; text-align: center; }
-        .buy-tag { 
-            color: #333333; 
-            font-weight: 800; 
-            font-size: 14px;
-            letter-spacing: 1px;
-            display: block;
-            margin-bottom: 5px;
-        }
-        .stock-label { font-size: 12px; color: #888; }
+        .card-info { padding: 15px; text-align: center; }
+        .buy-tag { font-weight: 800; font-size: 14px; display: block; margin-bottom: 5px; }
         .stock-count { font-weight: bold; color: #d9534f; }
-
         .sold-out { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
-        .sold-out-badge { 
-            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); 
-            background: rgba(217, 83, 79, 0.9); color: white; padding: 8px 16px; 
-            border: 2px solid white; font-weight: bold; z-index: 10; border-radius: 4px; display: none; 
-        }
-
+        .sold-out-badge { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); background: rgba(217, 83, 79, 0.9); color: white; padding: 8px 16px; border: 2px solid white; font-weight: bold; z-index: 10; border-radius: 4px; display: none; }
         #black-market-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:2000; overflow-y:auto; }
         .quiz-container { max-width: 600px; margin: 40px auto; text-align: center; padding: 20px; color: white; }
         .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #252525; color: #fff; border: 1px solid #444; border-radius: 10px; cursor: pointer; text-align: left; }
@@ -90,24 +33,24 @@
 </head>
 <body>
 
-<div class="status-bar">
-    <a href="index.html" class="back-home-btn">← 回到首頁</a>
-    <div class="coin-display">持有魚幣: <span id="coin-count">0</span> 🐟</div>
-    <button id="refresh-data" class="refresh-btn" onclick="fetchStockData()">
-        <span>🔄</span> 更新庫存
-    </button>
-</div>
-
-<div class="container">
-    <div class="header-section">
-        <h2 style="letter-spacing: 4px; font-weight: 900;">[ DINO 27TH BIRTHDAY ]</h2>
-        <p>點擊下方照片即可進行訂購登記</p>
-        <p class="price-tag">每套需消耗 3 魚幣，也請注意水獺尺寸!</p>
+<div id="main-content">
+    <div class="status-bar">
+        <a href="index.html" class="back-home-btn">← 回到首頁</a>
+        <div class="coin-display">持有魚幣: <span id="coin-count">0</span> 🐟</div>
+        <button id="refresh-data" class="refresh-btn" onclick="fetchStockData()">🔄 更新庫存</button>
     </div>
-    <div id="magazine-gallery" class="magazine-gallery"></div>
-</div>
 
-<button id="floating-market-btn" onclick="openMarket()">{ 進入黑市挑戰 }</button>
+    <div class="container">
+        <div class="header-section">
+            <h2 style="font-weight: 900;">[ DINO 27TH BIRTHDAY ]</h2>
+            <p>點擊下方照片即可進行訂購登記</p>
+            <p class="price-tag">每套需消耗 3 魚幣，也請注意水獺尺寸!</p>
+        </div>
+        <div id="magazine-gallery" class="magazine-gallery"></div>
+    </div>
+
+    <button id="floating-market-btn" onclick="openMarket()">{ 進入黑市挑戰 }</button>
+</div>
 
 <div id="black-market-overlay">
     <div class="quiz-container">
@@ -124,20 +67,21 @@
 
 <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOll10EJ23JtCAxUzRtOY6r8yW0yc0Tgn9TyuloPl4pR1lPuuVK5iOpV1KmAkaY4kSq1Jcj6OiQP0/pub?gid=488908997&single=true&output=csv";
-    const OPEN_DATE = new Date("Feb 08, 2026 10:00:00").getTime();
-    const BASE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScWck40_ZDTAutZ6PT6cq3koXbHUyplsl8lcoASe2ACTlZXOg/viewform?usp=pp_url";
-    const BLACK_MARKET_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLScv7hqzJEcDXYX7BpIEfs5c2NmNfLOpUnWIxa1blxE9gU9afw/viewform?usp=pp_url";
     const GITHUB_ASSETS = "https://raw.githubusercontent.com/jenny7824212-stack/Dino-Happy-Birthday/main/";
+    
+    // --- ⏰ 時間設定 ---
+    const OPEN_DATE = new Date("Feb 08, 2026 10:00:00").getTime();
+    const COMP_START = new Date("Feb 11, 2026 10:00:00").getTime();
+    const COMP_END = new Date("Feb 12, 2026 23:00:00").getTime(); // 12號晚上11點關站
 
     let coins = parseInt(localStorage.getItem('dino_coins')) || 3;
     let temporaryCoins = 0;
     let currentQuiz = -1;
     let showingStory = true;
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const isDeveloper = urlParams.get('dev') === 'otter921008';
+    const isDeveloper = new URLSearchParams(window.location.search).get('dev') === 'otter921008';
 
-    // 1. 正式題庫（完整保留）
+    // 1. 正式黑市題庫 (18題)
     const questions = [
         { story: "「 Dino 又增加一歲了呢，輸入數字進入黑市吧。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 這一天克拉都期待直播見到獺。</span>", q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
         { story: "「 你注意到了一個正在播放的收音機。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 李燦的日文電台總是很有趣，而且學習日文十分努力呢。</span>", q: "問題 2：李燦主持的SCHOOL OF LOCK 是固定每個月第幾週更新?", a: ["1", "2", "3", "4"], correct: 1 },
@@ -159,64 +103,85 @@
         { story: "「 最後，你發現了一本手繪的《水獺觀察日記》。」<br><span style='font-size: 13px; color:#fac12f; opacity: 0.8;'>—— 感謝走到這裡。</span>", q: "特別問題：以下哪一個「沒有」被收錄在hys_921008水獺觀察日記中?", a: ["鼓嘴", "捂臉", "露齒笑", "眼鏡"], correct: 3 }
     ];
 
-    // 2. 休息室專用新題庫（以後增加題目加在這裡）
+    // 2. 休息室題庫 (49題)
     const loungeExtraQuestions = [
-    { q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
-    { q: "問題 2：李燦主持的SCHOOL OF LOCK 是固定每個月第幾週更新?", a: ["1", "2", "3", "4"], correct: 1 },
-    { q: "問題 3：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
-    { q: "問題 4：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
-    { q: "問題 5：拍攝 wait MV 以下非拍攝地點?", a: ["鍾路區", "廣津區", "龍山區", "松島"], correct: 2 },
-    { q: "問題 6：在wait MV中李燦的號碼牌是幾號?", a: ["365", "211", "526", "214"], correct: 0 },
-    { q: "問題 7：Wait 打歌舞台是在哪一個節目放送?", a: ["人氣歌謠", "MUSIC BANK", "M COUNT DOWN", "SHOW CHANPION"], correct: 0 },
-    { q: "問題 8：李燦奶奶的醬蟹是哪裡的風格?", a: ["慶尚道", "江原道", "忠清道", "全羅道"], correct: 3 },
-    { q: "問題 9：下列哪一個不是鐵人大叔底下藝人?", a: ["趙乙好", "Charles", "碩珉", "Leo"], correct: 0 },
-    { q: "問題 10：在李茂珍Service中，唱的是麥可的哪首歌曲?", a: ["Beat It", "Thriller", "Billie Jean", "Heal The World"], correct: 3 },
-    { q: "問題 11：高陽場Rain舞台第一天與第二天表演服裝有何處不同?", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2 },
-    { q: "問題 12：李燦在face the sun 做了牙鑽造型，做了幾顆牙?", a: ["2", "3", "4", "5"], correct: 1 },
-    { q: "問題 13：Danceology中,和知秀在哪裡拍攝的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
-    { q: "問題 14：2025獨自一人出國表演是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯", "法國"], correct: 2 },
-    { q: "問題 15：2025年共有幾次隊外 Challenge 合作?", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
-    { q: "問題 16：哪一年的生日直播做了 danceology 的回顧?", a: ["2018", "2019", "2020", "2021"], correct: 3 },
-    { q: "問題 17：十三月的舞躺著部分，李燦從上面數來第幾層?", a: ["1", "2", "3", "4"], correct: 1 },
-    { q: "問題 18：李燦是哪一女團的粉絲?", a: ["Apink", "f(x)", "EXID", "2NE1"], correct: 0 },
-    { q: "問題 19：在<13少年漂流記>的藝能TV秀的Q&A問答中，李燦排了成員的外貌排序，第一名是哪個成員呢？", a: ["尹淨漢", "全圓佑", "李燦", "洪知秀"], correct: 2 },
-    { q: "問題 20：Going rangers李燦代表色是什麼?", a: ["白色", "藍色", "粉色", "紅色"], correct: 3 },
-    { q: "問題 21：在GOING SEVENTEEN VER農田唱卡拉OK逃離農田，李燦第一次的分數是幾分?", a: ["10", "0", "1", "99"], correct: 1 },
-    { q: "問題 22：以下韓劇李燦沒有唱該劇的ost?", a: ["巧克力", "無人島的Diva", "A-TEEN", "青春紀錄"], correct: 3 },
-    { q: "問題 23：在小綠屋時期，李燦背的小包包是什麼顏色?", a: ["橘色", "紅色", "白色", "黑色"], correct: 0 },
-    { q: "問題 24：5TH MINI Album oh my 打歌時期，李燦的髮色是什麼顏色 ?", a: ["金色", "藍色", "粉色", "黑色"], correct: 2 },
-    { q: "問題 25：very nice 回歸打歌舞台 李燦的special day是在哪個放送節目?", a: ["M COUNT DOWN", "SHOW CHANPION", "MUSIC BANK", "人氣歌謠"], correct: 0 },
-    { q: "問題 26：李燦的生肖是哪一個?", a: ["老虎", "龍", "牛", "兔子"], correct: 3 },
-    { q: "問題 27：勝寛送給李燦的外套生日禮物，李燦是穿著它和誰合作?", a: ["J-hope", "太陽", "彰彬", "然俊"], correct: 1 },
-    { q: "問題 28：下列何者不是李燦在節目或是直播說過的同款香水味道?", a: ["VETYVERO", "瓦平松浴女", "狂野麝香", "拿破崙之水"], correct: 3 },
-    { q: "問題 29：李燦給自己20歲的生日禮物是什麼?", a: ["項鍊", "戒指", "手鍊", "耳環"], correct: 1 },
-    { q: "問題 30：TRIGGER 歌詞中，李燦與鏡中的自己玩的是什麼遊戲?", a: ["俄羅斯輪盤", "德州撲克", "狼人殺", "骰寶"], correct: 0 },
-    { q: "問題 31：2024/03/19的DINO D-Day，李燦第一個同車的成員是哪一位?", a: ["圓佑", "勝寛", "珉奎", "碩珉"], correct: 3 },
-    { q: "問題 32：SVT Record DINO 的 What's in my bag中的包包是誰送的?", a: ["碩珉", "李燦爸爸", "勝寛", "順榮"], correct: 2 },
-    { q: "問題 33：李燦是在哪吃到DINO 漢堡的?", a: ["香港", "曼谷", "澳門", "舊金山"], correct: 2 },
-    { q: "問題 34：淨漢送李燦小水獺玩偶的時候，他們正因哪個節目在國外旅行中?", a: ["杜拜大富翁", "美好的一天", "NANA TOUR", "阿拉丁神燈"], correct: 3 },
-    { q: "問題 35：李燦和金珉奎就讀高中時，差了多少年級?", a: ["1", "2", "3", "0"], correct: 0 },
-    { q: "問題 36：挑食的李燦是討厭下面哪一個食物呢?", a: ["香菜", "南瓜", "紫蘇葉", "小黃瓜"], correct: 2 },
-    { q: "問題 37：在2024年底至2025年初的頒獎典禮，李燦是在哪一個舞台負責Dance Break ?", a: ["MAMA", "金唱片", "AAA", "TMA"], correct: 0 },
-    { q: "問題 38：2018的IDEAL CUT 李燦的 SOLO 舞台歌曲是下列哪一個?", a: ["THE REAL THING", "EVERY TIME", "ZERO(HERO)", "LAST ORDER"], correct: 1 },
-    { q: "問題 39：在閃耀五周年中，李燦扮演哪位成員?", a: ["知勳", "勝寛", "順榮", "碩珉"], correct: 3 },
-    { q: "問題 40：在GOING SEVENTEEN 把白飯吃得超美味的完美方法，李燦是如何做的?", a: ["演飯飯英雄", "邊唱trot邊吃飯", "和家人吃飯", "淋水吃飯"], correct: 2 },
-    { q: "問題 41：GOING SEVENTEEN DON'T LIE 3 李燦的角色是哪一個 ?", a: ["殺手", "醫生", "平民", "警察"], correct: 1 },
-    { q: "問題 42：GOING SEVENTEEN 談話聚餐會，李燦說下輩子像當什麼 ?", a: ["人類", "恐龍", "水獺", "小鳥"], correct: 3 },
-    { q: "問題 43：GOING SEVENTEEN 全知干預視角懲罰中，李燦的徵文比賽誰獲得第一名?", a: ["淨漢", "勝哲", "知秀", "俊輝"], correct: 2 },
-    { q: "問題 44：NANA BND中，李燦是住幾人房?", a: ["1", "2", "3", "4"], correct: 3 },
-    { q: "問題 45：NANA BND中，李燦是靠哪位成員完成猜對一分鐘?", a: ["勝哲", "明浩", "知勳", "俊輝"], correct: 1 },
-    { q: "問題 46：出差十五夜 HYBE 篇第一個遊戲HYBE花開了，李燦得到什麼?", a: ["咖啡", "甜瓜", "汽水", "西瓜"], correct: 3 },
-    { q: "問題 47：DINO TTT 寫真集總共有幾套不同造型(黑西裝那邊算一套)?", a: ["2", "3", "4", "5"], correct: 3 },
-    { q: "問題 48：在設定MINITEEN 燦噠哩時，水獺國王喜歡吃什麼?", a: ["辣炒年糕", "馬鈴薯排骨湯", "海帶湯", "炸雞"], correct: 1 },
-    { q: "問題 49：哈利波特聚會，李燦是哪一個學院的?", a: ["文雷克勞", "史萊哲林", "葛萊分多", "赫夫帕夫"], correct: 2 },
-    { q: "問題 20：李燦是哪一個小分隊隊長?", a: ["JxW", "HxW", "DxS", "CxM"], correct: 0 },
-   
-    // 💡 以後想加題目，就從這裡開始往後貼：
-    // , { q: "新問題？", a: ["A", "B", "C", "D"], correct: 0 }
-];
+        { q: "問題 1：李燦的生日是幾號?", a: ["2/10", "2/11", "2/12", "3/11"], correct: 1 },
+        { q: "問題 2：李燦主持的SCHOOL OF LOCK 是固定每個月第幾週更新?", a: ["1", "2", "3", "4"], correct: 1 },
+        { q: "問題 3：李燦成年高中畢業的Solo曲是?", a: ["Wait", "Last Order", "Zero", "High Five"], correct: 2 },
+        { q: "問題 4：《Wait》花絮 MV拍攝時,有幾位哥哥到場加油?", a: ["10", "11", "12", "13"], correct: 2 },
+        { q: "問題 5：拍攝 wait MV 以下非拍攝地點?", a: ["鍾路區", "廣津區", "龍山區", "松島"], correct: 2 },
+        { q: "問題 6：在wait MV中李燦的號碼牌是幾號?", a: ["365", "211", "526", "214"], correct: 0 },
+        { q: "問題 7：Wait 打歌舞台是在哪一個節目放送?", a: ["人氣歌謠", "MUSIC BANK", "M COUNT DOWN", "SHOW CHANPION"], correct: 0 },
+        { q: "問題 8：李燦奶奶的醬蟹是哪裡的風格?", a: ["慶尚道", "江原道", "忠清道", "全羅道"], correct: 3 },
+        { q: "問題 9：下列哪一個不是鐵人大叔底下藝人?", a: ["趙乙好", "Charles", "碩珉", "Leo"], correct: 0 },
+        { q: "問題 10：在李茂珍Service中，唱的是麥可的哪首歌曲?", a: ["Beat It", "Thriller", "Billie Jean", "Heal The World"], correct: 3 },
+        { q: "問題 11：高陽場Rain舞台第一天與第二天表演服裝有何處不同?", a: ["鞋子", "手套", "臂環", "麥克風"], correct: 2 },
+        { q: "問題 12：李燦在face the sun 做了牙鑽造型，做了幾顆牙?", a: ["2", "3", "4", "5"], correct: 1 },
+        { q: "問題 13：Danceology中,和知秀在哪裡拍攝的?", a: ["東京", "大阪", "首爾", "名古屋"], correct: 3 },
+        { q: "問題 14：2025獨自一人出國表演是去哪裡?", a: ["日本", "美國", "沙烏地阿拉伯", "法國"], correct: 2 },
+        { q: "問題 15：2025年共有幾次隊外 Challenge 合作?", a: ["4 次", "5 次", "6 次", "7 次"], correct: 2 },
+        { q: "問題 16：哪一年的生日直播做了 danceology 的回顧?", a: ["2018", "2019", "2020", "2021"], correct: 3 },
+        { q: "問題 17：十三月的舞躺著部分，李燦從上面數來第幾層?", a: ["1", "2", "3", "4"], correct: 1 },
+        { q: "問題 18：李燦是哪一女團的粉絲?", a: ["Apink", "f(x)", "EXID", "2NE1"], correct: 0 },
+        { q: "問題 19：在<13少年漂流記>的藝能TV秀的Q&A問答中，李燦排了成員的外貌排序，第一名是哪個成員呢？", a: ["尹淨漢", "全圓佑", "李燦", "洪知秀"], correct: 2 },
+        { q: "問題 20：Going rangers李燦代表色是什麼?", a: ["白色", "藍色", "粉色", "紅色"], correct: 3 },
+        { q: "問題 21：在GOING SEVENTEEN VER農田唱卡拉OK逃離農田，李燦第一次的分數是幾分?", a: ["10", "0", "1", "99"], correct: 1 },
+        { q: "問題 22：以下韓劇李燦沒有唱該劇的ost?", a: ["巧克力", "無人島的Diva", "A-TEEN", "青春紀錄"], correct: 3 },
+        { q: "問題 23：在小綠屋時期，李燦背的小包包是什麼顏色?", a: ["橘色", "紅色", "白色", "黑色"], correct: 0 },
+        { q: "問題 24：5TH MINI Album oh my 打歌時期，李燦的髮色是什麼顏色 ?", a: ["金色", "藍色", "粉色", "黑色"], correct: 2 },
+        { q: "問題 25：very nice 回歸打歌舞台 李燦的special day是在哪個放送節目?", a: ["M COUNT DOWN", "SHOW CHANPION", "MUSIC BANK", "人氣歌謠"], correct: 0 },
+        { q: "問題 26：李燦的生肖是哪一個?", a: ["老虎", "龍", "牛", "兔子"], correct: 3 },
+        { q: "問題 27：勝寛送給李燦的外套生日禮物，李燦是穿著它和誰合作?", a: ["J-hope", "太陽", "彰彬", "然俊"], correct: 1 },
+        { q: "問題 28：下列何者不是李燦在節目或是直播說過的同款香水味道?", a: ["VETYVERO", "瓦平松浴女", "狂野麝香", "拿破崙之水"], correct: 3 },
+        { q: "問題 29：李燦給自己20歲的生日禮物是什麼?", a: ["項鍊", "戒指", "手鍊", "耳環"], correct: 1 },
+        { q: "問題 30：TRIGGER 歌詞中，李燦與鏡中的自己玩的是什麼遊戲?", a: ["俄羅斯輪盤", "德州撲克", "狼人殺", "骰寶"], correct: 0 },
+        { q: "問題 31：2024/03/19的DINO D-Day，李燦第一個同車的成員是哪一位?", a: ["圓佑", "勝寛", "珉奎", "碩珉"], correct: 3 },
+        { q: "問題 32：SVT Record DINO 的 What's in my bag中的包包是誰送的?", a: ["碩珉", "李燦爸爸", "勝寛", "順榮"], correct: 2 },
+        { q: "問題 33：李燦是在哪吃到DINO 漢堡的?", a: ["香港", "曼谷", "澳門", "舊金山"], correct: 2 },
+        { q: "問題 34：淨漢送李燦小水獺玩偶的時候，他們正因哪個節目在國外旅行中?", a: ["杜拜大富翁", "美好的一天", "NANA TOUR", "阿拉丁神燈"], correct: 3 },
+        { q: "問題 35：李燦和金珉奎就讀高中時，差了多少年級?", a: ["1", "2", "3", "0"], correct: 0 },
+        { q: "問題 36：挑食的李燦是討厭下面哪一個食物呢?", a: ["香菜", "南瓜", "紫蘇葉", "小黃瓜"], correct: 2 },
+        { q: "問題 37：在2024年底至2025年初的頒獎典禮，李燦是在哪一個舞台負責Dance Break ?", a: ["MAMA", "金唱片", "AAA", "TMA"], correct: 0 },
+        { q: "問題 38：2018的IDEAL CUT 李燦的 SOLO 舞台歌曲是下列哪一個?", a: ["THE REAL THING", "EVERY TIME", "ZERO(HERO)", "LAST ORDER"], correct: 1 },
+        { q: "問題 39：在閃耀五周年中，李燦扮演哪位成員?", a: ["知勳", "勝寛", "順榮", "碩珉"], correct: 3 },
+        { q: "問題 40：在GOING SEVENTEEN 把白飯吃得超美味的完美方法，李燦是如何做的?", a: ["演飯飯英雄", "邊唱trot邊吃飯", "和家人吃飯", "淋水吃飯"], correct: 2 },
+        { q: "問題 41：GOING SEVENTEEN DON'T LIE 3 李燦的角色是哪一個 ?", a: ["殺手", "醫生", "平民", "警察"], correct: 1 },
+        { q: "問題 42：GOING SEVENTEEN 談話聚餐會，李燦說下輩子像當什麼 ?", a: ["人類", "恐龍", "水獺", "小鳥"], correct: 3 },
+        { q: "問題 43：GOING SEVENTEEN 全知干預視角懲罰中，李燦的徵文比賽誰獲得第一名?", a: ["淨漢", "勝哲", "知秀", "俊輝"], correct: 2 },
+        { q: "問題 44：NANA BND中，李燦是住幾人房?", a: ["1", "2", "3", "4"], correct: 3 },
+        { q: "問題 45：NANA BND中，李燦是靠哪位成員完成猜對一分鐘?", a: ["勝哲", "明浩", "知勳", "俊輝"], correct: 1 },
+        { q: "問題 46：出差十五夜 HYBE 篇第一個遊戲HYBE花開了，李燦得到什麼?", a: ["咖啡", "甜瓜", "汽水", "西瓜"], correct: 3 },
+        { q: "問題 47：DINO TTT 寫真集總共有幾套不同造型(黑西裝那邊算一套)?", a: ["2", "3", "4", "5"], correct: 3 },
+        { q: "問題 48：在設定MINITEEN 燦噠哩時，水獺國王喜歡吃什麼?", a: ["辣炒年糕", "馬鈴薯排骨湯", "海帶湯", "炸雞"], correct: 1 },
+        { q: "問題 49：哈利波特聚會，李燦是哪一個學院的?", a: ["文雷克勞", "史萊哲林", "葛萊分多", "赫夫帕夫"], correct: 2 },
+        { q: "問題 50：李燦是哪一個小分隊隊長?", a: ["JxW", "HxW", "DxS", "CxM"], correct: 0 }
+    ];
 
     window.onload = function() {
+        const now = new Date().getTime();
+
+        // 🚫 自動關站邏輯
+        if (now > COMP_END) {
+            document.body.innerHTML = `
+                <div style="background:#1a1a1a; color:#fff; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; font-family:sans-serif;">
+                    <h1 style="color:#ffd026; font-size:48px;">活動已結束</h1>
+                    <p style="font-size:18px; color:#888;">感謝所有子民的參與！水獺國王的時裝週之旅圓滿達成。</p>
+                    <button onclick="window.open('https://docs.google.com/spreadsheets/d/e/2PACX-1vRXulW2YWAihp7nLnQskERNxA6JNS3L5Op3eKXX9BlXj4wYnuhT_AnAH3sGqtPv8TnHo8QHh0d6NZ0L/pubhtml?gid=770811598&single=true')" 
+                            style="margin-top:30px; padding:10px 20px; background:#ffd026; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">
+                        📊 查看最終排行榜
+                    </button>
+                </div>`;
+            return;
+        }
+
+        renderGallery();
+        updateCoinDisplay();
+        fetchStockData();
+        checkMarketStatus();
+        if (isDeveloper) addDevTool();
+    };
+
+    function renderGallery() {
         const gallery = document.getElementById('magazine-gallery');
         for (let i = 1; i <= 10; i++) {
             const card = document.createElement('div');
@@ -226,94 +191,48 @@
             card.innerHTML = `<div id="badge-${i}" class="sold-out-badge">SOLD OUT</div><img src="${GITHUB_ASSETS}cloth${i}.jpg"><div class="card-info"><span class="buy-tag">CLOTH #${i}</span><span class="stock-label">剩餘數量：<span id="stock-${i}" class="stock-count">--</span></span></div>`;
             gallery.appendChild(card);
         }
-        updateCoinDisplay();
-        fetchStockData();
-        checkMarketStatus();
-        if (isDeveloper) addDevTool();
-    };
+    }
 
     async function fetchStockData() {
         const btn = document.getElementById('refresh-data');
-        btn.innerText = "更新中...";
         try {
             const response = await fetch(`${CSV_URL}&t=${new Date().getTime()}`);
             const data = await response.text();
             const rows = data.split('\n').map(row => row.split(','));
             for (let i = 1; i <= 10; i++) {
                 if (rows[i]) {
-                    const currentStock = parseInt(rows[i][2]); 
+                    const currentStock = parseInt(rows[i][2]);
                     document.getElementById(`stock-${i}`).innerText = currentStock;
                     if (currentStock <= 0) {
                         document.getElementById(`card-${i}`).classList.add('sold-out');
                         document.getElementById(`badge-${i}`).style.display = 'block';
-                    } else {
-                        document.getElementById(`card-${i}`).classList.remove('sold-out');
-                        document.getElementById(`badge-${i}`).style.display = 'none';
                     }
                 }
             }
-        } catch (e) { console.error("更新失敗", e); }
-        finally { btn.innerHTML = "<span>🔄</span> 更新庫存"; }
-    }
-
-    function updateCoinDisplay() {
-        document.getElementById('coin-count').innerText = coins;
-    }
-
-    function handlePurchase(itemId) {
-        const now = new Date().getTime();
-        const stockEl = document.getElementById(`stock-${itemId}`);
-        const stock = stockEl ? parseInt(stockEl.innerText) : 0;
-        if (now < OPEN_DATE && !isDeveloper) { alert("🔒 2/8 10:00 正式開啟。"); return; }
-        if (stock <= 0) { alert("此商品已售罄！"); return; }
-        if (coins < 3) { alert("魚幣不足！"); return; }
-        if (confirm(`消耗 3 魚幣購買 [ CLOTH #${itemId} ]？\n(注意：每人僅限登記購買一件)`)) {
-            coins -= 3;
-            localStorage.setItem('dino_coins', coins);
-            updateCoinDisplay();
-            window.location.href = `${BASE_FORM_URL}&entry.94643144=%23${itemId}`;
-        }
+        } catch (e) { console.error("Stock error"); }
     }
 
     function checkMarketStatus() {
         const btn = document.getElementById('floating-market-btn');
         const now = new Date().getTime();
         if (!isDeveloper && now < OPEN_DATE) { btn.style.display = 'none'; return; }
-        
+
         btn.style.display = 'block';
         const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
-        const entered = localStorage.getItem('dino_market_entered') === 'true';
-
         if (isPractice) {
-            // 已經通關過 -> 進入休息室
             btn.innerHTML = "🦦 休息室 ⟡";
             btn.style.background = "#1a1a1a";
-            btn.style.border = "1px solid #ffd026";
             btn.style.color = "#ffd026";
-            btn.onclick = openMarket;
-        } else if (entered) {
-            // 進入過但沒通關 (可能中途退出或出錯)
-            btn.innerHTML = "🦦 進入練習模式";
-            btn.style.background = "#555";
-            btn.onclick = () => {
-                localStorage.setItem('dino_cleared_market', 'true'); 
-                location.reload();
-            };
-        } else {
-            // 第一次參加
-            btn.innerHTML = "{ 進入黑市挑戰 }";
-            btn.style.background = "#ff4b4b";
-            btn.onclick = openMarket;
+            btn.style.border = "1px solid #ffd026";
         }
     }
+
     function openMarket() {
         const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
         if (!isPractice) {
-            if (localStorage.getItem('dino_market_entered') === 'true') return;
             if (!confirm("⚠️ 警告：進入黑市中途退出，魚幣將重置！也無法再次進入，確定進入？")) return;
             localStorage.setItem('dino_market_entered', 'true');
         }
-        checkMarketStatus();
         document.getElementById('black-market-overlay').style.display = 'block';
         currentQuiz = -1; temporaryCoins = 0; showQuestion();
     }
@@ -322,70 +241,44 @@
         const storyP = document.getElementById('quiz-story');
         const questionP = document.getElementById('quiz-question');
         const optionsDiv = document.getElementById('quiz-options');
+        const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
+        const currentDataPool = isPractice ? loungeExtraQuestions : questions;
+        const now = new Date().getTime();
+        const isCompTime = (now >= COMP_START && now <= COMP_END);
+
         document.getElementById('quiz-orig-coins').innerText = coins;
         document.getElementById('quiz-temp-coins').innerText = temporaryCoins;
 
-        const isPractice = localStorage.getItem('dino_cleared_market') === 'true';
-        const currentDataPool = isPractice ? loungeExtraQuestions : questions;
-
-        // --- 🏆 競賽時間邏輯 (2/11 10:00 - 24:00) ---
-        const now = new Date().getTime();
-        const compStart = new Date("Feb 11, 2026 10:00:00").getTime();
-        const compEnd = new Date("Feb 11, 2026 23:59:59").getTime();
-        const isCompetitionTime = (now >= compStart && now <= compEnd);
-
-        // 1. 檢查是否完成所有題目 (結算畫面)
         if (currentQuiz >= currentDataPool.length) {
             document.getElementById('quiz-coin-board').style.display = 'none';
-            
             if (isPractice) {
-                // --- 🔗 雙排行榜自動切換 ---
-                const oldLeaderboardUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQwkbg05CbAg70XRAKLAIPv7VlNlCj4175NA5q8NkIHd8Xogdl6hdngca8Rc3CS3484pBhOG5k-n2Nl/pubhtml?gid=1871742235&single=true"; 
-                const newLeaderboardUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXulW2YWAihp7nLnQskERNxA6JNS3L5Op3eKXX9BlXj4wYnuhT_AnAH3sGqtPv8TnHo8QHh0d6NZ0L/pubhtml?gid=770811598&single=true"; 
-                const finalLeaderboardUrl = isCompetitionTime ? newLeaderboardUrl : oldLeaderboardUrl;
+                const leaderboard = isCompTime ? "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXulW2YWAihp7nLnQskERNxA6JNS3L5Op3eKXX9BlXj4wYnuhT_AnAH3sGqtPv8TnHo8QHh0d6NZ0L/pubhtml?gid=770811598&single=true" : "https://docs.google.com/spreadsheets/d/e/2PACX-1vQwkbg05CbAg70XRAKLAIPv7VlNlCj4175NA5q8NkIHd8Xogdl6hdngca8Rc3CS3484pBhOG5k-n2Nl/pubhtml?gid=1871742235&single=true";
+                const verifyCode = (temporaryCoins + 211) * 13;
+                const formUrl = isCompTime 
+                    ? `https://docs.google.com/forms/d/e/1FAIpQLSdVxUqssvJQTRf89SvkIJ1cfR0UXs6vv0DBypK-X2GMYcjrvQ/viewform?usp=pp_url&entry.1663061856=${temporaryCoins}&entry.872829839=${verifyCode}`
+                    : `https://docs.google.com/forms/d/e/1FAIpQLSfrUlyB14ebD9DKTFJ3GlHFynv2alSnuoXppOT7P1Fs5mB4kg/viewform?usp=pp_url&entry.999984790=${temporaryCoins}`;
 
-                // --- 🔗 雙表單自動切換 ---
-                const normalFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfrUlyB14ebD9DKTFJ3GlHFynv2alSnuoXppOT7P1Fs5mB4kg/viewform?usp=pp_url&entry.999984790=${temporaryCoins}`;
-                const competitionVerifyCode = (temporaryCoins + 211) * 13;
-                const competitionFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSdVxUqssvJQTRf89SvkIJ1cfR0UXs6vv0DBypK-X2GMYcjrvQ/viewform?usp=pp_url&entry.1663061856=${temporaryCoins}&entry.872829839=${competitionVerifyCode}`;
-                const finalFormUrl = isCompetitionTime ? competitionFormUrl : normalFormUrl;
-
-                if (isCompetitionTime) {
-                    storyP.innerHTML = "<h2 style='color:#ff4b4b;'>🏆 0211 競賽模式完成！</h2><p>第一名可從商店中任選一組商品！<br>請務必前往登記並上傳證明。</p>";
-                } else {
-                    storyP.innerHTML = "<h2 style='color:#ffd026;'>挑戰結束！</h2><p>休息室練習完成。</p>";
-                }
-                
+                storyP.innerHTML = isCompTime ? "<h2 style='color:#ff4b4b;'>🏆 0211 競賽模式完成！</h2>" : "<h2>挑戰結束</h2>";
                 optionsDiv.innerHTML = `
-                    <button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${finalFormUrl}')">${isCompetitionTime ? '🥇 登記競賽分數 (抽獎用)' : '🏆 登記分數 / 題目投稿'}</button>
-                    <button class="option-btn" style="background:#ffffff; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${finalLeaderboardUrl}')">${isCompetitionTime ? '📊 查看競賽即時榜' : '📊 查看練習排行榜'}</button>
-                    <button class="option-btn" style="text-align:center;" onclick="location.reload()">↩️ 回到商店首頁</button>
-                `;
-                
-                questionP.innerHTML = `<div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;"><div style="margin:10px 0; font-size:24px; font-weight:900;">本次得分：${temporaryCoins} 🐟</div>${isCompetitionTime ? `<div style="font-size:12px; color:#999; margin-top:5px;">驗證碼：${competitionVerifyCode}</div>` : ''}</div>`;
+                    <button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${formUrl}')">${isCompTime ? '🥇 登記競賽分數' : '🏆 登記分數 / 題目投稿'}</button>
+                    <button class="option-btn" style="background:#fff; color:#000; font-weight:bold; text-align:center;" onclick="window.open('${leaderboard}')">📊 查看排行榜</button>
+                    <button class="option-btn" style="text-align:center;" onclick="location.reload()">↩️ 回到商店首頁</button>`;
+                questionP.innerHTML = `<div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;">得分：${temporaryCoins} 🐟${isCompTime ? `<br><small style="color:#999">驗證碼：${verifyCode}</small>` : ''}</div>`;
             } else {
-                // --- 黑市挑戰結束 ---
-                storyP.innerHTML = "<span style='color:#ffd026; font-size:18px; font-weight:bold;'>「感謝你找到李燦各種面貌的碎片...」</span><br>你推開服裝店的後門，發現了裁縫師在那等著你。";
-                optionsDiv.innerHTML = `<button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="finalizeMarketCoins()">確認領取並登記</button>`;
-                questionP.innerHTML = `<div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;"><div style="margin:10px 0; font-size:24px; font-weight:900;">總計獲得：${coins + temporaryCoins} 🐟</div></div>`;
+                storyP.innerHTML = "你推開服裝店的後門，發現了裁縫師在那等著你。";
+                optionsDiv.innerHTML = `<button class="option-btn" style="background:#ffd026; color:#000; font-weight:bold; text-align:center;" onclick="finalizeMarketCoins()">領取並登記</button>`;
+                questionP.innerHTML = `<div style="background:#fff; padding:20px; border-radius:15px; color:#000; margin-top:20px;">總計獲得：${coins + temporaryCoins} 🐟</div>`;
             }
             return;
         }
 
-        // 2. 顯示起始歡迎畫面
         if (currentQuiz === -1) {
-            if (isPractice) {
-                storyP.innerHTML = isCompetitionTime ? "<span style='color:#ff4b4b; font-size:24px; font-weight:bold;'>🔥 DINO 0211 競賽模式 🔥</span>" : "歡迎回到休息室練習場";
-                questionP.innerHTML = isCompetitionTime ? "挑戰第一名領取生日商品！<br>記得截圖分數畫面以便上傳證明。" : "在這裡你可以練習所有題目。";
-            } else {
-                storyP.innerHTML = "身為水獺國王的子民，你正為了國王的時裝週之旅奔波...";
-                questionP.innerHTML = "在過程中了解李燦的各種面貌的碎片。";
-            }
+            storyP.innerHTML = isCompTime && isPractice ? "<span style='color:#ff4b4b; font-size:24px; font-weight:bold;'>🔥 DINO 0211 競賽模式 🔥</span>" : "了解李燦各種面貌的碎片...";
+            questionP.innerText = isCompTime && isPractice ? "挑戰第一名領取生日商品！" : "準備好開始了嗎？";
             optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#ffd026; color:#000; font-weight:bold;" onclick="currentQuiz=0; showingStory=false; showQuestion();">開始挑戰</button>`;
             return;
         }
 
-        // 3. 題目內容顯示
         const data = currentDataPool[currentQuiz];
         if (isPractice || !showingStory) {
             storyP.innerHTML = `<div style="color:#888; font-size:14px;">Q${currentQuiz + 1} / ${currentDataPool.length}</div>`;
@@ -396,41 +289,47 @@
                 btn.className = 'option-btn';
                 btn.innerText = `${String.fromCharCode(65 + idx)}. ${txt}`;
                 btn.onclick = () => {
-                    if (idx === data.correct) { 
-                        temporaryCoins += 2; 
-                        alert("正確！獲得 2 魚幣。"); 
-                    } else { 
-                        alert("答錯了..."); 
-                    }
-                    currentQuiz++; 
-                    showingStory = true; 
-                    showQuestion();
+                    if (idx === data.correct) { temporaryCoins += 2; alert("正確！"); }
+                    else { alert("答錯了..."); }
+                    currentQuiz++; showingStory = true; showQuestion();
                 };
                 optionsDiv.appendChild(btn);
             });
         } else {
-            // 正式挑戰的故事間幕
             storyP.innerHTML = `<div style="font-size:20px; color:#ffd026; line-height:1.6; margin:40px 0;"> ${data.story} </div>`;
             questionP.innerText = "";
             optionsDiv.innerHTML = `<button class="option-btn" style="text-align:center; background:#444;" onclick="showingStory=false; showQuestion();">查看挑戰題 →</button>`;
         }
     }
-    function handlePenaltyClose() {
-        if (confirm("離開黑市，魚幣將歸回初始值 (3)！確定嗎？")) {
-            coins = 3; localStorage.setItem('dino_coins', 3); updateCoinDisplay();
-            document.getElementById('black-market-overlay').style.display = 'none';
-        }
-    }
 
     function finalizeMarketCoins() {
-        const finalCoins = coins + temporaryCoins;
-        coins = finalCoins;
+        coins += temporaryCoins;
         localStorage.setItem('dino_coins', coins);
         localStorage.setItem('dino_cleared_market', 'true');
         updateCoinDisplay();
-        const verifyCode = (finalCoins * 17) + 211;
-        window.location.href = `${BLACK_MARKET_BASE_URL}&entry.94782409=${finalCoins}&entry.1993098186=${verifyCode}`;
+        const verifyCode = (coins * 17) + 211;
+        window.location.href = `https://docs.google.com/forms/d/e/1FAIpQLScv7hqzJEcDXYX7BpIEfs5c2NmNfLOpUnWIxa1blxE9gU9afw/viewform?usp=pp_url&entry.94782409=${coins}&entry.1993098186=${verifyCode}`;
     }
+
+    function handlePenaltyClose() {
+        if (confirm("離開黑市，魚幣將歸回初始值 (3)！確定嗎？")) {
+            localStorage.setItem('dino_coins', 3); location.reload();
+        }
+    }
+
+    function handlePurchase(itemId) {
+        const now = new Date().getTime();
+        const stock = parseInt(document.getElementById(`stock-${itemId}`).innerText);
+        if (now < OPEN_DATE && !isDeveloper) { alert("🔒 2/8 10:00 正式開啟。"); return; }
+        if (stock <= 0) { alert("已售罄"); return; }
+        if (coins < 3) { alert("魚幣不足"); return; }
+        if (confirm(`消耗 3 魚幣購買 #${itemId}?`)) {
+            coins -= 3; localStorage.setItem('dino_coins', coins); updateCoinDisplay();
+            window.location.href = `https://docs.google.com/forms/d/e/1FAIpQLScWck40_ZDTAutZ6PT6cq3koXbHUyplsl8lcoASe2ACTlZXOg/viewform?usp=pp_url&entry.94643144=%23${itemId}`;
+        }
+    }
+
+    function updateCoinDisplay() { document.getElementById('coin-count').innerText = coins; }
 
     function addDevTool() {
         const devBtn = document.createElement('div');
@@ -439,20 +338,11 @@
             let cmd = prompt("1.+3 / 2.Reset / 3.Finish");
             if (cmd==='1') { coins+=3; localStorage.setItem('dino_coins', coins); updateCoinDisplay(); }
             if (cmd==='2') { localStorage.clear(); location.reload(); }
-            if (cmd==='3') { currentQuiz = questions.length; showQuestion(); }
+            if (cmd==='3') { currentQuiz = loungeExtraQuestions.length; showQuestion(); }
         };
         document.body.appendChild(devBtn);
     }
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
 
